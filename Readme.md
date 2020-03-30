@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Зуев](https://up.htmlacademy.ru/ecmascript/11/user/859219).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шершнев](https://up.htmlacademy.ru/ecmascript/11/user/587797).
 
 ---
 
