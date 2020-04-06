@@ -15,7 +15,7 @@ const createInfoTemplate = () => {
         Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
       </p>
     </section>`
-  )
+  );
 };
 
 // Меню
@@ -94,7 +94,7 @@ const createMainContentTemplate = () => {
         <ul class="trip-events__list"></ul>
       </li>
     </ul>`
-  )
+  );
 };
 
 // Форма создания/редактирования точки
