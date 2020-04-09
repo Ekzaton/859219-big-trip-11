@@ -29,14 +29,12 @@ render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplat
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-// Отрисовка сортировки и основного контента
+// Отрисовка сортировки, формы и основного контента
 render(tripEventsElement, createSortTemplate(), `beforeend`);
+render(tripEventsElement, createPointEditTemplate(), `beforeend`);
 render(tripEventsElement, createMainContentTemplate(), `beforeend`);
 
 const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
-
-// Отрисовка формы
-render(tripEventsListElement, createPointEditTemplate(), `beforeend`);
 
 // Отрисовка точек
 for (let i = 0; i < POINT_COUNT; i++) {
