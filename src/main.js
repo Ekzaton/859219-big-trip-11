@@ -1,5 +1,3 @@
-'use strict';
-
 // Константы
 const POINT_COUNT = 3;
 
