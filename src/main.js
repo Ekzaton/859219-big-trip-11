@@ -7,6 +7,8 @@ import {createMainContentTemplate} from "./components/main-content.js";
 import {createPointEditTemplate} from "./components/point-edit.js";
 import {createPointTemplate} from "./components/point.js";
 
+import {filters} from "./mock/filter.js";
+
 // Константы
 const POINT_COUNT = 3;
 
@@ -25,7 +27,7 @@ const tripControlsElement = document.querySelector(`.trip-controls`);
 
 // Отрисовка меню и фильтров
 render(tripControlsElement.querySelector(`h2:first-of-type`), createSiteMenuTemplate(), `afterend`);
-render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplate(), `afterend`);
+render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplate(filters), `afterend`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
