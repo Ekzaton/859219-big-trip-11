@@ -16,7 +16,7 @@ const createFilterMarkup = (filter, isChecked) => {
   );
 };
 
-// Фильтры
+// Шаблон секции фильтров
 export const createFilterTemplate = (filters) => {
   const filtersMarkup = filters.map((it, i) => createFilterMarkup(it, i === 0)).join(`\n`);
 

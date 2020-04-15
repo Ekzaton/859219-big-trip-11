@@ -1,15 +1,12 @@
-// Фильтры
-export const filters = [
-  {
-    name: `everything`,
-    title: `Everything`
-  },
-  {
-    name: `future`,
-    title: `Future`
-  },
-  {
-    name: `past`,
-    title: `Past`
-  },
-];
+// Имена фильтров
+const filterNames = [`everything`, `future`, `past`];
+
+// Генерация фильтров
+export const generateFilters = () => {
+  return filterNames.map((it) => {
+    return {
+      name: it,
+      title: it.charAt(0).toUpperCase() + it.slice(1),
+    };
+  });
+};

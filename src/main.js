@@ -1,4 +1,4 @@
-// Импорт
+// Компоненты
 import {createInfoTemplate} from "./components/info.js";
 import {createSiteMenuTemplate} from "./components/site-menu.js";
 import {createFilterTemplate} from "./components/filter.js";
@@ -7,7 +7,8 @@ import {createMainContentTemplate} from "./components/main-content.js";
 import {createPointEditTemplate} from "./components/point-edit.js";
 import {createPointTemplate} from "./components/point.js";
 
-import {filters} from "./mock/filter.js";
+// Моки
+import {generateFilters} from "./mock/filter.js";
 
 // Константы
 const POINT_COUNT = 3;
@@ -24,6 +25,8 @@ const tripMainElement = document.querySelector(`.trip-main`);
 render(tripMainElement, createInfoTemplate(), `afterbegin`);
 
 const tripControlsElement = document.querySelector(`.trip-controls`);
+
+const filters = generateFilters();
 
 // Отрисовка меню и фильтров
 render(tripControlsElement.querySelector(`h2:first-of-type`), createSiteMenuTemplate(), `afterend`);
