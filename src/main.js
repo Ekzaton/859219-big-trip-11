@@ -8,7 +8,8 @@ import {createPointEditTemplate} from "./components/point-edit.js";
 import {createPointTemplate} from "./components/point.js";
 
 // Моки
-import {generateFilters} from "./mock/filter.js";
+import {generateFiltersOptions} from "./mock/filter.js";
+import {generateSortOptions} from "./mock/sort.js";
 
 // Константы
 const POINT_COUNT = 3;
@@ -26,16 +27,18 @@ render(tripMainElement, createInfoTemplate(), `afterbegin`);
 
 const tripControlsElement = document.querySelector(`.trip-controls`);
 
-const filters = generateFilters();
+const filtersOptions = generateFiltersOptions();
 
 // Отрисовка меню и фильтров
 render(tripControlsElement.querySelector(`h2:first-of-type`), createSiteMenuTemplate(), `afterend`);
-render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplate(filters), `afterend`);
+render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplate(filtersOptions), `afterend`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
+const sortOptions = generateSortOptions();
+
 // Отрисовка сортировки, формы и основного контента
-render(tripEventsElement, createSortTemplate(), `beforeend`);
+render(tripEventsElement, createSortTemplate(sortOptions), `beforeend`);
 render(tripEventsElement, createPointEditTemplate(), `beforeend`);
 render(tripEventsElement, createMainContentTemplate(), `beforeend`);
 

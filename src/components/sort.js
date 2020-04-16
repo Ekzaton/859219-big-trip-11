@@ -1,27 +1,34 @@
-// Сортировка
-export const createSortTemplate = () => {
+// Разметка одной опции сортировки
+const createSortMarkup = (sortOption, isChecked) => {
+  const {name, title} = sortOption;
+
+  return (
+    `<div class="trip-sort__item  trip-sort__item--${name}">
+      <input id="sort-${name}"
+        class="trip-sort__input visually-hidden"
+        type="radio"
+        name="trip-sort"
+        value="sort-${name}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="trip-sort__btn"
+        for="sort-${name}"
+      >
+        ${title}
+      </label>
+    </div>`
+  );
+};
+
+// Шаблон секции сортировки
+export const createSortTemplate = (sortOptions) => {
+  const sortMarkup = sortOptions.map((it, i) => createSortMarkup(it, i === 0)).join(`\n`);
+
   return (
     `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
       <span class="trip-sort__item  trip-sort__item--day">Day</span>
 
-      <div class="trip-sort__item  trip-sort__item--event">
-        <input id="sort-event" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-event">
-        <label class="trip-sort__btn" for="sort-event">Event</label>
-      </div>
-
-      <div class="trip-sort__item  trip-sort__item--time">
-        <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" checked>
-        <label class="trip-sort__btn  trip-sort__btn--active  trip-sort__btn--by-increase" for="sort-time">
-          Time
-        </label>
-      </div>
-
-      <div class="trip-sort__item  trip-sort__item--price">
-        <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price">
-        <label class="trip-sort__btn" for="sort-price">
-          Price
-        </label>
-      </div>
+      ${sortMarkup}
 
       <span class="trip-sort__item  trip-sort__item--offers">Offers</span>
     </form>`

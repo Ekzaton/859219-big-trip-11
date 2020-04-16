@@ -1,9 +1,9 @@
 // Имена фильтров
-const filtersOptionNames = [`everything`, `future`, `past`];
+const sortOptionNames = [`event`, `time`, `price`];
 
 // Генерация фильтров
-export const generateFiltersOptions = () => {
-  return filtersOptionNames.map((it) => {
+export const generateSortOptions = () => {
+  return sortOptionNames.map((it) => {
     return {
       name: it,
       title: it.charAt(0).toUpperCase() + it.slice(1),
