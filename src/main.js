@@ -1,50 +1,54 @@
 // Компоненты
-import {createInfoTemplate} from "./components/info.js";
-import {createSiteMenuTemplate} from "./components/site-menu.js";
-import {createFilterTemplate} from "./components/filter.js";
-import {createSortTemplate} from "./components/sort.js";
-import {createMainContentTemplate} from "./components/main-content.js";
-import {createPointEditTemplate} from "./components/point-edit.js";
-import {createPointTemplate} from "./components/point.js";
+import {createTripInfoTemplate} from "./components/trip-info.js";
+import {createTripTabsTemplate} from "./components/trip-tabs.js";
+import {createTripFiltersTemplate} from "./components/trip-filters.js";
+import {createTripSortTemplate} from "./components/trip-sort.js";
+import {createTripEventsEditTemplate} from "./components/trip-events-edit.js";
+import {createTripDaysTemplate} from "./components/trip-days.js";
+import {createTripDaysItemTemplate} from "./components/trip-days-item.js";
+import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 
 // Моки
-import {generateFiltersOptions} from "./mock/filter.js";
-import {generateSortOptions} from "./mock/sort.js";
+import {generateEvents} from "./mock/trip-events.js";
 
 // Константы
-const POINT_COUNT = 3;
+const EVENTS_COUNT = 3;
 
 // Отрисовка компонента
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-
 const tripMainElement = document.querySelector(`.trip-main`);
 
 // Отрисовка маршрута и стоимости
-render(tripMainElement, createInfoTemplate(), `afterbegin`);
+render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
 
-const tripControlsElement = document.querySelector(`.trip-controls`);
-
-const filtersOptions = generateFiltersOptions();
+const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
 // Отрисовка меню и фильтров
-render(tripControlsElement.querySelector(`h2:first-of-type`), createSiteMenuTemplate(), `afterend`);
-render(tripControlsElement.querySelector(`h2:last-of-type`), createFilterTemplate(filtersOptions), `afterend`);
+render(tripControlsElement.querySelector(`h2:first-of-type`), createTripTabsTemplate(), `afterend`);
+render(tripControlsElement.querySelector(`h2:last-of-type`), createTripFiltersTemplate(), `afterend`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const sortOptions = generateSortOptions();
+const events = generateEvents(EVENTS_COUNT);
 
-// Отрисовка сортировки, формы и основного контента
-render(tripEventsElement, createSortTemplate(sortOptions), `beforeend`);
-render(tripEventsElement, createPointEditTemplate(), `beforeend`);
-render(tripEventsElement, createMainContentTemplate(), `beforeend`);
+// Отрисовка сортировки, формы и маршрута
+render(tripEventsElement, createTripSortTemplate(), `beforeend`);
+//render(tripEventsElement, createTripEventsEditTemplate(events[0]), `beforeend`);
+render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 
-const tripEventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
+const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
 
-// Отрисовка точек
-for (let i = 0; i < POINT_COUNT; i++) {
-  render(tripEventsListElement, createPointTemplate(), `beforeend`);
+// Отрисовка дней маршрута
+render(tripDaysElement, createTripDaysItemTemplate(), `beforeend`);
+
+const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`);
+
+render(tripEventsListElement, createTripEventsEditTemplate(events[0]), `beforeend`);
+
+// Отрисовка точек маршрута
+for (let i = 0; i < events.length; i++) {
+  render(tripEventsListElement, createTripEventsItemTemplate(events[1]), `beforeend`);
 }
