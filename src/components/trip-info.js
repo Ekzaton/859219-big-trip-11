@@ -1,4 +1,4 @@
-// Маршрут и стоимость
+// Шаблон секции информации о маршруте и стоимости
 export const createTripInfoTemplate = () => {
   return (
     `<section class="trip-main__trip-info  trip-info">

@@ -9,7 +9,7 @@ import {createTripDaysItemTemplate} from "./components/trip-days-item.js";
 import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 
 // Моки
-import {generateEvents} from "./mock/trip-events.js";
+import {generateTripEvents} from "./mock/trip-events.js";
 
 // Константы
 const EVENTS_COUNT = 3;
@@ -32,11 +32,10 @@ render(tripControlsElement.querySelector(`h2:last-of-type`), createTripFiltersTe
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const events = generateEvents(EVENTS_COUNT);
+const events = generateTripEvents(EVENTS_COUNT);
 
-// Отрисовка сортировки, формы и маршрута
+// Отрисовка сортировки и маршрута
 render(tripEventsElement, createTripSortTemplate(), `beforeend`);
-//render(tripEventsElement, createTripEventsEditTemplate(events[0]), `beforeend`);
 render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 
 const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
@@ -46,9 +45,9 @@ render(tripDaysElement, createTripDaysItemTemplate(), `beforeend`);
 
 const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`);
 
+// Отрисовка формы редактирования и точек маршрута
 render(tripEventsListElement, createTripEventsEditTemplate(events[0]), `beforeend`);
 
-// Отрисовка точек маршрута
 for (let i = 0; i < events.length; i++) {
   render(tripEventsListElement, createTripEventsItemTemplate(events[1]), `beforeend`);
 }
