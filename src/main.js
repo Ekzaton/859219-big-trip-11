@@ -3,13 +3,13 @@ import {createTripInfoTemplate} from "./components/trip-info.js";
 import {createTripTabsTemplate} from "./components/trip-tabs.js";
 import {createTripFiltersTemplate} from "./components/trip-filters.js";
 import {createTripSortTemplate} from "./components/trip-sort.js";
-import {createTripEventsEditTemplate} from "./components/trip-events-edit.js";
+import {createTripEventsItemEditTemplate} from "./components/trip-events-item-edit.js";
 import {createTripDaysTemplate} from "./components/trip-days.js";
 import {createTripDaysItemTemplate} from "./components/trip-days-item.js";
 import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 
 // Моки
-import {generateTripEvents} from "./mock/trip-events.js";
+import {generateTripEvents} from "./mock/trip-events-item.js";
 
 // Константы
 const EVENTS_COUNT = 3;
@@ -46,7 +46,7 @@ render(tripDaysElement, createTripDaysItemTemplate(), `beforeend`);
 const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`);
 
 // Отрисовка формы редактирования и точек маршрута
-render(tripEventsListElement, createTripEventsEditTemplate(events[0]), `beforeend`);
+render(tripEventsListElement, createTripEventsItemEditTemplate(events[0]), `beforeend`);
 
 for (let i = 0; i < events.length; i++) {
   render(tripEventsListElement, createTripEventsItemTemplate(events[1]), `beforeend`);

@@ -1,27 +1,30 @@
 import {formatDate, formatTime} from "../utils.js";
 
-// Разметка выбранных доп. опций
-const createOffersMarkup = () => {
-  return (
-    `<li class="event__offer">
-      <span class="event__offer-title">Order Uber</span>
-      &plus;
-      &euro;&nbsp;<span class="event__offer-price">20</span>
-     </li>`
-  );
+// Разметка доп. опций
+const createOffersMarkup = (offers) => {
+  return offers.map((offer) => {
+    return (
+      `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+      </li>`
+    );
+  })
+  .join(`\n`);
 };
 
 // Шаблон точки маршрута
 export const createTripEventsItemTemplate = (eventsItem) => {
-  const {type, cityName, startDateTime, endDateTime, price, offers} = eventsItem;
+  const {type, city, start, end, price, offers} = eventsItem;
 
-  const startDate = formatDate(startDateTime);
-  const startTime = formatTime(startDateTime);
+  const startDate = formatDate(start);
+  const startTime = formatTime(start);
 
-  const endDate = formatDate(endDateTime);
-  const endTime = formatTime(endDateTime);
+  const endDate = formatDate(end);
+  const endTime = formatTime(end);
 
-  const offersMarkup = createOffersMarkup();
+  const offersMarkup = createOffersMarkup(offers);
 
   return (
     `<li class="trip-events__item">
@@ -29,7 +32,7 @@ export const createTripEventsItemTemplate = (eventsItem) => {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${type} to ${cityName}</h3>
+        <h3 class="event__title">${type} to ${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate}T${startTime}">${startTime}</time>

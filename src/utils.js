@@ -20,6 +20,13 @@ export const formatTime = (value) => {
   return `${hours}:${minutes}`;
 };
 
+// Получение случайного элемента массива
+export const getRandomArrayItem = (array) => {
+  const randomIndex = getRandomIntegerNumber(0, array.length);
+
+  return array[randomIndex];
+};
+
 // Получение случайной даты и времени
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
