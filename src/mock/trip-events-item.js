@@ -5,22 +5,52 @@ import {
   getRandomIntegerNumber
 } from "../utils.js";
 
-// Типы точек маршрута
-const EVENT_TYPES = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`,
-  `Check-in`,
-  `Sightseeing`,
-  `Restaurant`
+// Точки маршрута
+export const TYPES = [
+  {
+    title: `Taxi`,
+    group: `transfer`
+  },
+  {
+    title: `Bus`,
+    group: `transfer`
+  },
+  {
+    title: `Train`,
+    group: `transfer`
+  },
+  {
+    title: `Ship`,
+    group: `transfer`
+  },
+  {
+    title: `Transport`,
+    group: `transfer`
+  },
+  {
+    title: `Drive`,
+    group: `transfer`
+  },
+  {
+    title: `Flight`,
+    group: `transfer`
+  },
+  {
+    title: `Check-in`,
+    group: `activity`
+  },
+  {
+    title: `Sightseeing`,
+    group: `activity`
+  },
+  {
+    title: `Restaurant`,
+    group: `activity`
+  },
 ];
 
-// Названия городов
-const CITY_NAMES = [
+// Города
+export const CITIES = [
   `Athens`,
   `Amsterdam`,
   `Copenhagen`,
@@ -34,7 +64,7 @@ const CITY_NAMES = [
 ];
 
 // Доп. опции
-const EVENT_OFFERS = [
+const OFFERS = [
   {
     type: `comfort`,
     title: `Switch to comfort`,
@@ -82,12 +112,12 @@ export const generateTripEventsItem = () => {
   const endDateTime = (first > second ? first : second);
 
   return {
-    type: getRandomArrayItem(EVENT_TYPES),
-    city: getRandomArrayItem(CITY_NAMES),
+    type: getRandomArrayItem(TYPES),
+    city: getRandomArrayItem(CITIES),
     start: startDateTime,
     end: endDateTime,
     price: getRandomIntegerNumber(200, 500),
-    offers: getRandomOffers(EVENT_OFFERS)
+    offers: getRandomOffers(OFFERS)
   };
 };
 

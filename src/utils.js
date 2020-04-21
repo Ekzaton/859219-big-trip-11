@@ -1,3 +1,7 @@
+// Константы
+const MSEC_IN_SEC = 1000;
+const SEC_IN_MIN = 60;
+
 // Установка формата даты и времени
 const castDateTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
@@ -20,6 +24,11 @@ export const formatTime = (value) => {
   return `${hours}:${minutes}`;
 };
 
+// Получение продолжительности в минутах
+export const getDurationTime = (value) => {
+  return value / (MSEC_IN_SEC * SEC_IN_MIN);
+};
+
 // Получение случайного элемента массива
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length);
@@ -31,8 +40,8 @@ export const getRandomArrayItem = (array) => {
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
 
-  const diffHours = getRandomIntegerNumber(1, 6);
-  const diffMinutes = getRandomIntegerNumber(15, 30);
+  const diffHours = getRandomIntegerNumber(0, 6);
+  const diffMinutes = getRandomIntegerNumber(30, 60);
 
   randomDateTime.setHours(randomDateTime.getHours() + diffHours);
   randomDateTime.setMinutes(randomDateTime.getMinutes() + diffMinutes);

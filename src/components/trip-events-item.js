@@ -1,4 +1,4 @@
-import {formatDate, formatTime} from "../utils.js";
+import {formatDate, formatTime, getDurationTime} from "../utils.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -18,11 +18,15 @@ const createOffersMarkup = (offers) => {
 export const createTripEventsItemTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers} = eventsItem;
 
+  const pretext = (type.group === `transfer` ? `to` : `in`);
+
   const startDate = formatDate(start);
   const startTime = formatTime(start);
 
   const endDate = formatDate(end);
   const endTime = formatTime(end);
+
+  const durationTime = getDurationTime(end - start);
 
   const offersMarkup = createOffersMarkup(offers);
 
@@ -30,16 +34,25 @@ export const createTripEventsItemTemplate = (eventsItem) => {
     `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
-          <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+          <img class="event__type-icon"
+            width="42"
+            height="42"
+            src="img/icons/${type.title.toLowerCase()}.png"
+            alt="Event type icon"
+          >
         </div>
-        <h3 class="event__title">${type} to ${city}</h3>
+        <h3 class="event__title">${type.title}&nbsp;${pretext}&nbsp;${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${startDate}T${startTime}">${startTime}</time>
+            <time class="event__start-time" datetime="${startDate}T${startTime}">
+              ${startTime}
+            </time>
             &mdash;
-            <time class="event__end-time" datetime="${endDate}T${endTime}">${endTime}</time>
+            <time class="event__end-time" datetime="${endDate}T${endTime}">
+              ${endTime}
+            </time>
           </p>
-          <p class="event__duration">30M</p>
+          <p class="event__duration">${durationTime}M</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>

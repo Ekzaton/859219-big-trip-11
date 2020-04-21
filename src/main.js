@@ -12,7 +12,7 @@ import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 import {generateTripEvents} from "./mock/trip-events-item.js";
 
 // Константы
-const EVENTS_COUNT = 3;
+const EVENTS_COUNT = 15;
 
 // Отрисовка компонента
 const render = (container, template, place) => {
@@ -48,6 +48,6 @@ const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`
 // Отрисовка формы редактирования и точек маршрута
 render(tripEventsListElement, createTripEventsItemEditTemplate(events[0]), `beforeend`);
 
-for (let i = 0; i < events.length; i++) {
-  render(tripEventsListElement, createTripEventsItemTemplate(events[1]), `beforeend`);
+for (let i = 1; i < events.length; i++) {
+  render(tripEventsListElement, createTripEventsItemTemplate(events[i]), `beforeend`);
 }
