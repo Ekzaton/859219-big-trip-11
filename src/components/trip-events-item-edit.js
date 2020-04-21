@@ -8,20 +8,22 @@ const createTypesMarkup = (types, group) => {
     if (group === type.group) {
       return (
         `<div class="event__type-item">
-          <input id="event-type-${type.title.toLowerCase()}-1"
+          <input id="event-type-${type.name.toLowerCase()}-1"
             class="event__type-input visually-hidden"
             type="radio"
             name="event-type"
-            value="${type.title.toLowerCase()}"
+            value="${type.name.toLowerCase()}"
             ${isChecked === 0 ? `checked` : ``}
           >
-          <label class="event__type-label event__type-label--${type.title.toLowerCase()}"
-            for="event-type-${type.title.toLowerCase()}-1"
+          <label class="event__type-label event__type-label--${type.name.toLowerCase()}"
+            for="event-type-${type.name.toLowerCase()}-1"
           >
-            ${type.title}
+            ${type.name}
           </label>
         </div>`
-      )
+      );
+    } else {
+      return ``;
     }
   })
   .join(`\n`);
@@ -49,7 +51,7 @@ const createOffersMarkup = (offers) => {
         <label class="event__offer-label"
           for="event-offer-${offer.type}-1"
         >
-          <span class="event__offer-title">${offer.title}</span>
+          <span class="event__offer-name">${offer.name}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
         </label>
@@ -59,15 +61,22 @@ const createOffersMarkup = (offers) => {
   .join(`\n`);
 };
 
+// Разметка фотографий
+const createPhotosMarkup = (photos) => {
+  return photos.map((source) => {
+    return `<img class="event__photo" src="${source}" alt="Event photo">`;
+  })
+  .join(`\n`);
+};
+
 // Шаблон формы создания/редактирования точки маршрута
 export const createTripEventsItemEditTemplate = (eventsItem) => {
-  const {type, city, start, end, price, offers} = eventsItem;
+  const {type, city, start, end, price, offers, description, photos} = eventsItem;
 
   const pretext = (type.group === `transfer` ? `to` : `in`);
 
   const startDate = formatDate(start);
   const startTime = formatTime(start);
-
   const endDate = formatDate(end);
   const endTime = formatTime(end);
 
@@ -75,6 +84,7 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
   const activitiesMarkup = createTypesMarkup(TYPES, `activity`);
   const destinationsMarkup = createtDestinationsMarkup(CITIES);
   const offersMarkup = createOffersMarkup(offers);
+  const photosMarkup = createPhotosMarkup(photos);
 
   return (
     `<li class="trip-events__item">
@@ -86,7 +96,7 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
               <img class="event__type-icon"
                 width="17"
                 height="17"
-                src="img/icons/${type.title.toLowerCase()}.png"
+                src="img/icons/${type.name.toLowerCase()}.png"
                 alt="Event type icon"
               >
             </label>
@@ -114,7 +124,7 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
             <label class="event__label event__type-output"
               for="event-destination-1"
             >
-              ${type.title}&nbsp;${pretext}
+              ${type.name}&nbsp;${pretext}
             </label>
             <input class="event__input event__input--destination"
               id="event-destination-1"
@@ -189,6 +199,19 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
 
             <div class="event__available-offers">
               ${offersMarkup}
+            </div>
+          </section>
+
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">
+              ${description}
+            </p>
+
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${photosMarkup}
+              </div>
             </div>
           </section>
         </section>

@@ -8,43 +8,43 @@ import {
 // Точки маршрута
 export const TYPES = [
   {
-    title: `Taxi`,
+    name: `Taxi`,
     group: `transfer`
   },
   {
-    title: `Bus`,
+    name: `Bus`,
     group: `transfer`
   },
   {
-    title: `Train`,
+    name: `Train`,
     group: `transfer`
   },
   {
-    title: `Ship`,
+    name: `Ship`,
     group: `transfer`
   },
   {
-    title: `Transport`,
+    name: `Transport`,
     group: `transfer`
   },
   {
-    title: `Drive`,
+    name: `Drive`,
     group: `transfer`
   },
   {
-    title: `Flight`,
+    name: `Flight`,
     group: `transfer`
   },
   {
-    title: `Check-in`,
+    name: `Check-in`,
     group: `activity`
   },
   {
-    title: `Sightseeing`,
+    name: `Sightseeing`,
     group: `activity`
   },
   {
-    title: `Restaurant`,
+    name: `Restaurant`,
     group: `activity`
   },
 ];
@@ -67,40 +67,62 @@ export const CITIES = [
 const OFFERS = [
   {
     type: `comfort`,
-    title: `Switch to comfort`,
+    name: `Switch to comfort`,
     price: getRandomIntegerNumber(20, 100)
   },
   {
     type: `luggage`,
-    title: `Add luggage`,
+    name: `Add luggage`,
     price: getRandomIntegerNumber(20, 100)
   },
   {
     type: `meal`,
-    title: `Add meal`,
+    name: `Add meal`,
     price: getRandomIntegerNumber(20, 100)
   },
   {
     type: `seats`,
-    title: `Choose seats`,
+    name: `Choose seats`,
     price: getRandomIntegerNumber(20, 100)
   },
   {
     type: `train`,
-    title: `Travel by train`,
+    name: `Travel by train`,
     price: getRandomIntegerNumber(20, 100)
   },
 ];
 
-// Получение случайных доп. опций
-const getRandomOffers = (offers) => {
-  const randomOffers = [];
+// Предложения для описания
+const SENTENCES = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra.`,
+  `Aliquam id orci ut lectus varius viverra.`,
+  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
+  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
+  `Aliquam erat volutpat.`,
+  `Nunc fermentum tortor ac porta dapibus.`,
+  `In rutrum ac purus sit amet tempus.`
+];
 
-  for (let i = 0; i < getRandomIntegerNumber(0, 6); i++) {
-    randomOffers.push(offers[i]);
+// Генерация доп. опций / описания
+const generateRandomItems = (items) => {
+  const randomItems = [];
+
+  for (let i = 0; i < getRandomIntegerNumber(1, 6); i++) {
+    randomItems.push(items[i]);
   }
 
-  return randomOffers;
+  return randomItems;
+};
+
+// Генерация фотографий
+const generateRandomPhotos = (randomPhotos) => {
+  return new Array(randomPhotos).fill(``).map(function () {
+    return `http://picsum.photos/248/152?r=${Math.random()}`;
+  });
 };
 
 // Генерация одной точки маршрута
@@ -117,7 +139,9 @@ export const generateTripEventsItem = () => {
     start: startDateTime,
     end: endDateTime,
     price: getRandomIntegerNumber(200, 500),
-    offers: getRandomOffers(OFFERS)
+    offers: generateRandomItems(OFFERS),
+    description: generateRandomItems(SENTENCES),
+    photos: generateRandomPhotos(getRandomIntegerNumber(1, 6)),
   };
 };
 

@@ -5,7 +5,7 @@ const createOffersMarkup = (offers) => {
   return offers.map((offer) => {
     return (
       `<li class="event__offer">
-        <span class="event__offer-title">${offer.title}</span>
+        <span class="event__offer-name">${offer.name}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
       </li>`
@@ -37,11 +37,11 @@ export const createTripEventsItemTemplate = (eventsItem) => {
           <img class="event__type-icon"
             width="42"
             height="42"
-            src="img/icons/${type.title.toLowerCase()}.png"
+            src="img/icons/${type.name.toLowerCase()}.png"
             alt="Event type icon"
           >
         </div>
-        <h3 class="event__title">${type.title}&nbsp;${pretext}&nbsp;${city}</h3>
+        <h3 class="event__title">${type.name}&nbsp;${pretext}&nbsp;${city}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate}T${startTime}">
