@@ -3,9 +3,9 @@ import {createTripInfoTemplate} from "./components/trip-info.js";
 import {createTripTabsTemplate} from "./components/trip-tabs.js";
 import {createTripFiltersTemplate} from "./components/trip-filters.js";
 import {createTripSortTemplate} from "./components/trip-sort.js";
-import {createTripEventsItemEditTemplate} from "./components/trip-events-item-edit.js";
 import {createTripDaysTemplate} from "./components/trip-days.js";
 import {createTripDaysItemTemplate} from "./components/trip-days-item.js";
+import {createTripEventsItemEditTemplate} from "./components/trip-events-item-edit.js";
 import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 
 // Моки

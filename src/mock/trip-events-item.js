@@ -119,10 +119,14 @@ const generateRandomItems = (items) => {
 };
 
 // Генерация фотографий
-const generateRandomPhotos = (randomPhotos) => {
-  return new Array(randomPhotos).fill(``).map(function () {
-    return `http://picsum.photos/248/152?r=${Math.random()}`;
-  });
+const generateRandomPhotos = () => {
+  const randomPhotos = [];
+
+  for (let i = 0; i < getRandomIntegerNumber(1, 6); i++) {
+    randomPhotos.push(`http://picsum.photos/248/152?r=${Math.random()}`);
+  }
+
+  return randomPhotos;
 };
 
 // Генерация одной точки маршрута
@@ -141,7 +145,7 @@ export const generateTripEventsItem = () => {
     price: getRandomIntegerNumber(200, 500),
     offers: generateRandomItems(OFFERS),
     description: generateRandomItems(SENTENCES),
-    photos: generateRandomPhotos(getRandomIntegerNumber(1, 6)),
+    photos: generateRandomPhotos(),
   };
 };
 
