@@ -11,6 +11,7 @@ import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 // Моки
 import {generateTripEvents} from "./mock/trip-events-item.js";
 
+
 // Константы
 const EVENTS_COUNT = 15;
 
@@ -18,6 +19,8 @@ const EVENTS_COUNT = 15;
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
+
+export const events = generateTripEvents(EVENTS_COUNT);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -31,8 +34,6 @@ render(tripControlsElement.querySelector(`h2:first-of-type`), createTripTabsTemp
 render(tripControlsElement.querySelector(`h2:last-of-type`), createTripFiltersTemplate(), `afterend`);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
-
-const events = generateTripEvents(EVENTS_COUNT);
 
 // Отрисовка сортировки и маршрута
 render(tripEventsElement, createTripSortTemplate(), `beforeend`);
