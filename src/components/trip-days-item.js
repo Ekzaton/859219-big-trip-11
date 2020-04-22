@@ -1,16 +1,25 @@
-// Шаблон дня
-export const createTripDaysItemTemplate = () => {
-  const counter = ``;
-  const date = `2019-03-18`;
-  const date2 = `MAR 18`;
+import {MONTHS} from "../const.js";
 
-  return (
-    `<li class="trip-days__item day">
-      <div class="day__info">
-        <span class="day__counter">${counter + 1}</span>
-        <time class="day__date" datetime="${date}">${date2}</time>
-      </div>
-      <ul class="trip-events__list"></ul>
-    </li>`
-  );
+// Шаблон дня
+export const createTripDaysItemTemplate = (dates) => {
+  return dates.map((date, counter) => {
+    const dateTime = new Date(date);
+
+    const day = dateTime.getDate();
+    const month = dateTime.getMonth();
+    const year = dateTime.getYear();
+
+    return (
+      `<li class="trip-days__item day">
+        <div class="day__info">
+          <span class="day__counter">${counter + 1}</span>
+          <time class="day__date" datetime="${year}-${month + 1}-${day}">
+            ${MONTHS[month]}&nbsp;${day}
+          </time>
+        </div>
+        <ul class="trip-events__list"></ul>
+      </li>`
+    );
+  }).
+  join(`\n`);
 };

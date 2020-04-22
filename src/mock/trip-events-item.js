@@ -155,3 +155,9 @@ export const generateTripEvents = (count) => {
     .map(generateTripEventsItem)
     .sort((a, b) => a.start > b.start ? 1 : -1);
 };
+
+// Получение массива точек маршрута, соответствующих конкретной дате
+export const getEventsForDate = (events, date) => {
+  return events.slice(1, events.length).filter((eventsItem) =>
+    eventsItem.start.toDateString() === date);
+};

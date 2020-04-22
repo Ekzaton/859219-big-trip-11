@@ -9,11 +9,12 @@ import {createTripEventsItemEditTemplate} from "./components/trip-events-item-ed
 import {createTripEventsItemTemplate} from "./components/trip-events-item.js";
 
 // Моки
-import {generateTripEvents} from "./mock/trip-events-item.js";
+import {generateTripEvents, getEventsForDate} from "./mock/trip-events-item.js";
+import {getTripDates} from "./mock/trip-days-item.js";
 
 
 // Константы
-const EVENTS_COUNT = 15;
+const EVENTS_COUNT = 20;
 
 // Отрисовка компонента
 const render = (container, template, place) => {
@@ -39,15 +40,21 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 render(tripEventsElement, createTripSortTemplate(), `beforeend`);
 render(tripEventsElement, createTripDaysTemplate(), `beforeend`);
 
+const dates = getTripDates(events);
+
 const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
 
 // Отрисовка дней маршрута
-render(tripDaysElement, createTripDaysItemTemplate(), `beforeend`);
+render(tripDaysElement, createTripDaysItemTemplate(dates), `beforeend`);
 
-const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`);
+const tripEventsListElements = Array.from(document.querySelectorAll(`.trip-events__list`));
+
+render(tripEventsListElements[0], createTripEventsItemEditTemplate(events[0]), `beforeend`);
 
 // Отрисовка формы редактирования и точек маршрута
-render(tripEventsListElement, createTripEventsItemEditTemplate(events[0]), `beforeend`);
+dates.forEach((date, index) => {
+  const filteredEvents = getEventsForDate(events, date);
 
-events.slice(1, events.length).forEach((eventsItem) =>
-  render(tripEventsListElement, createTripEventsItemTemplate(eventsItem), `beforeend`));
+  filteredEvents.forEach((eventsItem) =>
+    render(tripEventsListElements[index], createTripEventsItemTemplate(eventsItem), `beforeend`));
+});

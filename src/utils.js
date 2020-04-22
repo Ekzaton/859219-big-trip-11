@@ -26,7 +26,7 @@ export const formatTime = (value) => {
 
 // Получение продолжительности в минутах
 export const getDurationTime = (value) => {
-  return value / (MSEC_IN_SEC * SEC_IN_MIN);
+  return Math.round(value / (MSEC_IN_SEC * SEC_IN_MIN));
 };
 
 // Получение случайного элемента массива
