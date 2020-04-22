@@ -111,9 +111,8 @@ const SENTENCES = [
 const generateRandomItems = (items) => {
   const randomItems = [];
 
-  for (let i = 0; i < getRandomIntegerNumber(1, 6); i++) {
-    randomItems.push(items[i]);
-  }
+  items.slice(getRandomIntegerNumber(1, 6)).forEach((item) =>
+    randomItems.push(item));
 
   return randomItems;
 };

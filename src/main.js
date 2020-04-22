@@ -49,6 +49,5 @@ const tripEventsListElement = tripDaysElement.querySelector(`.trip-events__list`
 // Отрисовка формы редактирования и точек маршрута
 render(tripEventsListElement, createTripEventsItemEditTemplate(events[0]), `beforeend`);
 
-for (let i = 1; i < events.length; i++) {
-  render(tripEventsListElement, createTripEventsItemTemplate(events[i]), `beforeend`);
-}
+events.slice(1, events.length).forEach((eventsItem) =>
+  render(tripEventsListElement, createTripEventsItemTemplate(eventsItem), `beforeend`));
