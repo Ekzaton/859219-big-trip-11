@@ -40,9 +40,11 @@ export const getRandomArrayItem = (array) => {
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
 
-  const diffHours = getRandomIntegerNumber(0, 6);
-  const diffMinutes = getRandomIntegerNumber(30, 60);
+  const diffDate = getRandomIntegerNumber(0, 7);
+  const diffHours = getRandomIntegerNumber(0, 24);
+  const diffMinutes = getRandomIntegerNumber(0, 60);
 
+  randomDateTime.setDate(randomDateTime.getDate() + diffDate);
   randomDateTime.setHours(randomDateTime.getHours() + diffHours);
   randomDateTime.setMinutes(randomDateTime.getMinutes() + diffMinutes);
 

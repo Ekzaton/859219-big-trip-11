@@ -148,7 +148,10 @@ export const generateTripEventsItem = () => {
   };
 };
 
-// Генерация массива точек маршрута
+// Генерация массива точек маршрута c сортировкой от даты начала
 export const generateTripEvents = (count) => {
-  return new Array(count).fill(``).map(generateTripEventsItem);
+  return new Array(count)
+    .fill(``)
+    .map(generateTripEventsItem)
+    .sort((a, b) => a.start > b.start ? 1 : -1);
 };
