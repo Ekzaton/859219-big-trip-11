@@ -1,5 +1,5 @@
 // Получение заголовка маршрута
-export const getTripTitle = (events) => {
+export const getTripInfoTitle = (events) => {
   const cities = events.map((eventsItem) => eventsItem.city);
 
   if (cities.length <= 3) {
@@ -12,7 +12,7 @@ export const getTripTitle = (events) => {
 };
 
 // Получение дат маршрута
-export const getTripDates = (events) => {
+export const getTripInfoDates = (events) => {
   const dates = events.map((eventsItem) => eventsItem.start.toDateString());
 
   return dates[0].slice(4, 10)
@@ -21,7 +21,7 @@ export const getTripDates = (events) => {
 };
 
 // Получение стоимости маршрута
-export const getTripCost = (events) => {
+export const getTripInfoCost = (events) => {
   const prices = events.map((eventsItem) => eventsItem.price);
 
   return prices.reduce((sum, current) => sum + current, 0);

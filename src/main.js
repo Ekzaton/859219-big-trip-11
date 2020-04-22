@@ -20,12 +20,12 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-export const events = generateTripEvents(EVENTS_COUNT);
+const events = generateTripEvents(EVENTS_COUNT);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
 // Отрисовка маршрута и стоимости
-render(tripMainElement, createTripInfoTemplate(), `afterbegin`);
+render(tripMainElement, createTripInfoTemplate(events), `afterbegin`);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 

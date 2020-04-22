@@ -1,12 +1,15 @@
 // Импорт
-import {getTripTitle, getTripDates, getTripCost} from "../mock/trip-info.js";
-import {events} from "../main.js";
+import {
+  getTripInfoTitle,
+  getTripInfoDates,
+  getTripInfoCost
+} from "../mock/trip-info.js";
 
-// Шаблон маршрута и стоимости
-export const createTripInfoTemplate = () => {
-  const title = getTripTitle(events);
-  const dates = getTripDates(events);
-  const cost = getTripCost(events);
+// Шаблон информации о маршруте
+export const createTripInfoTemplate = (events) => {
+  const title = getTripInfoTitle(events);
+  const dates = getTripInfoDates(events);
+  const cost = getTripInfoCost(events);
 
   return (
     `<section class="trip-main__trip-info  trip-info">
