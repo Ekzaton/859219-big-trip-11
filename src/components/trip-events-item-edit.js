@@ -30,7 +30,7 @@ const createTypesMarkup = (types, group) => {
 };
 
 // Разметка пунктов назначения
-const createtDestinationsMarkup = (destinations) => {
+const createDestinationsMarkup = (destinations) => {
   return destinations.map((destination) => {
     return `<option value="${destination}"></option>`;
   })
@@ -82,7 +82,7 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
 
   const transfersMarkup = createTypesMarkup(TYPES, `transfer`);
   const activitiesMarkup = createTypesMarkup(TYPES, `activity`);
-  const destinationsMarkup = createtDestinationsMarkup(CITIES);
+  const destinationsMarkup = createDestinationsMarkup(CITIES);
   const offersMarkup = createOffersMarkup(offers);
   const photosMarkup = createPhotosMarkup(photos);
 
