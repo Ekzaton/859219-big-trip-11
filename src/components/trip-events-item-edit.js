@@ -1,6 +1,11 @@
+// Импорт
 import {TYPES} from "../mock/trip-events-item.js";
 import {CITIES} from "../mock/trip-events-item.js";
-import {formatDate, formatTime} from "../utils.js";
+import {
+  createElement,
+  formatDate,
+  formatTime
+} from "../utils.js";
 
 // Раметка типов точек маршрута
 const createTypesMarkup = (types, group) => {
@@ -70,7 +75,7 @@ const createPhotosMarkup = (photos) => {
 };
 
 // Шаблон формы создания/редактирования точки маршрута
-export const createTripEventsItemEditTemplate = (eventsItem) => {
+const createTripEventsItemEditTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers, description, photos} = eventsItem;
 
   const pretext = (type.group === `transfer` ? `to` : `in`);
@@ -219,3 +224,27 @@ export const createTripEventsItemEditTemplate = (eventsItem) => {
     </li>`
   );
 };
+
+// Класс
+export default class TripEventsItemEdit {
+  constructor(eventsItem) {
+    this._eventsItem = eventsItem;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventsItemEditTemplate(this._eventsItem);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,7 +1,9 @@
+// Импорт
 import {MONTHS} from "../const.js";
+import {createElement} from "../utils.js";
 
 // Шаблон дня
-export const createTripDaysItemTemplate = (dates) => {
+const createTripDaysItemTemplate = (dates) => {
   return dates.map((date, counter) => {
     const dateTime = new Date(date);
 
@@ -23,3 +25,27 @@ export const createTripDaysItemTemplate = (dates) => {
   }).
   join(`\n`);
 };
+
+// Класс
+export default class TripDaysItem {
+  constructor(dates) {
+    this._dates = dates;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripDaysItemTemplate(this._dates);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

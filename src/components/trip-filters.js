@@ -1,5 +1,8 @@
+// Импорт
+import {createElement} from "../utils.js";
+
 // Шаблон секции фильтров
-export const createTripFiltersTemplate = () => {
+const createTripFiltersTemplate = () => {
   return (
     `<form class="trip-filters" action="#" method="get">
       <div class="trip-filters__filter">
@@ -18,3 +21,26 @@ export const createTripFiltersTemplate = () => {
     </form>`
   );
 };
+
+// Класс
+export default class TripFilters {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripFiltersTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
