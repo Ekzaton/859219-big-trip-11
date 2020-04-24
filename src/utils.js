@@ -7,6 +7,14 @@ const castDateTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
 
+// Создание DOM-элемента
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Формат даты
 export const formatDate = (value) => {
   const date = castDateTimeFormat(value.getDate());
