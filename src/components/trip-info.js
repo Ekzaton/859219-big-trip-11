@@ -1,12 +1,12 @@
 // Импорт
 import {
-  createElement,
   getTripInfoTitle,
   getTripInfoDates,
   getTripInfoCost
 } from "../mock/trip-info.js";
+import {createElement} from "../utils.js";
 
-// Шаблон информации о маршруте
+// Шаблон информации о маршруте и стоимости
 const createTripInfoTemplate = (events) => {
   const title = getTripInfoTitle(events);
   const dates = getTripInfoDates(events);
