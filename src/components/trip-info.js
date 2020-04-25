@@ -4,9 +4,10 @@ import {
   getTripInfoDates,
   getTripInfoCost
 } from "../mock/trip-info.js";
+import {createElement} from "../utils.js";
 
-// Шаблон информации о маршруте
-export const createTripInfoTemplate = (events) => {
+// Шаблон информации о маршруте и стоимости
+const createTripInfoTemplate = (events) => {
   const title = getTripInfoTitle(events);
   const dates = getTripInfoDates(events);
   const cost = getTripInfoCost(events);
@@ -23,3 +24,27 @@ export const createTripInfoTemplate = (events) => {
     </section>`
   );
 };
+
+// Класс
+export default class TripInfo {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

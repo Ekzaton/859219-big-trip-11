@@ -1,4 +1,9 @@
-import {formatDate, formatTime, getDurationTime} from "../utils.js";
+import {
+  createElement,
+  formatDate,
+  formatTime,
+  getDurationTime
+} from "../utils.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -15,7 +20,7 @@ const createOffersMarkup = (offers) => {
 };
 
 // Шаблон точки маршрута
-export const createTripEventsItemTemplate = (eventsItem) => {
+const createTripEventsItemTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers} = eventsItem;
 
   const pretext = (type.group === `transfer` ? `to` : `in`);
@@ -68,3 +73,27 @@ export const createTripEventsItemTemplate = (eventsItem) => {
     </li>`
   );
 };
+
+// Класс
+export default class TripEventsItem {
+  constructor(eventsItem) {
+    this._eventsItem = eventsItem;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripEventsItemTemplate(this._eventsItem);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
