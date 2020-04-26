@@ -28,21 +28,36 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
     );
   };
 
-  const replaceEditToEvent = (evt) => {
-    evt.preventDefault();
+  const replaceEditToEvent = () => {
     tripEventsListElement.replaceChild(
         tripEventsItemElement,
         tripEventsItemEditElement
     );
   };
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const tripEventsItemElement = new TripEventsItemComponent(eventsItem).getElement();
   const eventRollupBtnElement = tripEventsItemElement.querySelector(`.event__rollup-btn`);
-  eventRollupBtnElement.addEventListener(`click`, replaceEventToEdit);
+  eventRollupBtnElement.addEventListener(`click`, () => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const tripEventsItemEditElement = new TripEventsItemEditComponent(eventsItem).getElement();
   const editFormElement = tripEventsItemEditElement.querySelector(`form`);
-  editFormElement.addEventListener(`submit`, replaceEditToEvent);
+  editFormElement.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(tripEventsListElement, tripEventsItemElement, RenderPosition.BEFOREEND);
 };
