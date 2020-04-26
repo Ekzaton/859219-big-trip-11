@@ -21,14 +21,14 @@ const dates = getTripDates(events);
 
 // Отрисовка точки маршрута и формы создания/редактирования
 const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
-  const onEventRollupBtnClick = () => {
+  const replaceEventToEdit = () => {
     tripEventsListElement.replaceChild(
         tripEventsItemEditElement,
         tripEventsItemElement
     );
   };
 
-  const onEditFormSubmit = (evt) => {
+  const replaceEditToEvent = (evt) => {
     evt.preventDefault();
     tripEventsListElement.replaceChild(
         tripEventsItemElement,
@@ -38,11 +38,11 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
 
   const tripEventsItemElement = new TripEventsItemComponent(eventsItem).getElement();
   const eventRollupBtnElement = tripEventsItemElement.querySelector(`.event__rollup-btn`);
-  eventRollupBtnElement.addEventListener(`click`, onEventRollupBtnClick);
+  eventRollupBtnElement.addEventListener(`click`, replaceEventToEdit);
 
   const tripEventsItemEditElement = new TripEventsItemEditComponent(eventsItem).getElement();
   const editFormElement = tripEventsItemEditElement.querySelector(`form`);
-  editFormElement.addEventListener(`submit`, onEditFormSubmit);
+  editFormElement.addEventListener(`submit`, replaceEditToEvent);
 
   render(tripEventsListElement, tripEventsItemElement, RenderPosition.BEFOREEND);
 };
