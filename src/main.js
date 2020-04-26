@@ -76,7 +76,7 @@ render(tripControlsElement, new TripFiltersComponent().getElement(), RenderPosit
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const noEvents = (events[0] === undefined);
+const noEvents = (events.length === 0);
 
 // Отрисовка сортировки и списка дней
 if (noEvents) {
@@ -84,20 +84,20 @@ if (noEvents) {
 } else {
   render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
   render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
+
+  dates.forEach((date, index) => {
+    const tripDaysItemElement = new TripDaysItemComponent(date, index).getElement();
+
+    // Отрисовка дней маршрута
+    render(tripDaysElement, tripDaysItemElement, RenderPosition.BEFOREEND);
+
+    const tripEventsListElement = tripDaysItemElement.querySelector(`.trip-events__list`);
+
+    const eventsForDate = getEventsForDate(events, date);
+
+    eventsForDate.forEach((eventsItem) =>
+      renderTripEventsItem(tripEventsListElement, eventsItem));
+  });
 }
-
-const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
-
-// Отрисовка дней маршрута
-dates.forEach((date, index) => {
-  const tripDaysItemElement = new TripDaysItemComponent(date, index).getElement();
-
-  render(tripDaysElement, tripDaysItemElement, RenderPosition.BEFOREEND);
-
-  const tripEventsListElement = tripDaysItemElement.querySelector(`.trip-events__list`);
-
-  const eventsForDate = getEventsForDate(events, date);
-
-  eventsForDate.forEach((eventsItem) =>
-    renderTripEventsItem(tripEventsListElement, eventsItem));
-});
