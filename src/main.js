@@ -5,6 +5,7 @@ import TripFiltersComponent from "./components/trip-filters.js";
 import TripSortComponent from "./components/trip-sort.js";
 import TripDaysComponent from "./components/trip-days.js";
 import TripDaysItemComponent from "./components/trip-days-item.js";
+import TripEventsMsgComponent from "./components/trip-events-msg.js";
 import TripEventsItemEditComponent from "./components/trip-events-item-edit.js";
 import TripEventsItemComponent from "./components/trip-events-item.js";
 import {render, RenderPosition} from "./utils.js";
@@ -75,9 +76,15 @@ render(tripControlsElement, new TripFiltersComponent().getElement(), RenderPosit
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
+const noEvents = (events[0] === undefined);
+
 // Отрисовка сортировки и списка дней
-render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+if (noEvents) {
+  render(tripEventsElement, new TripEventsMsgComponent().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+}
 
 const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
 

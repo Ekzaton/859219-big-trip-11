@@ -19,13 +19,15 @@ export const getTripInfoDates = (events) => {
   const start = events.map((eventsItem) => eventsItem.start);
   const end = events.map((eventsItem) => eventsItem.end);
 
-  const startMonth = MONTHS[start[0].getMonth()];
-  const startDay = start[0].getDate();
+  const startMonth = (start[0] === undefined) ? `` : MONTHS[start[0].getMonth()];
+  const startDay = (start[0] === undefined) ? `` : start[0].getDate();
 
-  const endMonth = MONTHS[end[end.length - 1].getMonth()];
-  const endDay = end[end.length - 1].getDate();
+  const endMonth = (start[0] === undefined) ? `` : MONTHS[end[end.length - 1].getMonth()];
+  const endDay = (start[0] === undefined) ? `` : end[end.length - 1].getDate();
 
-  if (startMonth === endMonth) {
+  if (start[0] === undefined) {
+    return ``;
+  } else if (startMonth === endMonth) {
     return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;` + endDay;
   } else {
     return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;`
