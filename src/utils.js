@@ -9,7 +9,7 @@ export const RenderPosition = {
 };
 
 // Установка формата даты и времени
-const castDateTimeFormat = (value) => {
+export const castDateTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
 };
 
