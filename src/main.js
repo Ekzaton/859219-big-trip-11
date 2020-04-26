@@ -5,6 +5,7 @@ import TripFiltersComponent from "./components/trip-filters.js";
 import TripSortComponent from "./components/trip-sort.js";
 import TripDaysComponent from "./components/trip-days.js";
 import TripDaysItemComponent from "./components/trip-days-item.js";
+import TripEventsMsgComponent from "./components/trip-events-msg.js";
 import TripEventsItemEditComponent from "./components/trip-events-item-edit.js";
 import TripEventsItemComponent from "./components/trip-events-item.js";
 import {render, RenderPosition} from "./utils.js";
@@ -21,28 +22,43 @@ const dates = getTripDates(events);
 
 // Отрисовка точки маршрута и формы создания/редактирования
 const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
-  const onEventRollupBtnClick = () => {
+  const replaceEventToEdit = () => {
     tripEventsListElement.replaceChild(
         tripEventsItemEditElement,
         tripEventsItemElement
     );
   };
 
-  const onEditFormSubmit = (evt) => {
-    evt.preventDefault();
+  const replaceEditToEvent = () => {
     tripEventsListElement.replaceChild(
         tripEventsItemElement,
         tripEventsItemEditElement
     );
   };
 
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceEditToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
   const tripEventsItemElement = new TripEventsItemComponent(eventsItem).getElement();
   const eventRollupBtnElement = tripEventsItemElement.querySelector(`.event__rollup-btn`);
-  eventRollupBtnElement.addEventListener(`click`, onEventRollupBtnClick);
+  eventRollupBtnElement.addEventListener(`click`, () => {
+    replaceEventToEdit();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const tripEventsItemEditElement = new TripEventsItemEditComponent(eventsItem).getElement();
   const editFormElement = tripEventsItemEditElement.querySelector(`form`);
-  editFormElement.addEventListener(`submit`, onEditFormSubmit);
+  editFormElement.addEventListener(`submit`, (evt) => {
+    evt.preventDefault();
+    replaceEditToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(tripEventsListElement, tripEventsItemElement, RenderPosition.BEFOREEND);
 };
@@ -60,9 +76,15 @@ render(tripControlsElement, new TripFiltersComponent().getElement(), RenderPosit
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
+const noEvents = (events[0] === undefined);
+
 // Отрисовка сортировки и списка дней
-render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
-render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+if (noEvents) {
+  render(tripEventsElement, new TripEventsMsgComponent().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+}
 
 const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
 
