@@ -1,3 +1,6 @@
+// Импорт
+import {MONTHS} from "../const.js";
+
 // Получение заголовка маршрута
 export const getTripInfoTitle = (events) => {
   const cities = events.map((eventsItem) => eventsItem.city);
@@ -13,11 +16,21 @@ export const getTripInfoTitle = (events) => {
 
 // Получение дат маршрута
 export const getTripInfoDates = (events) => {
-  const dates = events.map((eventsItem) => eventsItem.start.toDateString());
+  const start = events.map((eventsItem) => eventsItem.start);
+  const end = events.map((eventsItem) => eventsItem.end);
 
-  return dates[0].slice(4, 10)
-    + `&nbsp;&mdash;&nbsp;`
-    + dates[dates.length - 1].slice(8, 10);
+  const startMonth = MONTHS[start[0].getMonth()];
+  const startDay = start[0].getDate();
+
+  const endMonth = MONTHS[end[end.length - 1].getMonth()];
+  const endDay = end[end.length - 1].getDate();
+
+  if (startMonth === endMonth) {
+    return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;` + endDay;
+  } else {
+    return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;`
+      + endMonth + `&nbsp;` + endDay;
+  }
 };
 
 // Получение стоимости маршрута

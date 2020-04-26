@@ -23,11 +23,11 @@ export const createElement = (template) => {
 
 // Формат даты
 export const formatDate = (value) => {
-  const date = castDateTimeFormat(value.getDate());
+  const day = castDateTimeFormat(value.getDate());
   const month = castDateTimeFormat(value.getMonth() + 1);
   const year = castDateTimeFormat(value.getFullYear()).slice(2);
 
-  return `${date}/${month}/${year}`;
+  return `${day}/${month}/${year}`;
 };
 
 // Формат времени
@@ -54,11 +54,11 @@ export const getRandomArrayItem = (array) => {
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
 
-  const diffDate = getRandomIntegerNumber(0, 7);
+  const diffDay = getRandomIntegerNumber(0, 7);
   const diffHours = getRandomIntegerNumber(0, 24);
   const diffMinutes = getRandomIntegerNumber(0, 60);
 
-  randomDateTime.setDate(randomDateTime.getDate() + diffDate);
+  randomDateTime.setDate(randomDateTime.getDate() + diffDay);
   randomDateTime.setHours(randomDateTime.getHours() + diffHours);
   randomDateTime.setMinutes(randomDateTime.getMinutes() + diffMinutes);
 
