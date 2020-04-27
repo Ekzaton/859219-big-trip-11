@@ -50,18 +50,8 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
 };
 
 // Отрисовка маршрута
-const renderTripEvents = (tripEventsElement, events) => {
-  const noEvents = (events.length === 0);
-
-  if (noEvents) {
-    render(tripEventsElement, new TripEventsMsgComponent(), RenderPosition.BEFOREEND);
-    return;
-  }
-
-  render(tripEventsElement, new TripSortComponent(), RenderPosition.BEFOREEND);
-  render(tripEventsElement, new TripDaysComponent(), RenderPosition.BEFOREEND);
-
-  const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
+const renderTripEvents = (container, events) => {
+  const tripDaysElement = container.querySelector(`.trip-days`);
 
   const dates = getTripDates(events);
 
@@ -83,9 +73,24 @@ const renderTripEvents = (tripEventsElement, events) => {
 export default class TripController {
   constructor(container) {
     this._container = container;
+    this._tripEventsMsgComponent = new TripEventsMsgComponent();
+    this._tripSortComponent = new TripSortComponent();
+    this._tripDaysComponent = new TripDaysComponent();
   }
 
   render(events) {
-    renderTripEvents(this._container, events);
+    const container = this._container;
+
+    const noEvents = (events.length === 0);
+
+    if (noEvents) {
+      render(container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
+    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+
+    renderTripEvents(container, events);
   }
 }
