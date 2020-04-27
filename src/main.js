@@ -18,7 +18,6 @@ import {getTripDates} from "./mock/trip-days-item.js";
 const EVENTS_COUNT = 20;
 
 const events = generateTripEvents(EVENTS_COUNT);
-const dates = getTripDates(events);
 
 // Отрисовка точки маршрута и формы создания/редактирования
 const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
@@ -56,6 +55,36 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
   render(tripEventsListElement, tripEventsItemComponent, RenderPosition.BEFOREEND);
 };
 
+// Отрисовка маршрута
+const renderTripEvents = (tripEventsElement, events) => {
+  const noEvents = (events.length === 0);
+
+  if (noEvents) {
+    render(tripEventsElement, new TripEventsMsgComponent(), RenderPosition.BEFOREEND);
+    return;
+  }
+
+  render(tripEventsElement, new TripSortComponent(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripDaysComponent(), RenderPosition.BEFOREEND);
+
+  const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
+
+  const dates = getTripDates(events);
+
+  dates.forEach((date, index) => {
+    const tripDaysItemComponent = new TripDaysItemComponent(date, index);
+
+    render(tripDaysElement, tripDaysItemComponent, RenderPosition.BEFOREEND);
+
+    const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
+
+    const eventsForDate = getEventsForDate(events, date);
+
+    eventsForDate.forEach((eventsItem) =>
+      renderTripEventsItem(tripEventsListElement, eventsItem));
+  });
+};
+
 const tripMainElement = document.querySelector(`.trip-main`);
 
 // Отрисовка информации о маршруте и стоимости
@@ -69,28 +98,4 @@ render(tripControlsElement, new TripFiltersComponent(), RenderPosition.BEFOREEND
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const noEvents = (events.length === 0);
-
-// Отрисовка сортировки и списка дней
-if (noEvents) {
-  render(tripEventsElement, new TripEventsMsgComponent(), RenderPosition.BEFOREEND);
-} else {
-  render(tripEventsElement, new TripSortComponent(), RenderPosition.BEFOREEND);
-  render(tripEventsElement, new TripDaysComponent(), RenderPosition.BEFOREEND);
-
-  const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
-
-  dates.forEach((date, index) => {
-    const tripDaysItemComponent = new TripDaysItemComponent(date, index);
-
-    // Отрисовка дней маршрута
-    render(tripDaysElement, tripDaysItemComponent, RenderPosition.BEFOREEND);
-
-    const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
-
-    const eventsForDate = getEventsForDate(events, date);
-
-    eventsForDate.forEach((eventsItem) =>
-      renderTripEventsItem(tripEventsListElement, eventsItem));
-  });
-}
+renderTripEvents(tripEventsElement, events);
