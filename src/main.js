@@ -23,11 +23,11 @@ const dates = getTripDates(events);
 // Отрисовка точки маршрута и формы создания/редактирования
 const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
   const replaceEventToEdit = () => {
-    replace(tripEventsListElement, tripEventsItemEditElement, tripEventsItemElement);
+    replace(tripEventsItemEditComponent, tripEventsItemComponent);
   };
 
   const replaceEditToEvent = () => {
-    replace(tripEventsListElement, tripEventsItemElement, tripEventsItemEditElement);
+    replace(tripEventsItemComponent, tripEventsItemEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -39,34 +39,34 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
     }
   };
 
-  const tripEventsItemElement = new TripEventsItemComponent(eventsItem).getElement();
-  const eventRollupBtnElement = tripEventsItemElement.querySelector(`.event__rollup-btn`);
+  const tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
+  const eventRollupBtnElement = tripEventsItemComponent.getElement().querySelector(`.event__rollup-btn`);
   eventRollupBtnElement.addEventListener(`click`, () => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const tripEventsItemEditElement = new TripEventsItemEditComponent(eventsItem).getElement();
-  const editFormElement = tripEventsItemEditElement.querySelector(`form`);
+  const tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
+  const editFormElement = tripEventsItemEditComponent.getElement().querySelector(`form`);
   editFormElement.addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(tripEventsListElement, tripEventsItemElement, RenderPosition.BEFOREEND);
+  render(tripEventsListElement, tripEventsItemComponent, RenderPosition.BEFOREEND);
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
 // Отрисовка информации о маршруте и стоимости
-render(tripMainElement, new TripInfoComponent(events).getElement(), RenderPosition.AFTERBEGIN);
+render(tripMainElement, new TripInfoComponent(events), RenderPosition.AFTERBEGIN);
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
 // Отрисовка меню и фильтров
-render(tripControlsElement, new TripTabsComponent().getElement(), RenderPosition.BEFOREEND);
-render(tripControlsElement, new TripFiltersComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripControlsElement, new TripTabsComponent(), RenderPosition.BEFOREEND);
+render(tripControlsElement, new TripFiltersComponent(), RenderPosition.BEFOREEND);
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
@@ -74,20 +74,20 @@ const noEvents = (events.length === 0);
 
 // Отрисовка сортировки и списка дней
 if (noEvents) {
-  render(tripEventsElement, new TripEventsMsgComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripEventsMsgComponent(), RenderPosition.BEFOREEND);
 } else {
-  render(tripEventsElement, new TripSortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(tripEventsElement, new TripDaysComponent().getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripSortComponent(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new TripDaysComponent(), RenderPosition.BEFOREEND);
 
   const tripDaysElement = tripEventsElement.querySelector(`.trip-days`);
 
   dates.forEach((date, index) => {
-    const tripDaysItemElement = new TripDaysItemComponent(date, index).getElement();
+    const tripDaysItemComponent = new TripDaysItemComponent(date, index);
 
     // Отрисовка дней маршрута
-    render(tripDaysElement, tripDaysItemElement, RenderPosition.BEFOREEND);
+    render(tripDaysElement, tripDaysItemComponent, RenderPosition.BEFOREEND);
 
-    const tripEventsListElement = tripDaysItemElement.querySelector(`.trip-events__list`);
+    const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
 
     const eventsForDate = getEventsForDate(events, date);
 
