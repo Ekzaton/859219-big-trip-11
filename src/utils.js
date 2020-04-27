@@ -2,23 +2,9 @@
 const MSEC_IN_SEC = 1000;
 const SEC_IN_MIN = 60;
 
-// Позиции для отрисовки
-export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
-
 // Установка формата даты и времени
 export const castDateTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
-};
-
-// Создание DOM-элемента
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
 };
 
 // Формат даты
@@ -68,16 +54,4 @@ export const getRandomDateTime = () => {
 // Получение случайного целого числа из заданного интервала
 export const getRandomIntegerNumber = (min, max) => {
   return min + Math.floor(Math.random() * (max - min));
-};
-
-// Отрисовка компонента
-export const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
 };

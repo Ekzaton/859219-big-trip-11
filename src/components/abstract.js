@@ -1,5 +1,5 @@
 // Импорт
-import {createElement} from "../utils.js";
+import {createElement} from "../utils/render.js";
 
 // Абстрактный класс
 export default class AbstractComponent {

@@ -8,7 +8,7 @@ import TripDaysItemComponent from "./components/trip-days-item.js";
 import TripEventsMsgComponent from "./components/trip-events-msg.js";
 import TripEventsItemEditComponent from "./components/trip-events-item-edit.js";
 import TripEventsItemComponent from "./components/trip-events-item.js";
-import {render, RenderPosition} from "./utils.js";
+import {render, RenderPosition} from "./utils/render.js";
 
 // Моки
 import {generateTripEvents, getEventsForDate} from "./mock/trip-events-item.js";
