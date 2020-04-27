@@ -232,4 +232,8 @@ export default class TripEventsItemEdit extends AbstractComponent {
   getTemplate() {
     return createTripEventsItemEditTemplate(this._eventsItem);
   }
+
+  setSubmitHandler(handler) {
+    this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+  }
 }

@@ -40,15 +40,14 @@ const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
   };
 
   const tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
-  const eventRollupBtnElement = tripEventsItemComponent.getElement().querySelector(`.event__rollup-btn`);
-  eventRollupBtnElement.addEventListener(`click`, () => {
+  const tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
+
+  tripEventsItemComponent.setEventRollupBtnClickHandler(() => {
     replaceEventToEdit();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  const tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
-  const editFormElement = tripEventsItemEditComponent.getElement().querySelector(`form`);
-  editFormElement.addEventListener(`submit`, (evt) => {
+  tripEventsItemEditComponent.setSubmitHandler((evt) => {
     evt.preventDefault();
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onEscKeyDown);
