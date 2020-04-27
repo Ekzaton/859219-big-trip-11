@@ -1,6 +1,6 @@
 // Импорт
 import AbstractComponent from "./abstract.js";
-import {formatDate, formatTime, getDurationTime} from "../utils.js";
+import {formatDate, formatTime, getDurationTime} from "../utils/common.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {

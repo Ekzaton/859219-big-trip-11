@@ -2,7 +2,7 @@
 import AbstractComponent from "./abstract.js";
 import {TYPES} from "../mock/trip-events-item.js";
 import {CITIES} from "../mock/trip-events-item.js";
-import {formatDate, formatTime} from "../utils.js";
+import {formatDate, formatTime} from "../utils/common.js";
 
 // Раметка типов точек маршрута
 const createTypesMarkup = (types, group) => {

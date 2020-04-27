@@ -1,6 +1,6 @@
 // Импорт
 import {MONTHS} from "../const.js";
-import {castDateTimeFormat} from "../utils.js";
+import {castDateTimeFormat} from "../utils/common.js";
 
 // Получение заголовка маршрута
 export const getTripInfoTitle = (events) => {
