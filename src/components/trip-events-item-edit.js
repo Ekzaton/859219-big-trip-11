@@ -1,11 +1,8 @@
 // Импорт
+import AbstractComponent from "./abstract.js";
 import {TYPES} from "../mock/trip-events-item.js";
 import {CITIES} from "../mock/trip-events-item.js";
-import {
-  createElement,
-  formatDate,
-  formatTime
-} from "../utils.js";
+import {formatDate, formatTime} from "../utils.js";
 
 // Раметка типов точек маршрута
 const createTypesMarkup = (types, group) => {
@@ -226,25 +223,13 @@ const createTripEventsItemEditTemplate = (eventsItem) => {
 };
 
 // Класс
-export default class TripEventsItemEdit {
+export default class TripEventsItemEdit extends AbstractComponent {
   constructor(eventsItem) {
+    super();
     this._eventsItem = eventsItem;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventsItemEditTemplate(this._eventsItem);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

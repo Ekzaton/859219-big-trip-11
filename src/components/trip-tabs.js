@@ -1,5 +1,5 @@
 // Импорт
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract.js";
 
 // Шаблон меню сайта
 const createTripTabsTemplate = () => {
@@ -12,24 +12,8 @@ const createTripTabsTemplate = () => {
 };
 
 // Класс
-export default class TripTabs {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripTabs extends AbstractComponent {
   getTemplate() {
     return createTripTabsTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

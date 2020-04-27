@@ -1,5 +1,5 @@
 // Импорт
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract.js";
 
 // Шаблон секции сортировки
 const createTripSortTemplate = () => {
@@ -28,24 +28,8 @@ const createTripSortTemplate = () => {
 };
 
 // Класс
-export default class TripSort {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripSort extends AbstractComponent {
   getTemplate() {
     return createTripSortTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

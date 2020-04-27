@@ -1,10 +1,6 @@
 // Импорт
-import {
-  getTripInfoTitle,
-  getTripInfoDates,
-  getTripInfoCost
-} from "../mock/trip-info.js";
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract.js";
+import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../mock/trip-info.js";
 
 // Шаблон информации о маршруте и стоимости
 const createTripInfoTemplate = (events) => {
@@ -26,25 +22,13 @@ const createTripInfoTemplate = (events) => {
 };
 
 // Класс
-export default class TripInfo {
+export default class TripInfo extends AbstractComponent {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

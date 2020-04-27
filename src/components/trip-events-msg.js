@@ -1,5 +1,5 @@
 // Импорт
-import {createElement} from "../utils.js";
+import AbstractComponent from "./abstract.js";
 
 // Шаблон сообщения-заглушки
 const createTripEventsMsgTemplate = () => {
@@ -11,24 +11,8 @@ const createTripEventsMsgTemplate = () => {
 };
 
 // Класс
-export default class TripEventsMsg {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripEventsMsg extends AbstractComponent {
   getTemplate() {
     return createTripEventsMsgTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
