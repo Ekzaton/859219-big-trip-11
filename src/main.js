@@ -8,7 +8,7 @@ import TripDaysItemComponent from "./components/trip-days-item.js";
 import TripEventsMsgComponent from "./components/trip-events-msg.js";
 import TripEventsItemEditComponent from "./components/trip-events-item-edit.js";
 import TripEventsItemComponent from "./components/trip-events-item.js";
-import {render, RenderPosition} from "./utils/render.js";
+import {render, replace, RenderPosition} from "./utils/render.js";
 
 // Моки
 import {generateTripEvents, getEventsForDate} from "./mock/trip-events-item.js";
@@ -23,17 +23,11 @@ const dates = getTripDates(events);
 // Отрисовка точки маршрута и формы создания/редактирования
 const renderTripEventsItem = (tripEventsListElement, eventsItem) => {
   const replaceEventToEdit = () => {
-    tripEventsListElement.replaceChild(
-        tripEventsItemEditElement,
-        tripEventsItemElement
-    );
+    replace(tripEventsListElement, tripEventsItemEditElement, tripEventsItemElement);
   };
 
   const replaceEditToEvent = () => {
-    tripEventsListElement.replaceChild(
-        tripEventsItemElement,
-        tripEventsItemEditElement
-    );
+    replace(tripEventsListElement, tripEventsItemElement, tripEventsItemEditElement);
   };
 
   const onEscKeyDown = (evt) => {
