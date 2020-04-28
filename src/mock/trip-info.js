@@ -1,5 +1,6 @@
 // Импорт
 import {MONTHS} from "../const.js";
+import {castDateTimeFormat} from "../utils/common.js";
 
 // Получение заголовка маршрута
 export const getTripInfoTitle = (events) => {
@@ -28,10 +29,11 @@ export const getTripInfoDates = (events) => {
   if (start[0] === undefined) {
     return ``;
   } else if (startMonth === endMonth) {
-    return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;` + endDay;
+    return startMonth + `&nbsp;` + castDateTimeFormat(startDay)
+      + `&nbsp;&mdash;&nbsp;` + castDateTimeFormat(endDay);
   } else {
-    return startMonth + `&nbsp;` + startDay + `&nbsp;&mdash;&nbsp;`
-      + endMonth + `&nbsp;` + endDay;
+    return startMonth + `&nbsp;` + castDateTimeFormat(startDay)
+      + `&nbsp;&mdash;&nbsp;` + endMonth + `&nbsp;` + castDateTimeFormat(endDay);
   }
 };
 

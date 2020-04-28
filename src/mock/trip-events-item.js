@@ -3,7 +3,7 @@ import {
   getRandomArrayItem,
   getRandomDateTime,
   getRandomIntegerNumber
-} from "../utils.js";
+} from "../utils/common.js";
 
 // Точки маршрута
 export const TYPES = [

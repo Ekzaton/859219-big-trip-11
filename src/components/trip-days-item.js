@@ -1,6 +1,6 @@
 // Импорт
+import AbstractComponent from "./abstract.js";
 import {MONTHS} from "../const.js";
-import {createElement} from "../utils.js";
 
 // Шаблон дня маршрута
 const createTripDaysItemTemplate = (date, index) => {
@@ -24,26 +24,14 @@ const createTripDaysItemTemplate = (date, index) => {
 };
 
 // Класс
-export default class TripDaysItem {
+export default class TripDaysItem extends AbstractComponent {
   constructor(date, index) {
+    super();
     this._date = date;
     this._index = index;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripDaysItemTemplate(this._date, this._index);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

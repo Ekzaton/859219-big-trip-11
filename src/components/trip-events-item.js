@@ -1,9 +1,6 @@
-import {
-  createElement,
-  formatDate,
-  formatTime,
-  getDurationTime
-} from "../utils.js";
+// Импорт
+import AbstractComponent from "./abstract.js";
+import {formatDate, formatTime, getDurationTime} from "../utils/common.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -75,25 +72,17 @@ const createTripEventsItemTemplate = (eventsItem) => {
 };
 
 // Класс
-export default class TripEventsItem {
+export default class TripEventsItem extends AbstractComponent {
   constructor(eventsItem) {
+    super();
     this._eventsItem = eventsItem;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripEventsItemTemplate(this._eventsItem);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setEventRollupBtnClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
   }
 }
