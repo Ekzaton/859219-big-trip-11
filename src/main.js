@@ -4,7 +4,7 @@ import TripTabsComponent from "./components/trip-tabs.js";
 import TripFiltersComponent from "./components/trip-filters.js";
 
 // Контроллеры
-import TripController from "./controllers/trip.js";
+import TripEventsController from "./controllers/trip-events.js";
 
 // Утилиты
 import {render, RenderPosition} from "./utils/render.js";
@@ -30,6 +30,6 @@ render(tripControlsElement, new TripFiltersComponent(), RenderPosition.BEFOREEND
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const tripController = new TripController(tripEventsElement);
+const tripEventsController = new TripEventsController(tripEventsElement);
 
-tripController.render(events);
+tripEventsController.render(events);
