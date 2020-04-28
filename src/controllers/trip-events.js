@@ -70,7 +70,7 @@ const renderTripEvents = (container, events) => {
 };
 
 // Контроллер
-export default class TripController {
+export default class TripEventsController {
   constructor(container) {
     this._container = container;
     this._tripEventsMsgComponent = new TripEventsMsgComponent();
