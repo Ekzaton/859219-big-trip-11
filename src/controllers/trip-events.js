@@ -92,5 +92,9 @@ export default class TripEventsController {
     render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     renderTripEvents(container, events);
+
+    this._tripSortComponent.setSortTypeChangeHandler(() => {
+
+    });
   }
 }
