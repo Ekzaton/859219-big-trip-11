@@ -131,7 +131,7 @@ export default class TripEventsController {
 
       const sortedEvents = getSortedEvents(events, sortType);
 
-      this._tripDaysComponent.getElement().innerHTML = ``;
+      this._tripDaysComponent.clearElement();
 
       if (sortType === SortType.EVENT) {
         renderTripEvents(container, events);
