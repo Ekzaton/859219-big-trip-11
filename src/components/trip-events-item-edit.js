@@ -1,10 +1,14 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Моки
 import {TYPES} from "../mock/trip-events-item.js";
 import {CITIES} from "../mock/trip-events-item.js";
+
+// Утилиты
 import {formatDate, formatTime} from "../utils/common.js";
 
-// Раметка типов точек маршрута
+// Разметка типов точек маршрута
 const createTypesMarkup = (types, group) => {
   return types.map((type, isChecked) => {
     if (group === type.group) {

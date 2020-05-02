@@ -1,4 +1,4 @@
-// Импорт
+// Утилиты
 import {
   getRandomArrayItem,
   getRandomDateTime,

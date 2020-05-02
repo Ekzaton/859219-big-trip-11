@@ -1,5 +1,7 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Утилиты
 import {formatDate, formatTime, getDurationTime} from "../utils/common.js";
 
 // Разметка доп. опций

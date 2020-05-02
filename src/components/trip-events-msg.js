@@ -1,4 +1,4 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
 
 // Шаблон сообщения-заглушки

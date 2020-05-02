@@ -6,11 +6,11 @@ import TripFiltersComponent from "./components/trip-filters.js";
 // Контроллеры
 import TripEventsController from "./controllers/trip-events.js";
 
-// Утилиты
-import {render, RenderPosition} from "./utils/render.js";
-
 // Моки
 import {generateTripEvents} from "./mock/trip-events-item.js";
+
+// Утилиты
+import {render, RenderPosition} from "./utils/render.js";
 
 // Константы
 const EVENTS_COUNT = 20;

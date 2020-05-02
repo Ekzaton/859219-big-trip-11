@@ -3,51 +3,16 @@ import TripSortComponent, {SortType} from "../components/trip-sort.js";
 import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
 import TripEventsMsgComponent from "../components/trip-events-msg.js";
-import TripEventsItemEditComponent from "../components/trip-events-item-edit.js";
-import TripEventsItemComponent from "../components/trip-events-item.js";
 
-// Утилиты
-import {render, replace, RenderPosition} from "../utils/render.js";
+// Контроллеры
+import TripEventsItemController from "./trip-events-item.js";
 
 // Моки
 import {getEventsForDate} from "../mock/trip-events-item.js";
 import {getTripDates} from "../mock/trip-days-item.js";
 
-// Отрисовка точки маршрута и формы создания/редактирования
-const renderTripEventsItem = (container, eventsItem) => {
-  const replaceEventToEdit = () => {
-    replace(tripEventsItemEditComponent, tripEventsItemComponent);
-  };
-
-  const replaceEditToEvent = () => {
-    replace(tripEventsItemComponent, tripEventsItemEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
-  const tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
-
-  tripEventsItemComponent.setEventRollupBtnClickHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  tripEventsItemEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(container, tripEventsItemComponent, RenderPosition.BEFOREEND);
-};
+// Утилиты
+import {render, RenderPosition} from "../utils/render.js";
 
 // Отрисовка маршрута
 const renderTripEvents = (container, events) => {
@@ -64,8 +29,13 @@ const renderTripEvents = (container, events) => {
 
     const eventsForDate = getEventsForDate(events, date);
 
-    eventsForDate.forEach((eventsItem) =>
-      renderTripEventsItem(tripEventsListElement, eventsItem));
+    return eventsForDate.map((eventsItem) => {
+      const tripEventsItemController = new TripEventsItemController(tripEventsListElement);
+
+      tripEventsItemController.render(eventsItem);
+
+      return tripEventsItemController;
+    });
   });
 };
 
@@ -79,8 +49,13 @@ const renderSortedTripEvents = (container, sortedEvents) => {
 
   const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
 
-  sortedEvents.forEach((eventsItem) =>
-    renderTripEventsItem(tripEventsListElement, eventsItem));
+  return sortedEvents.map((eventsItem) => {
+    const tripEventsItemController = new TripEventsItemController(tripEventsListElement);
+
+    tripEventsItemController.render(eventsItem);
+
+    return tripEventsItemController;
+  });
 };
 
 // Получение отсортированных точек маршрута
@@ -103,16 +78,23 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-// Контроллер
+// Контроллер маршрута
 export default class TripEventsController {
   constructor(container) {
     this._container = container;
+
     this._tripEventsMsgComponent = new TripEventsMsgComponent();
     this._tripSortComponent = new TripSortComponent();
     this._tripDaysComponent = new TripDaysComponent();
+
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+
+    this._tripSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   render(events) {
+    this._events = events;
+
     const container = this._container;
 
     const noEvents = (events.length === 0);
@@ -126,18 +108,19 @@ export default class TripEventsController {
     render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     renderTripEvents(container, events);
+  }
 
-    this._tripSortComponent.setSortTypeChangeHandler((sortType) => {
+  _onSortTypeChange(sortType) {
+    const container = this._container;
 
-      const sortedEvents = getSortedEvents(events, sortType);
+    const sortedEvents = getSortedEvents(this._events, sortType);
 
-      this._tripDaysComponent.clearElement();
+    this._tripDaysComponent.clearElement();
 
-      if (sortType === SortType.EVENT) {
-        renderTripEvents(container, events);
-      } else {
-        renderSortedTripEvents(container, sortedEvents);
-      }
-    });
+    if (sortType === SortType.EVENT) {
+      renderTripEvents(container, this._events);
+    } else {
+      renderSortedTripEvents(container, sortedEvents);
+    }
   }
 }

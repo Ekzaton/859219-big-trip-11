@@ -1,4 +1,4 @@
-// Импорт
+// Утилиты
 import {createElement} from "../utils/render.js";
 
 // Абстрактный класс

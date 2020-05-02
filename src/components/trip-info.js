@@ -1,5 +1,7 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Моки
 import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../mock/trip-info.js";
 
 // Шаблон информации о маршруте и стоимости

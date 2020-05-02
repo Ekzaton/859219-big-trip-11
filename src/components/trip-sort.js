@@ -1,5 +1,7 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Моки
 import {SORT_ITEMS} from "../mock/trip-sort.js";
 
 // Типы сортировки
