@@ -25,6 +25,10 @@ export default class TripEventsItemController {
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
+    this._tripEventsItemEditComponent.setEventFavoriteBtnClickHandler(() => {
+
+    });
+
     this._tripEventsItemEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       this._replaceEditToEvent();
