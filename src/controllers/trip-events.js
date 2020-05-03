@@ -22,7 +22,7 @@ const renderTripEvents = (container, events, onDataChange) => {
 };
 
 // Отрисовка дня маршрута
-const renderTripDaysItem = (container, events, date, index, onDataChange) => {
+const renderTripDaysItem = (container, events, onDataChange, date, index) => {
   const tripDaysItemComponent = new TripDaysItemComponent(date, index);
 
   const tripEventsListElement = tripDaysItemComponent.getElement()
@@ -42,7 +42,7 @@ const renderTripDays = (container, events, dates, onDataChange) => {
   dates.forEach((date, index) => {
     const eventsForDate = getEventsForDate(events, date);
 
-    tripDays = renderTripDaysItem(container, eventsForDate, date, index, onDataChange);
+    tripDays = renderTripDaysItem(container, eventsForDate, onDataChange, date, index);
   });
 
   return tripDays;
