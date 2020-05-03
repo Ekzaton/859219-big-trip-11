@@ -7,8 +7,9 @@ import {render, replace, RenderPosition} from "../utils/render.js";
 
 // Контроллер точки маршрута
 export default class TripEventsItemController {
-  constructor(container) {
+  constructor(container, onDataChange) {
     this._container = container;
+    this._onDataChange = onDataChange;
 
     this._tripEventsItemComponent = null;
     this._tripEventsItemEditComponent = null;
@@ -26,7 +27,9 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventFavoriteBtnClickHandler(() => {
-
+      this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, {
+        isFavorite: !eventsItem.isFavorite,
+      }));
     });
 
     this._tripEventsItemEditComponent.setSubmitHandler((evt) => {
