@@ -77,7 +77,7 @@ const createPhotosMarkup = (photos) => {
 
 // Шаблон формы создания/редактирования точки маршрута
 const createTripEventsItemEditTemplate = (eventsItem) => {
-  const {type, city, start, end, price, offers, description, photos} = eventsItem;
+  const {type, city, start, end, price, offers, description, photos, isFavorite} = eventsItem;
 
   const pretext = (type.group === `transfer` ? `to` : `in`);
 
@@ -182,6 +182,7 @@ const createTripEventsItemEditTemplate = (eventsItem) => {
             class="event__favorite-checkbox visually-hidden"
             type="checkbox"
             name="event-favorite"
+            ${isFavorite ? `checked` : ``}
           >
           <label class="event__favorite-btn" for="event-favorite-1">
             <span class="visually-hidden">Add to favorite</span>

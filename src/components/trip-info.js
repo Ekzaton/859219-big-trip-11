@@ -1,8 +1,8 @@
 // Компоненты
 import AbstractComponent from "./abstract.js";
 
-// Моки
-import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../mock/trip-info.js";
+// Утилиты
+import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../utils/common.js";
 
 // Шаблон информации о маршруте и стоимости
 const createTripInfoTemplate = (events) => {

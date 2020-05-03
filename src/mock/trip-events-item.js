@@ -145,6 +145,7 @@ export const generateTripEventsItem = () => {
     offers: generateRandomItems(OFFERS),
     description: generateRandomItems(SENTENCES),
     photos: generateRandomPhotos(),
+    isFavorite: Math.random() > 0.5,
   };
 };
 
@@ -154,10 +155,4 @@ export const generateTripEvents = (count) => {
     .fill(``)
     .map(generateTripEventsItem)
     .sort((a, b) => a.start > b.start ? 1 : -1);
-};
-
-// Получение массива точек маршрута, соответствующих конкретной дате
-export const getEventsForDate = (events, date) => {
-  return events.filter((eventsItem) =>
-    eventsItem.start.toDateString() === date);
 };
