@@ -3,84 +3,49 @@ import TripSortComponent, {SortType} from "../components/trip-sort.js";
 import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
 import TripEventsMsgComponent from "../components/trip-events-msg.js";
-import TripEventsItemEditComponent from "../components/trip-events-item-edit.js";
-import TripEventsItemComponent from "../components/trip-events-item.js";
+
+// Контроллеры
+import TripEventsItemController from "./trip-events-item.js";
 
 // Утилиты
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition} from "../utils/render.js";
 
-// Моки
-import {getEventsForDate} from "../mock/trip-events-item.js";
-import {getTripDates} from "../mock/trip-days-item.js";
+// Отрисовка точек маршрута
+const renderTripEvents = (container, events, onDataChange, onViewChange) => {
+  return events.map((eventsItem) => {
+    const tripEventsItemController = new TripEventsItemController(container, onDataChange, onViewChange);
 
-// Отрисовка точки маршрута и формы создания/редактирования
-const renderTripEventsItem = (container, eventsItem) => {
-  const replaceEventToEdit = () => {
-    replace(tripEventsItemEditComponent, tripEventsItemComponent);
-  };
+    tripEventsItemController.render(eventsItem);
 
-  const replaceEditToEvent = () => {
-    replace(tripEventsItemComponent, tripEventsItemEditComponent);
-  };
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  const tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
-  const tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
-
-  tripEventsItemComponent.setEventRollupBtnClickHandler(() => {
-    replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
+    return tripEventsItemController;
   });
-
-  tripEventsItemEditComponent.setSubmitHandler((evt) => {
-    evt.preventDefault();
-    replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(container, tripEventsItemComponent, RenderPosition.BEFOREEND);
 };
 
-// Отрисовка маршрута
-const renderTripEvents = (container, events) => {
-  const tripDaysElement = container.querySelector(`.trip-days`);
+// Отрисовка дня маршрута
+const renderTripDaysItem = (container, events, onDataChange, onViewChange, date, index) => {
+  const tripDaysItemComponent = new TripDaysItemComponent(date, index);
 
-  const dates = getTripDates(events);
+  const tripEventsListElement = tripDaysItemComponent.getElement()
+    .querySelector(`.trip-events__list`);
+
+  const tripEventsItemControllers = renderTripEvents(tripEventsListElement, events, onDataChange, onViewChange);
+
+  render(container, tripDaysItemComponent, RenderPosition.BEFOREEND);
+
+  return tripEventsItemControllers;
+};
+
+// Отрисовка списка дней
+const renderTripDays = (container, events, dates, onDataChange, onViewChange) => {
+  let tripDays = [];
 
   dates.forEach((date, index) => {
-    const tripDaysItemComponent = new TripDaysItemComponent(date, index);
-
-    render(tripDaysElement, tripDaysItemComponent, RenderPosition.BEFOREEND);
-
-    const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
-
     const eventsForDate = getEventsForDate(events, date);
 
-    eventsForDate.forEach((eventsItem) =>
-      renderTripEventsItem(tripEventsListElement, eventsItem));
+    tripDays = tripDays.concat(renderTripDaysItem(container, eventsForDate, onDataChange, onViewChange, date, index));
   });
-};
 
-// Отрисовка результатов сортировки
-const renderSortedTripEvents = (container, sortedEvents) => {
-  const tripDaysElement = container.querySelector(`.trip-days`);
-
-  const tripDaysItemComponent = new TripDaysItemComponent();
-
-  render(tripDaysElement, tripDaysItemComponent, RenderPosition.BEFOREEND);
-
-  const tripEventsListElement = tripDaysItemComponent.getElement().querySelector(`.trip-events__list`);
-
-  sortedEvents.forEach((eventsItem) =>
-    renderTripEventsItem(tripEventsListElement, eventsItem));
+  return tripDays;
 };
 
 // Получение отсортированных точек маршрута
@@ -103,41 +68,88 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-// Контроллер
+// Получение дат маршрута в порядке возрастания
+const getTripDates = (events) => {
+  const dates = Array.from(
+      new Set(events.map((eventsItem) => eventsItem.start.toDateString()))
+  );
+
+  return dates.sort((a, b) => new Date(a) - new Date(b));
+};
+
+// Получение точек маршрута, сгруппированных по датам
+const getEventsForDate = (events, date) => {
+  return events.filter((eventsItem) => eventsItem.start.toDateString() === date);
+};
+
+// Контроллер маршрута
 export default class TripEventsController {
   constructor(container) {
     this._container = container;
+
+    this._events = [];
+    this._dates = [];
+    this._tripEventsItemControllers = [];
     this._tripEventsMsgComponent = new TripEventsMsgComponent();
     this._tripSortComponent = new TripSortComponent();
     this._tripDaysComponent = new TripDaysComponent();
+
+    this._onDataChange = this._onDataChange.bind(this);
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
+
+    this._tripSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
   render(events) {
-    const container = this._container;
+    this._events = events;
+    this._dates = getTripDates(events);
 
     const noEvents = (events.length === 0);
 
     if (noEvents) {
-      render(container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
+      render(this._container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
-    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    render(this._container, this._tripSortComponent, RenderPosition.BEFOREEND);
+    render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
-    renderTripEvents(container, events);
+    const tripDaysElement = this._tripDaysComponent.getElement();
 
-    this._tripSortComponent.setSortTypeChangeHandler((sortType) => {
+    const tripEvents = renderTripDays(tripDaysElement, events, this._dates, this._onDataChange, this._onViewChange);
+    this._tripEventsItemControllers = tripEvents;
+  }
 
-      const sortedEvents = getSortedEvents(events, sortType);
+  _onDataChange(tripEventsItemController, oldData, newData) {
+    const index = this._events.findIndex((it) => it === oldData);
 
-      this._tripDaysComponent.getElement().innerHTML = ``;
+    if (index === -1) {
+      return;
+    }
 
-      if (sortType === SortType.EVENT) {
-        renderTripEvents(container, events);
-      } else {
-        renderSortedTripEvents(container, sortedEvents);
-      }
-    });
+    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
+
+    tripEventsItemController.render(this._events[index]);
+  }
+
+  _onViewChange() {
+    this._tripEventsItemControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _onSortTypeChange(sortType) {
+    this._tripDaysComponent.clearElement();
+
+    const tripDaysElement = this._tripDaysComponent.getElement();
+
+    if (sortType === SortType.EVENT) {
+      const tripEvents = renderTripDays(tripDaysElement, this._events, this._dates, this._onDataChange, this._onViewChange);
+      this._tripEventsItemControllers = tripEvents;
+    } else {
+      const sortedEvents = getSortedEvents(this._events, sortType);
+
+      const tripEvents = renderTripDaysItem(tripDaysElement, sortedEvents, this._onDataChange, this._onViewChange);
+      this._tripEventsItemControllers = tripEvents;
+    }
   }
 }

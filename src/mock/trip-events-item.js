@@ -1,52 +1,26 @@
-// Импорт
+// Утилиты
 import {
   getRandomArrayItem,
   getRandomDateTime,
   getRandomIntegerNumber
 } from "../utils/common.js";
 
-// Точки маршрута
-export const TYPES = [
-  {
-    name: `Taxi`,
-    group: `transfer`
-  },
-  {
-    name: `Bus`,
-    group: `transfer`
-  },
-  {
-    name: `Train`,
-    group: `transfer`
-  },
-  {
-    name: `Ship`,
-    group: `transfer`
-  },
-  {
-    name: `Transport`,
-    group: `transfer`
-  },
-  {
-    name: `Drive`,
-    group: `transfer`
-  },
-  {
-    name: `Flight`,
-    group: `transfer`
-  },
-  {
-    name: `Check-in`,
-    group: `activity`
-  },
-  {
-    name: `Sightseeing`,
-    group: `activity`
-  },
-  {
-    name: `Restaurant`,
-    group: `activity`
-  },
+// Точки маршрута - перемещения
+export const TRANSFERS = [
+  `Taxi`,
+  `Bus`,
+  `Train`,
+  `Ship`,
+  `Transport`,
+  `Drive`,
+  `Flight`
+];
+
+// Точки маршрута - меропориятия
+export const ACTIVITIES = [
+  `Check-in`,
+  `Sightseeing`,
+  `Restaurant`
 ];
 
 // Города
@@ -64,7 +38,7 @@ export const CITIES = [
 ];
 
 // Доп. опции
-const OFFERS = [
+export const OFFERS = [
   {
     type: `comfort`,
     name: `Switch to comfort`,
@@ -93,7 +67,7 @@ const OFFERS = [
 ];
 
 // Предложения для описания
-const SENTENCES = [
+export const SENTENCES = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
   `Fusce tristique felis at fermentum pharetra.`,
@@ -108,7 +82,7 @@ const SENTENCES = [
 ];
 
 // Генерация доп. опций / описания
-const generateRandomItems = (items) => {
+export const generateRandomItems = (items) => {
   const randomItems = [];
 
   items.slice(getRandomIntegerNumber(1, 6)).forEach((item) =>
@@ -118,7 +92,7 @@ const generateRandomItems = (items) => {
 };
 
 // Генерация фотографий
-const generateRandomPhotos = () => {
+export const generateRandomPhotos = () => {
   const randomPhotos = [];
 
   for (let i = 0; i < getRandomIntegerNumber(1, 6); i++) {
@@ -137,7 +111,7 @@ export const generateTripEventsItem = () => {
   const endDateTime = (first > second ? first : second);
 
   return {
-    type: getRandomArrayItem(TYPES),
+    type: getRandomArrayItem(TRANSFERS.concat(ACTIVITIES)),
     city: getRandomArrayItem(CITIES),
     start: startDateTime,
     end: endDateTime,
@@ -145,19 +119,11 @@ export const generateTripEventsItem = () => {
     offers: generateRandomItems(OFFERS),
     description: generateRandomItems(SENTENCES),
     photos: generateRandomPhotos(),
+    isFavorite: Math.random() > 0.5,
   };
 };
 
-// Генерация массива точек маршрута c сортировкой от даты начала
+// Генерация массива точек маршрута
 export const generateTripEvents = (count) => {
-  return new Array(count)
-    .fill(``)
-    .map(generateTripEventsItem)
-    .sort((a, b) => a.start > b.start ? 1 : -1);
-};
-
-// Получение массива точек маршрута, соответствующих конкретной дате
-export const getEventsForDate = (events, date) => {
-  return events.filter((eventsItem) =>
-    eventsItem.start.toDateString() === date);
+  return new Array(count).fill(``).map(generateTripEventsItem);
 };

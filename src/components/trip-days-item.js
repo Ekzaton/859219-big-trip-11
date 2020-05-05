@@ -1,5 +1,7 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Константы
 import {MONTHS} from "../const.js";
 
 // Шаблон дня маршрута

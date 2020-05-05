@@ -1,5 +1,8 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Утилиты
+import {placeholders} from "../utils/adapter.js";
 import {formatDate, formatTime, getDurationTime} from "../utils/common.js";
 
 // Разметка доп. опций
@@ -20,8 +23,6 @@ const createOffersMarkup = (offers) => {
 const createTripEventsItemTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers} = eventsItem;
 
-  const pretext = (type.group === `transfer` ? `to` : `in`);
-
   const startDate = formatDate(start);
   const startTime = formatTime(start);
 
@@ -39,11 +40,13 @@ const createTripEventsItemTemplate = (eventsItem) => {
           <img class="event__type-icon"
             width="42"
             height="42"
-            src="img/icons/${type.name.toLowerCase()}.png"
+            src="img/icons/${type.toLowerCase()}.png"
             alt="Event type icon"
           >
         </div>
-        <h3 class="event__title">${type.name}&nbsp;${pretext}&nbsp;${city}</h3>
+        <h3 class="event__title">
+          ${placeholders.get(type.toLowerCase())}&nbsp;${city}
+        </h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate}T${startTime}">
@@ -83,6 +86,7 @@ export default class TripEventsItem extends AbstractComponent {
   }
 
   setEventRollupBtnClickHandler(handler) {
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }

@@ -1,65 +1,45 @@
-// Импорт
+// Компоненты
 import AbstractComponent from "./abstract.js";
+
+// Утилшиты
+import {SORT_ITEMS} from "../const.js";
 
 // Типы сортировки
 export const SortType = {
-  EVENT: `event`,
-  TIME: `time`,
-  PRICE: `price`,
+  EVENT: `sort-event`,
+  TIME: `sort-time`,
+  PRICE: `sort-price`,
+};
+
+// Разметка опций сортировки
+const createSortItemsMarkup = (sortItems) => {
+  return sortItems.map((sortItem, isChecked) => {
+    return (
+      `<div class="trip-sort__item trip-sort__item--${sortItem.toLowerCase()}">
+        <input id="${SortType[sortItem.toUpperCase()]}"
+          class="trip-sort__input visually-hidden"
+          type="radio"
+          name="trip-sort"
+          value="sort-${sortItem.toLowerCase()}"
+          ${isChecked === 0 ? `checked` : ``}
+        >
+        <label class="trip-sort__btn" for="${SortType[sortItem.toUpperCase()]}">
+          ${sortItem}
+        </label>
+      </div>`
+    );
+  })
+  .join(`\n`);
 };
 
 // Шаблон секции сортировки
-const createTripSortTemplate = (sortType) => {
+const createTripSortTemplate = () => {
+  const sortItemsMarkup = createSortItemsMarkup(SORT_ITEMS);
+
   return (
     `<form class="trip-events__trip-sort trip-sort" action="#" method="get">
-      <span class="trip-sort__item trip-sort__item--day">
-        ${sortType === SortType.EVENT ? `Day` : ``}
-      </span>
-      <div class="trip-sort__item trip-sort__item--event">
-        <input id="sort-event"
-          class="trip-sort__input visually-hidden"
-          type="radio"
-          name="trip-sort"
-          value="sort-event"
-          ${sortType === SortType.EVENT ? `checked` : ``}
-        >
-        <label class="trip-sort__btn"
-          for="sort-event"
-          data-sort-type="${SortType.EVENT}"
-        >
-          Event
-        </label>
-      </div>
-      <div class="trip-sort__item trip-sort__item--time">
-        <input id="sort-time"
-          class="trip-sort__input visually-hidden"
-          type="radio"
-          name="trip-sort"
-          value="sort-time"
-          ${sortType === SortType.TIME ? `checked` : ``}
-        >
-        <label class="trip-sort__btn"
-          for="sort-time"
-          data-sort-type="${SortType.TIME}"
-        >
-          Time
-        </label>
-      </div>
-      <div class="trip-sort__item trip-sort__item--price">
-        <input id="sort-price"
-          class="trip-sort__input visually-hidden"
-          type="radio"
-          name="trip-sort"
-          value="sort-price"
-          ${sortType === SortType.PRICE ? `checked` : ``}
-        >
-        <label class="trip-sort__btn"
-          for="sort-price"
-          data-sort-type="${SortType.PRICE}"
-        >
-          Price
-        </label>
-      </div>
+      <span class="trip-sort__item trip-sort__item--day">Day</span>
+        ${sortItemsMarkup}
       <span class="trip-sort__item trip-sort__item--offers">Offers</span>
     </form>`
   );
@@ -73,7 +53,7 @@ export default class TripSort extends AbstractComponent {
   }
 
   getTemplate() {
-    return createTripSortTemplate(this._currenSortType);
+    return createTripSortTemplate();
   }
 
   getSortType() {
@@ -82,13 +62,12 @@ export default class TripSort extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
 
-      if (evt.target.className !== `trip-sort__btn`) {
+      if (evt.target.tagName !== `INPUT`) {
         return;
       }
 
-      const sortType = evt.target.dataset.sortType;
+      const sortType = evt.target.id;
 
       if (this._currenSortType === sortType) {
         return;
@@ -97,13 +76,6 @@ export default class TripSort extends AbstractComponent {
       this._currenSortType = sortType;
 
       handler(this._currenSortType);
-
-      this.refreshElement();
     });
-  }
-
-  refreshElement() {
-    this._element.innerHTML = ``;
-    this._element.innerHTML = this.getTemplate();
   }
 }

@@ -1,7 +1,7 @@
-// Импорт
+// Утилиты
 import {createElement} from "../utils/render.js";
 
-// Абстрактный класс
+// Абстрактный компонент
 export default class AbstractComponent {
   constructor() {
     if (new.target === AbstractComponent) {
