@@ -1,36 +1,39 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import AbstractSmartComponent from "./abstract-smart.js";
 
 // Моки
-import {TYPES} from "../mock/trip-events-item.js";
-import {CITIES} from "../mock/trip-events-item.js";
+import {
+  TRANSFERS,
+  ACTIVITIES,
+  CITIES,
+  OFFERS,
+  SENTENCES,
+  generateRandomItems,
+  generateRandomPhotos
+} from "../mock/trip-events-item.js";
 
 // Утилиты
+import {placeholders} from "../utils/adapter.js";
 import {formatDate, formatTime} from "../utils/common.js";
 
 // Разметка типов точек маршрута
-const createTypesMarkup = (types, group) => {
-  return types.map((type, isChecked) => {
-    if (group === type.group) {
-      return (
-        `<div class="event__type-item">
-          <input id="event-type-${type.name.toLowerCase()}-1"
-            class="event__type-input visually-hidden"
-            type="radio"
-            name="event-type"
-            value="${type.name.toLowerCase()}"
-            ${isChecked === 0 ? `checked` : ``}
-          >
-          <label class="event__type-label event__type-label--${type.name.toLowerCase()}"
-            for="event-type-${type.name.toLowerCase()}-1"
-          >
-            ${type.name}
-          </label>
-        </div>`
-      );
-    } else {
-      return ``;
-    }
+const createTypesMarkup = (types) => {
+  return types.map((type) => {
+    return (
+      `<div class="event__type-item">
+        <input id="event-type-${type.toLowerCase()}-1"
+          class="event__type-input visually-hidden"
+          type="radio"
+          name="event-type"
+          value="${type.toLowerCase()}"
+        >
+        <label class="event__type-label event__type-label--${type.toLowerCase()}"
+          for="event-type-${type.toLowerCase()}-1"
+        >
+          ${type}
+        </label>
+      </div>`
+    );
   })
   .join(`\n`);
 };
@@ -45,14 +48,13 @@ const createDestinationsMarkup = (destinations) => {
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
-  return offers.map((offer, isChecked) => {
+  return offers.map((offer) => {
     return (
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox visually-hidden"
           id="event-offer-${offer.type}-1"
           type="checkbox"
           name="event-offer-${offer.type}"
-          ${isChecked === 0 ? `checked` : ``}
         >
         <label class="event__offer-label"
           for="event-offer-${offer.type}-1"
@@ -76,18 +78,18 @@ const createPhotosMarkup = (photos) => {
 };
 
 // Шаблон формы создания/редактирования точки маршрута
-const createTripEventsItemEditTemplate = (eventsItem) => {
-  const {type, city, start, end, price, offers, description, photos, isFavorite} = eventsItem;
-
-  const pretext = (type.group === `transfer` ? `to` : `in`);
+const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
+  const {start, end, price, isFavorite} = eventsItem;
+  const {city, description, photos} = destination;
+  const {type, offers} = offer;
 
   const startDate = formatDate(start);
   const startTime = formatTime(start);
   const endDate = formatDate(end);
   const endTime = formatTime(end);
 
-  const transfersMarkup = createTypesMarkup(TYPES, `transfer`);
-  const activitiesMarkup = createTypesMarkup(TYPES, `activity`);
+  const transfersMarkup = createTypesMarkup(TRANSFERS);
+  const activitiesMarkup = createTypesMarkup(ACTIVITIES);
   const destinationsMarkup = createDestinationsMarkup(CITIES);
   const offersMarkup = createOffersMarkup(offers);
   const photosMarkup = createPhotosMarkup(photos);
@@ -102,7 +104,7 @@ const createTripEventsItemEditTemplate = (eventsItem) => {
               <img class="event__type-icon"
                 width="17"
                 height="17"
-                src="img/icons/${type.name.toLowerCase()}.png"
+                src="img/icons/${type.toLowerCase()}.png"
                 alt="Event type icon"
               >
             </label>
@@ -130,7 +132,7 @@ const createTripEventsItemEditTemplate = (eventsItem) => {
             <label class="event__label event__type-output"
               for="event-destination-1"
             >
-              ${type.name}&nbsp;${pretext}
+              ${placeholders.get(type.toLowerCase())}
             </label>
             <input class="event__input event__input--destination"
               id="event-destination-1"
@@ -228,22 +230,81 @@ const createTripEventsItemEditTemplate = (eventsItem) => {
 };
 
 // Класс
-export default class TripEventsItemEdit extends AbstractComponent {
+export default class TripEventsItemEdit extends AbstractSmartComponent {
   constructor(eventsItem) {
     super();
+
     this._eventsItem = eventsItem;
+
+    this._city = eventsItem.city;
+    this._description = eventsItem.description;
+    this._photos = eventsItem.photos;
+    this._type = eventsItem.type;
+    this._offers = eventsItem.offers;
+
+    this._submitHandler = null;
+    this._eventFavoriteBtnClickHandler = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createTripEventsItemEditTemplate(this._eventsItem);
+    return createTripEventsItemEditTemplate(
+        this._eventsItem,
+        {
+          city: this._city,
+          description: this._description,
+          photos: this._photos
+        },
+        {
+          type: this._type,
+          offers: this._offers
+        }
+    );
+  }
+
+  recoveryListeners() {
+    this.setSubmitHandler(this._submitHandler);
+    this.setEventFavoriteBtnClickHandler(this._eventFavoriteBtnClickHandler);
+    this._subscribeOnEvents();
   }
 
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
+
+    this._submitHandler = handler;
   }
 
   setEventFavoriteBtnClickHandler(handler) {
-    this.getElement().querySelector(`.event__favorite-btn`)
-      .addEventListener(`click`, handler);
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
+
+    this._eventFavoriteBtnClickHandler = handler;
+  }
+
+  _subscribeOnEvents() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-list`).addEventListener(`change`, (evt) => {
+      if (this._type.toLowerCase() === evt.target.value) {
+        return;
+      }
+
+      this._type = evt.target.value;
+      this._offers = generateRandomItems(OFFERS);
+
+      this.rerender();
+    });
+
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, (evt) => {
+      if (this._city === evt.target.value) {
+        return;
+      }
+
+      this._city = evt.target.value;
+      this._description = generateRandomItems(SENTENCES);
+      this._photos = generateRandomPhotos();
+
+      this.rerender();
+    });
   }
 }
