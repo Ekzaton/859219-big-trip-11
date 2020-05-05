@@ -5,11 +5,20 @@ import TripEventsItemEditComponent from "../components/trip-events-item-edit.js"
 // Утилиты
 import {render, replace, RenderPosition} from "../utils/render.js";
 
+// Режимы отображения точки маршрута
+const Mode = {
+  DEFAULT: `default`,
+  EDIT: `edit`,
+};
+
 // Контроллер точки маршрута
 export default class TripEventsItemController {
-  constructor(container, onDataChange) {
+  constructor(container, onDataChange, onViewChange) {
     this._container = container;
     this._onDataChange = onDataChange;
+    this._onViewChange = onViewChange;
+
+    this._mode = Mode.DEFAULT;
 
     this._tripEventsItemComponent = null;
     this._tripEventsItemEditComponent = null;
@@ -18,6 +27,9 @@ export default class TripEventsItemController {
   }
 
   render(eventsItem) {
+    const oldTripEventsItemComponent = this._tripEventsItemComponent;
+    const oldTripEventsItemEditComponent = this._tripEventsItemEditComponent;
+
     this._tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
     this._tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
 
@@ -37,16 +49,31 @@ export default class TripEventsItemController {
       this._replaceEditToEvent();
     });
 
-    render(this._container, this._tripEventsItemComponent, RenderPosition.BEFOREEND);
+    if (oldTripEventsItemComponent && oldTripEventsItemEditComponent) {
+      replace(this._tripEventsItemComponent, oldTripEventsItemComponent);
+      replace(this._tripEventsItemEditComponent, oldTripEventsItemEditComponent);
+    } else {
+      render(this._container, this._tripEventsItemComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  setDefaultView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditToEvent();
+    }
   }
 
   _replaceEditToEvent() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._tripEventsItemEditComponent.reset();
     replace(this._tripEventsItemComponent, this._tripEventsItemEditComponent);
+    this._mode = Mode.DEFAULT;
   }
 
   _replaceEventToEdit() {
+    this._onViewChange();
     replace(this._tripEventsItemEditComponent, this._tripEventsItemComponent);
+    this._mode = Mode.EDIT;
   }
 
   _onEscKeyDown(evt) {

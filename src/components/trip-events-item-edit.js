@@ -269,6 +269,18 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
+  reset() {
+    const eventsItem = this._eventsItem;
+
+    this._city = eventsItem.city;
+    this._description = eventsItem.description;
+    this._photos = eventsItem.photos;
+    this._type = eventsItem.type;
+    this._offers = eventsItem.offers;
+
+    this.rerender();
+  }
+
   setSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
 
