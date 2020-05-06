@@ -16,6 +16,12 @@ import {
 import {placeholders} from "../utils/adapter.js";
 import {formatDate, formatTime} from "../utils/common.js";
 
+// Библиотеки
+import flatpickr from "flatpickr";
+
+// Стили
+import "flatpickr/dist/flatpickr.min.css";
+
 // Разметка типов точек маршрута
 const createTypesMarkup = (types) => {
   return types.map((type) => {
@@ -242,9 +248,13 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._type = eventsItem.type;
     this._offers = eventsItem.offers;
 
+    this._flatpickrStart = null;
+    this._flatpickrEnd = null;
+
     this._submitHandler = null;
     this._eventFavoriteBtnClickHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -269,6 +279,12 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
   reset() {
     const eventsItem = this._eventsItem;
 
@@ -291,6 +307,36 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
 
     this._eventFavoriteBtnClickHandler = handler;
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickrStart || this._flatpickrEnd) {
+      this._flatpickrStart.destroy();
+      this._flatpickrEnd.destroy();
+
+      this._flatpickrStart = null;
+      this._flatpickrEnd = null;
+    }
+
+    const startDateTimeElement = this.getElement().querySelector(`#event-start-time-1`);
+
+    this._flatpickrStart = flatpickr(startDateTimeElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: this._eventsItem.start,
+      minDate: this._eventsItem.start,
+    });
+
+    const endDateTimeElement = this.getElement().querySelector(`#event-end-time-1`);
+
+    this._flatpickrEnd = flatpickr(endDateTimeElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: this._eventsItem.end,
+      minDate: this._eventsItem.start,
+    });
   }
 
   _subscribeOnEvents() {
