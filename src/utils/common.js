@@ -1,34 +1,9 @@
 // Константы
 import {MONTHS} from "../const.js";
 
-const MSEC_IN_SEC = 1000;
-const SEC_IN_MIN = 60;
-
 // Установка формата даты и времени
 const castDateTimeFormat = (value) => {
   return value < 10 ? `0${value}` : String(value);
-};
-
-// Формат даты
-export const formatDate = (value) => {
-  const day = castDateTimeFormat(value.getDate());
-  const month = castDateTimeFormat(value.getMonth() + 1);
-  const year = castDateTimeFormat(value.getFullYear()).slice(2);
-
-  return `${day}/${month}/${year}`;
-};
-
-// Формат времени
-export const formatTime = (value) => {
-  const hours = castDateTimeFormat(value.getHours());
-  const minutes = castDateTimeFormat(value.getMinutes());
-
-  return `${hours}:${minutes}`;
-};
-
-// Получение продолжительности в минутах
-export const getDurationTime = (value) => {
-  return Math.round(value / (MSEC_IN_SEC * SEC_IN_MIN));
 };
 
 // Получение случайного элемента массива

@@ -3,7 +3,9 @@ import AbstractComponent from "./abstract.js";
 
 // Утилиты
 import {placeholders} from "../utils/adapter.js";
-import {formatDate, formatTime, getDurationTime} from "../utils/common.js";
+
+// Библиотеки
+import moment from "moment";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -23,13 +25,14 @@ const createOffersMarkup = (offers) => {
 const createTripEventsItemTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers} = eventsItem;
 
-  const startDate = formatDate(start);
-  const startTime = formatTime(start);
+  const startDate = moment(start).format(`YYYY-MM-DD`);
+  const startTime = moment(start).format(`HH:mm`);
 
-  const endDate = formatDate(end);
-  const endTime = formatTime(end);
+  const endDate = moment(end).format(`YYYY-MM-DD`);
+  const endTime = moment(end).format(`HH:mm`);
 
-  const durationTime = getDurationTime(end - start);
+  const duration = moment.duration(end - start).asMilliseconds();
+  const durationTime = moment.utc(duration).format(`DD[D] HH[H] mm[M]`);
 
   const offersMarkup = createOffersMarkup(offers);
 
@@ -57,7 +60,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
               ${endTime}
             </time>
           </p>
-          <p class="event__duration">${durationTime}M</p>
+          <p class="event__duration">${durationTime}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>

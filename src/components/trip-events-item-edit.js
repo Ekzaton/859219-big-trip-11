@@ -14,10 +14,10 @@ import {
 
 // Утилиты
 import {placeholders} from "../utils/adapter.js";
-import {formatDate, formatTime} from "../utils/common.js";
 
 // Библиотеки
 import flatpickr from "flatpickr";
+import moment from "moment";
 
 // Стили
 import "flatpickr/dist/flatpickr.min.css";
@@ -89,10 +89,8 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
   const {city, description, photos} = destination;
   const {type, offers} = offer;
 
-  const startDate = formatDate(start);
-  const startTime = formatTime(start);
-  const endDate = formatDate(end);
-  const endTime = formatTime(end);
+  const startDateTime = moment(start).format(`DD/MM/YY HH:mm`);
+  const endDateTime = moment(end).format(`DD/MM/YY HH:mm`);
 
   const transfersMarkup = createTypesMarkup(TRANSFERS);
   const activitiesMarkup = createTypesMarkup(ACTIVITIES);
@@ -158,7 +156,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${startDate}&nbsp;${startTime}"
+              value="${startDateTime}"
             >
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -166,7 +164,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${endDate}&nbsp;${endTime}"
+              value="${endDateTime}"
             >
           </div>
 
@@ -248,8 +246,7 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._type = eventsItem.type;
     this._offers = eventsItem.offers;
 
-    this._flatpickrStart = null;
-    this._flatpickrEnd = null;
+    this._flatpickr = null;
 
     this._submitHandler = null;
     this._eventFavoriteBtnClickHandler = null;
@@ -309,34 +306,27 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._eventFavoriteBtnClickHandler = handler;
   }
 
-  _applyFlatpickr() {
-    if (this._flatpickrStart || this._flatpickrEnd) {
-      this._flatpickrStart.destroy();
-      this._flatpickrEnd.destroy();
+  setFlatpickr(dateElement, date) {
+    this._flatpickr = flatpickr(dateElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: date,
+      minDate: this._eventsItem.start,
+    });
+  }
 
-      this._flatpickrStart = null;
-      this._flatpickrEnd = null;
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
     }
 
     const startDateTimeElement = this.getElement().querySelector(`#event-start-time-1`);
-
-    this._flatpickrStart = flatpickr(startDateTimeElement, {
-      allowInput: true,
-      enableTime: true,
-      dateFormat: `d/m/y H:i`,
-      defaultDate: this._eventsItem.start,
-      minDate: this._eventsItem.start,
-    });
-
     const endDateTimeElement = this.getElement().querySelector(`#event-end-time-1`);
 
-    this._flatpickrEnd = flatpickr(endDateTimeElement, {
-      allowInput: true,
-      enableTime: true,
-      dateFormat: `d/m/y H:i`,
-      defaultDate: this._eventsItem.end,
-      minDate: this._eventsItem.start,
-    });
+    this.setFlatpickr(startDateTimeElement, this._eventsItem.start);
+    this.setFlatpickr(endDateTimeElement, this._eventsItem.end);
   }
 
   _subscribeOnEvents() {
