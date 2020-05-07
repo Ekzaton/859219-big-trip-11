@@ -2,7 +2,7 @@
 import AbstractComponent from "./abstract.js";
 
 // Утилиты
-import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../utils/common.js";
+import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../utils/info.js";
 
 // Шаблон информации о маршруте и стоимости
 const createTripInfoTemplate = (events) => {

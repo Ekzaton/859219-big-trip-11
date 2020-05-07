@@ -14,7 +14,13 @@ import {
 
 // Утилиты
 import {placeholders} from "../utils/adapter.js";
-import {formatDate, formatTime} from "../utils/common.js";
+import {getDateTime} from "../utils/datetime.js";
+
+// Библиотеки
+import flatpickr from "flatpickr";
+
+// Стили
+import "flatpickr/dist/flatpickr.min.css";
 
 // Разметка типов точек маршрута
 const createTypesMarkup = (types) => {
@@ -83,10 +89,8 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
   const {city, description, photos} = destination;
   const {type, offers} = offer;
 
-  const startDate = formatDate(start);
-  const startTime = formatTime(start);
-  const endDate = formatDate(end);
-  const endTime = formatTime(end);
+  const startDateTime = getDateTime(start);
+  const endDateTime = getDateTime(end);
 
   const transfersMarkup = createTypesMarkup(TRANSFERS);
   const activitiesMarkup = createTypesMarkup(ACTIVITIES);
@@ -152,7 +156,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${startDate}&nbsp;${startTime}"
+              value="${startDateTime}"
             >
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
@@ -160,7 +164,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${endDate}&nbsp;${endTime}"
+              value="${endDateTime}"
             >
           </div>
 
@@ -242,9 +246,12 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._type = eventsItem.type;
     this._offers = eventsItem.offers;
 
+    this._flatpickr = null;
+
     this._submitHandler = null;
     this._eventFavoriteBtnClickHandler = null;
 
+    this._applyFlatpickr();
     this._subscribeOnEvents();
   }
 
@@ -269,6 +276,12 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
+  }
+
   reset() {
     const eventsItem = this._eventsItem;
 
@@ -291,6 +304,29 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, handler);
 
     this._eventFavoriteBtnClickHandler = handler;
+  }
+
+  setFlatpickr(dateElement, date) {
+    this._flatpickr = flatpickr(dateElement, {
+      allowInput: true,
+      enableTime: true,
+      dateFormat: `d/m/y H:i`,
+      defaultDate: date,
+      minDate: this._eventsItem.start,
+    });
+  }
+
+  _applyFlatpickr() {
+    if (this._flatpickr) {
+      this._flatpickr.destroy();
+      this._flatpickr = null;
+    }
+
+    const startDateTimeElement = this.getElement().querySelector(`#event-start-time-1`);
+    const endDateTimeElement = this.getElement().querySelector(`#event-end-time-1`);
+
+    this.setFlatpickr(startDateTimeElement, this._eventsItem.start);
+    this.setFlatpickr(endDateTimeElement, this._eventsItem.end);
   }
 
   _subscribeOnEvents() {
