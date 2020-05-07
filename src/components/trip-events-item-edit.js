@@ -14,10 +14,10 @@ import {
 
 // Утилиты
 import {placeholders} from "../utils/adapter.js";
+import {getDateTime} from "../utils/datetime.js";
 
 // Библиотеки
 import flatpickr from "flatpickr";
-import moment from "moment";
 
 // Стили
 import "flatpickr/dist/flatpickr.min.css";
@@ -89,8 +89,8 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
   const {city, description, photos} = destination;
   const {type, offers} = offer;
 
-  const startDateTime = moment(start).format(`DD/MM/YY HH:mm`);
-  const endDateTime = moment(end).format(`DD/MM/YY HH:mm`);
+  const startDateTime = getDateTime(start);
+  const endDateTime = getDateTime(end);
 
   const transfersMarkup = createTypesMarkup(TRANSFERS);
   const activitiesMarkup = createTypesMarkup(ACTIVITIES);

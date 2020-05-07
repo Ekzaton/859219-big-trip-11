@@ -1,9 +1,6 @@
 // Утилиты
-import {
-  getRandomArrayItem,
-  getRandomDateTime,
-  getRandomIntegerNumber
-} from "../utils/common.js";
+import {getRandomArrayItem, getRandomIntegerNumber} from "../utils/common.js";
+import {getRandomDateTime} from "../utils/datetime.js";
 
 // Точки маршрута - перемещения
 export const TRANSFERS = [

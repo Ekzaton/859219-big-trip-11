@@ -3,9 +3,7 @@ import AbstractComponent from "./abstract.js";
 
 // Утилиты
 import {placeholders} from "../utils/adapter.js";
-
-// Библиотеки
-import moment from "moment";
+import {getDate, getTime, getDuration} from "../utils/datetime.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -25,14 +23,13 @@ const createOffersMarkup = (offers) => {
 const createTripEventsItemTemplate = (eventsItem) => {
   const {type, city, start, end, price, offers} = eventsItem;
 
-  const startDate = moment(start).format(`YYYY-MM-DD`);
-  const startTime = moment(start).format(`HH:mm`);
+  const startDate = getDate(start);
+  const startTime = getTime(start);
 
-  const endDate = moment(end).format(`YYYY-MM-DD`);
-  const endTime = moment(end).format(`HH:mm`);
+  const endDate = getDate(end);
+  const endTime = getTime(end);
 
-  const duration = moment.duration(end - start).asMilliseconds();
-  const durationTime = moment.utc(duration).format(`DD[D] HH[H] mm[M]`);
+  const durationTime = getDuration(end, start);
 
   const offersMarkup = createOffersMarkup(offers);
 
