@@ -25,7 +25,7 @@ export default class TripFiltersController {
 
   render() {
     const container = this._container;
-    const events = this._eventsModel.getEvents();
+    const events = this._eventsModel.getEventsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         name: filterType,
@@ -46,6 +46,7 @@ export default class TripFiltersController {
   }
 
   _onFilterChange(filterType) {
+    this._tasksModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 
