@@ -1,6 +1,14 @@
 // Компоненты
 import AbstractComponent from "./abstract.js";
 
+// Константы
+const FILTER_ID_PREFIX = `filter-`;
+
+// Получение имени филтра по ID
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
 // Шаблон секции фильтров
 const createTripFiltersTemplate = () => {
   return (
@@ -26,5 +34,12 @@ const createTripFiltersTemplate = () => {
 export default class TripFilters extends AbstractComponent {
   getTemplate() {
     return createTripFiltersTemplate();
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+    });
   }
 }

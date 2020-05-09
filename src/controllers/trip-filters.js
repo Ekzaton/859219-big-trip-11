@@ -46,7 +46,6 @@ export default class TripFiltersController {
   }
 
   _onFilterChange(filterType) {
-    this._eventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 

@@ -53,3 +53,13 @@ export const getRandomDateTime = () => {
 
   return randomDateTime;
 };
+
+// Запланированная точка маршрута
+export const isFutureEventsItem = (startDate, currentDate) => {
+  return startDate > currentDate;
+};
+
+// Пройденная точка маршрута
+export const isPastEventsItem = (startDate, currentDate) => {
+  return startDate < currentDate;
+};
