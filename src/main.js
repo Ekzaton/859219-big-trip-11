@@ -9,6 +9,9 @@ import TripEventsController from "./controllers/trip-events.js";
 // Моки
 import {generateTripEvents} from "./mock/trip-events-item.js";
 
+// Модели данных
+import TripEventsModel from "./models/trip-events.js";
+
 // Утилиты
 import {render, RenderPosition} from "./utils/render.js";
 
@@ -16,6 +19,8 @@ import {render, RenderPosition} from "./utils/render.js";
 const EVENTS_COUNT = 20;
 
 const events = generateTripEvents(EVENTS_COUNT);
+const eventsModel = new TripEventsModel();
+eventsModel.setEvents(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -30,6 +35,6 @@ render(tripControlsElement, new TripFiltersComponent(), RenderPosition.BEFOREEND
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const tripEventsController = new TripEventsController(tripEventsElement);
+const tripEventsController = new TripEventsController(tripEventsElement, eventsModel);
 
 tripEventsController.render(events);

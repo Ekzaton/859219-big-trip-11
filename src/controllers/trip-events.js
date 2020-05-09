@@ -84,8 +84,9 @@ const getEventsForDate = (events, date) => {
 
 // Контроллер маршрута
 export default class TripEventsController {
-  constructor(container) {
+  constructor(container, eventsModel) {
     this._container = container;
+    this._eventsModel = eventsModel;
 
     this._events = [];
     this._dates = [];
@@ -101,8 +102,8 @@ export default class TripEventsController {
     this._tripSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
   }
 
-  render(events) {
-    this._events = events;
+  render() {
+    const events = this._eventsModel.getEvents();
     this._dates = getTripDates(events);
 
     const noEvents = (events.length === 0);
@@ -115,6 +116,10 @@ export default class TripEventsController {
     render(this._container, this._tripSortComponent, RenderPosition.BEFOREEND);
     render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
+    this._renderEvents(events);
+  }
+
+  _renderEvents(events) {
     const tripDaysElement = this._tripDaysComponent.getElement();
 
     const tripEvents = renderTripDays(tripDaysElement, events, this._dates, this._onDataChange, this._onViewChange);
@@ -122,15 +127,11 @@ export default class TripEventsController {
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
-    const index = this._events.findIndex((it) => it === oldData);
+    const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      tripEventsItemController.render(newData);
     }
-
-    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
-
-    tripEventsItemController.render(this._events[index]);
   }
 
   _onViewChange() {
@@ -143,10 +144,10 @@ export default class TripEventsController {
     const tripDaysElement = this._tripDaysComponent.getElement();
 
     if (sortType === SortType.EVENT) {
-      const tripEvents = renderTripDays(tripDaysElement, this._events, this._dates, this._onDataChange, this._onViewChange);
+      const tripEvents = renderTripDays(tripDaysElement, this._eventsModel.getEvents(), this._dates, this._onDataChange, this._onViewChange);
       this._tripEventsItemControllers = tripEvents;
     } else {
-      const sortedEvents = getSortedEvents(this._events, sortType);
+      const sortedEvents = getSortedEvents(this._eventsModel.getEvents(), sortType);
 
       const tripEvents = renderTripDaysItem(tripDaysElement, sortedEvents, this._onDataChange, this._onViewChange);
       this._tripEventsItemControllers = tripEvents;

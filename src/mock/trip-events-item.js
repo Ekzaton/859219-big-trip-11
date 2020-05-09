@@ -108,6 +108,7 @@ export const generateTripEventsItem = () => {
   const endDateTime = (first > second ? first : second);
 
   return {
+    id: String(new Date() + Math.random()),
     type: getRandomArrayItem(TRANSFERS.concat(ACTIVITIES)),
     city: getRandomArrayItem(CITIES),
     start: startDateTime,
