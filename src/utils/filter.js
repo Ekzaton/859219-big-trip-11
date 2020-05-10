@@ -4,26 +4,21 @@ import {isFutureEventsItem, isPastEventsItem} from "./datetime.js";
 // Константы
 import {FilterType} from "../const.js";
 
-// Получение полного списка точек маршрута
-export const getEverythingEvents = (events) => {
-  return events;
-};
-
 // Получение запланированных точек маршрута
-export const getFutureEvents = (events, startDate) => {
+export const getFutureEvents = (events, currentDate) => {
   return events.filter((eventsItem) => {
-    startDate = eventsItem.start;
+    const startDate = eventsItem.start;
 
-    return isFutureEventsItem(startDate);
+    return isFutureEventsItem(startDate, currentDate);
   });
 };
 
 // Получение пройденных точек маршрута
-export const getPastEvents = (events, startDate) => {
+export const getPastEvents = (events, currentDate) => {
   return events.filter((eventsItem) => {
-    startDate = eventsItem.start;
+    const endDate = eventsItem.end;
 
-    return isPastEventsItem(startDate);
+    return isPastEventsItem(endDate, currentDate);
   });
 };
 

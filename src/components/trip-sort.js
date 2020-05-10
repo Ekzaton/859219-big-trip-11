@@ -49,6 +49,7 @@ const createTripSortTemplate = () => {
 export default class TripSort extends AbstractComponent {
   constructor() {
     super();
+
     this._currenSortType = SortType.EVENT;
   }
 
@@ -62,7 +63,6 @@ export default class TripSort extends AbstractComponent {
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-
       if (evt.target.tagName !== `INPUT`) {
         return;
       }

@@ -4,7 +4,7 @@ import AbstractComponent from "./abstract.js";
 // Константы
 const FILTER_ID_PREFIX = `filter-`;
 
-// Получение имени филтра по ID
+// Получение имени фильтра по ID
 const getFilterNameById = (id) => {
   return id.substring(FILTER_ID_PREFIX.length);
 };

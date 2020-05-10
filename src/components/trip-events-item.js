@@ -78,6 +78,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
 export default class TripEventsItem extends AbstractComponent {
   constructor(eventsItem) {
     super();
+
     this._eventsItem = eventsItem;
   }
 

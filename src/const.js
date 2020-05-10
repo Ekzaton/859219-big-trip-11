@@ -20,6 +20,6 @@ export const SORT_ITEMS = [`Event`, `Time`, `Price`];
 // Типы фильтров
 export const FilterType = {
   EVERYTHING: `everything`,
-  FUTURE: `fututre`,
+  FUTURE: `future`,
   PAST: `past`,
 };

@@ -3,7 +3,7 @@ import TripEventsItemComponent from "../components/trip-events-item.js";
 import TripEventsItemEditComponent from "../components/trip-events-item-edit.js";
 
 // Утилиты
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, replace, remove, RenderPosition} from "../utils/render.js";
 
 // Режимы отображения точки маршрута
 const Mode = {
@@ -61,6 +61,12 @@ export default class TripEventsItemController {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceEditToEvent();
     }
+  }
+
+  destroy() {
+    remove(this._tripEventsItemEditComponent);
+    remove(this._tripEventsItemComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 
   _replaceEditToEvent() {
