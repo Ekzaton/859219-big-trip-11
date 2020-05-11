@@ -6,10 +6,13 @@ import TripEventsItemEditComponent from "../components/trip-events-item-edit.js"
 import {render, replace, remove, RenderPosition} from "../utils/render.js";
 
 // Режимы отображения точки маршрута
-const Mode = {
+export const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
+
+// Пустая точка маршрута
+export const EmptyEvent = {};
 
 // Контроллер точки маршрута
 export default class TripEventsItemController {

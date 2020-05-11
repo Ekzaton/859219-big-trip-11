@@ -28,6 +28,20 @@ export default class TripEvents {
     this._callHandlers(this._filterChangeHandlers);
   }
 
+  removeEventsItem(id) {
+    const index = this._events.findIndex((it) => it.id === id);
+
+    if (index === -1) {
+      return false;
+    }
+
+    this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
+
+    this._callHandlers(this._dataChangeHandlers);
+
+    return true;
+  }
+
   updateEventsItem(id, eventsItem) {
     const index = this._events.findIndex((it) => it.id === id);
 
@@ -40,6 +54,11 @@ export default class TripEvents {
     this._callHandlers(this._dataChangeHandlers);
 
     return true;
+  }
+
+  addEventsItem(eventsItem) {
+    this._events = [].concat(eventsItem, this._events);
+    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilterChangeHandler(handler) {

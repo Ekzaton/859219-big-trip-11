@@ -11,6 +11,7 @@ import TripEventsItemController from "./trip-events-item.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 // Константы
+import {Mode, EmptyEvent} from "./trip-events-item.js";
 import {SortType} from "../const.js";
 
 // Отрисовка точек маршрута
@@ -145,10 +146,22 @@ export default class TripEventsController {
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
-    const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
+    if (oldData === EmptyEvent) {
+      this._creatingEvent = null;
+      if (newData === null) {
+        tripEventsItemController.destroy();
+      } else {
+        this._eventsModel.addEventsItem(newData);
+        tripEventsItemController.render(newData, Mode.DEFAULT);
+      }
+    } else if (newData === null) {
+      this._eventsModel.removeEventsItem(oldData.id);
+    } else {
+      const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
 
-    if (isSuccess) {
-      tripEventsItemController.render(newData);
+      if (isSuccess) {
+        tripEventsItemController.render(newData, Mode.DEFAULT);
+      }
     }
   }
 
