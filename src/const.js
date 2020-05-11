@@ -17,6 +17,16 @@ export const MONTHS = [
 // Опции сортировки
 export const SORT_ITEMS = [`Event`, `Time`, `Price`];
 
+// Типы сортировки
+export const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`,
+};
+
+// Фильтры
+export const FILTERS = [`Everything`, `Future`, `Past`];
+
 // Типы фильтров
 export const FilterType = {
   EVERYTHING: `everything`,

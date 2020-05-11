@@ -24,7 +24,7 @@ export default class TripFiltersController {
 
   render() {
     const container = this._container;
-    const filters = Object.values(FilterType).map((filterType) => filterType);
+    const filters = Object.values(FilterType);
     const oldComponent = this._filterComponent;
 
     this._filterComponent = new TripFiltersComponent(filters);

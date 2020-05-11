@@ -20,6 +20,7 @@ const EVENTS_COUNT = 20;
 
 const events = generateTripEvents(EVENTS_COUNT);
 const eventsModel = new TripEventsModel();
+
 eventsModel.setEvents(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);

@@ -1,5 +1,5 @@
 // Компоненты
-import TripSortComponent, {SortType} from "../components/trip-sort.js";
+import TripSortComponent from "../components/trip-sort.js";
 import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
 import TripEventsMsgComponent from "../components/trip-events-msg.js";
@@ -9,6 +9,9 @@ import TripEventsItemController from "./trip-events-item.js";
 
 // Утилиты
 import {render, RenderPosition} from "../utils/render.js";
+
+// Константы
+import {SortType} from "../const.js";
 
 // Отрисовка точек маршрута
 const renderTripEvents = (container, events, onDataChange, onViewChange) => {
@@ -101,7 +104,8 @@ export default class TripEventsController {
 
   render() {
     const container = this._container;
-    const events = this._eventsModel.getEvents().sort((a, b) => a.start > b.start ? 1 : -1);
+    const events = this._eventsModel.getEvents()
+      .sort((a, b) => a.start > b.start ? 1 : -1);
 
     const noEvents = (events.length === 0);
 
