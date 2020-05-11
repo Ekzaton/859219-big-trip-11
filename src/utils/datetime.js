@@ -43,23 +43,13 @@ export const getDuration = (start, end) => {
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
 
-  const diffDay = getRandomIntegerNumber(-3, 3);
-  const diffHours = getRandomIntegerNumber(0, 6);
-  const diffMinutes = getRandomIntegerNumber(0, 60);
+  const diffDay = getRandomIntegerNumber(-5, 5);
+  const diffHours = getRandomIntegerNumber(0, 12);
+  const diffMinutes = getRandomIntegerNumber(0, 30);
 
   randomDateTime.setDate(randomDateTime.getDate() + diffDay);
   randomDateTime.setHours(randomDateTime.getHours() + diffHours);
   randomDateTime.setMinutes(randomDateTime.getMinutes() + diffMinutes);
 
   return randomDateTime;
-};
-
-// Запланированная точка маршрута
-export const isFutureEventsItem = (startDate, currentDate) => {
-  return startDate > currentDate;
-};
-
-// Пройденная точка маршрута
-export const isPastEventsItem = (endDate, currentDate) => {
-  return endDate < currentDate;
 };

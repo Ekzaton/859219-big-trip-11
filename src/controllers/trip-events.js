@@ -56,7 +56,7 @@ const getSortedEvents = (events, sortType) => {
 
   switch (sortType) {
     case SortType.EVENT:
-      sortedEvents = newEvents.sort((a, b) => a.start > b.start ? 1 : -1);
+      sortedEvents = newEvents;
       break;
     case SortType.TIME:
       sortedEvents = newEvents.sort((a, b) => (b.end - b.start) - (a.end - a.start));
@@ -69,13 +69,9 @@ const getSortedEvents = (events, sortType) => {
   return sortedEvents;
 };
 
-// Получение дат маршрута в порядке возрастания
+// Получение дат маршрута
 const getTripDates = (events) => {
-  const dates = Array.from(
-      new Set(events.map((eventsItem) => eventsItem.start.toDateString()))
-  );
-
-  return dates.sort((a, b) => new Date(a) - new Date(b));
+  return Array.from(new Set(events.map((eventsItem) => eventsItem.start.toDateString())));
 };
 
 // Получение точек маршрута, сгруппированных по датам
@@ -89,8 +85,6 @@ export default class TripEventsController {
     this._container = container;
     this._eventsModel = eventsModel;
 
-    this._events = [];
-    this._dates = [];
     this._tripEventsItemControllers = [];
     this._tripEventsMsgComponent = new TripEventsMsgComponent();
     this._tripSortComponent = new TripSortComponent();
@@ -106,30 +100,34 @@ export default class TripEventsController {
   }
 
   render() {
-    const events = this._eventsModel.getEvents();
-    this._dates = getTripDates(events);
+    const container = this._container;
+    const events = this._eventsModel.getEvents().sort((a, b) => a.start > b.start ? 1 : -1);
 
     const noEvents = (events.length === 0);
 
     if (noEvents) {
-      render(this._container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
+      render(container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(this._container, this._tripSortComponent, RenderPosition.BEFOREEND);
-    render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
+    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     this._renderEvents(events);
   }
 
   _removeEvents() {
+    this._tripEventsItemControllers.forEach((controller) => controller.destroy());
+    this._tripEventsItemControllers = [];
     this._tripDaysComponent.clearElement();
   }
 
   _renderEvents(events) {
     const tripDaysElement = this._tripDaysComponent.getElement();
 
-    const tripEvents = renderTripDays(tripDaysElement, events, this._dates, this._onDataChange, this._onViewChange);
+    const dates = getTripDates(events);
+
+    const tripEvents = renderTripDays(tripDaysElement, events, dates, this._onDataChange, this._onViewChange);
     this._tripEventsItemControllers = tripEvents;
   }
 
@@ -167,6 +165,7 @@ export default class TripEventsController {
   }
 
   _onFilterChange() {
+    this._tripSortComponent.resetSortType();
     this._removeEvents();
     this._renderEvents(this._eventsModel.getEvents());
   }

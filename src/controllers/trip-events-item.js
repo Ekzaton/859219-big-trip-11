@@ -15,6 +15,7 @@ const Mode = {
 export default class TripEventsItemController {
   constructor(container, onDataChange, onViewChange) {
     this._container = container;
+
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 

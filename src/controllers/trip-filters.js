@@ -2,7 +2,6 @@
 import TripFiltersComponent from "../components/trip-filters.js";
 
 // Утилиты
-import {getEventsByFilter} from "../utils/filter.js";
 import {render, replace, RenderPosition} from "../utils/render.js";
 
 // Константы
@@ -25,14 +24,7 @@ export default class TripFiltersController {
 
   render() {
     const container = this._container;
-    const events = this._eventsModel.getEventsAll();
-    const filters = Object.values(FilterType).map((filterType) => {
-      return {
-        name: filterType,
-        count: getEventsByFilter(events, filterType).length,
-        checked: filterType === this._activeFilterType,
-      };
-    });
+    const filters = Object.values(FilterType).map((filterType) => filterType);
     const oldComponent = this._filterComponent;
 
     this._filterComponent = new TripFiltersComponent(filters);
