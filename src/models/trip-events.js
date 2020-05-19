@@ -18,6 +18,10 @@ export default class TripEvents {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
+  getAllEvents() {
+    return this._events;
+  }
+
   setEvents(events) {
     this._events = events;
     this._callHandlers(this._dataChangeHandlers);
@@ -28,6 +32,17 @@ export default class TripEvents {
     this._callHandlers(this._filterChangeHandlers);
   }
 
+  resetFilter() {
+    this._activeFilterType = FilterType.EVERYTHING;
+    document.querySelector(`#filter-everything`).checked = true;
+    this._callHandlers(this._filterChangeHandlers);
+  }
+
+  createEventsItem(eventsItem) {
+    this._events = [].concat(eventsItem, this._events);
+    this._callHandlers(this._dataChangeHandlers);
+  }
+
   removeEventsItem(id) {
     const index = this._events.findIndex((it) => it.id === id);
 
@@ -36,7 +51,6 @@ export default class TripEvents {
     }
 
     this._events = [].concat(this._events.slice(0, index), this._events.slice(index + 1));
-
     this._callHandlers(this._dataChangeHandlers);
 
     return true;
@@ -50,15 +64,9 @@ export default class TripEvents {
     }
 
     this._events = [].concat(this._events.slice(0, index), eventsItem, this._events.slice(index + 1));
-
     this._callHandlers(this._dataChangeHandlers);
 
     return true;
-  }
-
-  addEventsItem(eventsItem) {
-    this._events = [].concat(eventsItem, this._events);
-    this._callHandlers(this._dataChangeHandlers);
   }
 
   setFilterChangeHandler(handler) {

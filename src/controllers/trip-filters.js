@@ -3,6 +3,7 @@ import TripFiltersComponent from "../components/trip-filters.js";
 
 // Утилиты
 import {render, replace, RenderPosition} from "../utils/render.js";
+import {getEventsByFilter} from "../utils/filter.js";
 
 // Константы
 import {FilterType} from "../const.js";
@@ -14,26 +15,33 @@ export default class TripFiltersController {
     this._eventsModel = eventsModel;
 
     this._activeFilterType = FilterType.EVERYTHING;
-    this._filterComponent = null;
+    this._tripFiltersComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onFilterChange = this._onFilterChange.bind(this);
-
-    this._eventsModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
     const container = this._container;
-    const filters = Object.values(FilterType);
-    const oldComponent = this._filterComponent;
+    const allEvents = this._eventsModel.getAllEvents();
 
-    this._filterComponent = new TripFiltersComponent(filters);
-    this._filterComponent.setFilterChangeHandler(this._onFilterChange);
+    const filters = Object.values(FilterType).map((filterType) => {
+      return {
+        name: filterType,
+        count: getEventsByFilter(allEvents, filterType).length,
+        checked: filterType === this._activeFilterType,
+      };
+    });
+
+    const oldComponent = this._tripFiltersComponent;
+
+    this._tripFiltersComponent = new TripFiltersComponent(filters);
+    this._tripFiltersComponent.setFilterChangeHandler(this._onFilterChange);
 
     if (oldComponent) {
-      replace(this._filterComponent, oldComponent);
+      replace(this._tripFiltersComponent, oldComponent);
     } else {
-      render(container, this._filterComponent, RenderPosition.BEFOREEND);
+      render(container, this._tripFiltersComponent, RenderPosition.BEFOREEND);
     }
   }
 

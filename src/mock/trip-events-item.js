@@ -4,20 +4,20 @@ import {getRandomDateTime} from "../utils/datetime.js";
 
 // Точки маршрута - перемещения
 export const TRANSFERS = [
-  `Taxi`,
-  `Bus`,
-  `Train`,
-  `Ship`,
-  `Transport`,
-  `Drive`,
-  `Flight`
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
 ];
 
 // Точки маршрута - меропориятия
 export const ACTIVITIES = [
-  `Check-in`,
-  `Sightseeing`,
-  `Restaurant`
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
 ];
 
 // Города
@@ -115,7 +115,7 @@ export const generateTripEventsItem = () => {
     end: endDateTime,
     price: getRandomIntegerNumber(200, 500),
     offers: generateRandomItems(OFFERS),
-    description: generateRandomItems(SENTENCES),
+    description: generateRandomItems(SENTENCES).join(`\n`),
     photos: generateRandomPhotos(),
     isFavorite: Math.random() > 0.5,
   };

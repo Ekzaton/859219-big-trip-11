@@ -26,17 +26,7 @@ export const getTime = (time) => {
 
 // Получение продолжительности
 export const getDuration = (start, end) => {
-  const duration = moment.duration(start - end);
-
-  const days = duration.days();
-  const hours = duration.hours();
-  const minutes = duration.minutes();
-
-  return (
-    `${days ? `${castDateTimeFormat(days)}D` : ``}
-      ${hours ? `${castDateTimeFormat(hours)}H` : ``}
-      ${minutes ? `${castDateTimeFormat(minutes)}M` : ``}`
-  );
+  return moment.duration(start - end);
 };
 
 // Получение случайной даты и времени
