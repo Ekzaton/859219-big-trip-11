@@ -29,7 +29,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
   const endDate = getDate(end);
   const endTime = getTime(end);
 
-  const duration = getDuration(end, start);
+  const duration = getDuration(start, end);
   let days = duration.days();
   let hours = duration.hours();
   let minutes = duration.minutes();

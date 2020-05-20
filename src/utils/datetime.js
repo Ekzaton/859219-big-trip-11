@@ -26,7 +26,7 @@ export const getTime = (time) => {
 
 // Получение продолжительности
 export const getDuration = (start, end) => {
-  return moment.duration(start - end);
+  return moment.duration(moment(end).diff(moment(start)));
 };
 
 // Получение случайной даты и времени
