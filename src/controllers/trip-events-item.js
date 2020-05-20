@@ -17,8 +17,8 @@ export const EmptyEventsItem = {
   id: String(new Date() + Math.random()),
   type: `taxi`,
   city: ``,
-  start: new Date(),
-  end: new Date(),
+  start: Date.now(),
+  end: Date.now(),
   price: ``,
   offers: [],
   description: ``,
@@ -31,9 +31,9 @@ const parseFormData = (formData) => {
   return {
     type: formData.get(`event-type`),
     city: formData.get(`event-destination`),
-    start: formData.get(`event-start-time`),
-    end: formData.get(`event-end-time`),
-    price: formData.get(`event-price`)
+    start: new Date(formData.get(`event-start-time`)),
+    end: new Date(formData.get(`event-end-time`)),
+    price: Number(formData.get(`event-price`))
   };
 };
 
