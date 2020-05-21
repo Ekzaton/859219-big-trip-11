@@ -95,11 +95,12 @@ const createPhotosMarkup = (photos) => {
 
 // Шаблон формы создания/редактирования точки маршрута
 const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
-  let newEventsItem = (eventsItem === EmptyEventsItem) ? true : false;
-
   const {start, end, price, isFavorite} = eventsItem;
   const {city, description, photos} = destination;
   const {type, offers} = offer;
+
+  const newEventsItem = (eventsItem === EmptyEventsItem) ? true : false;
+  const noDestination = (city === ``) ? true : false;
 
   const startDateTime = getDateTime(start);
   const endDateTime = getDateTime(end);
@@ -111,7 +112,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
   const photosMarkup = createPhotosMarkup(photos);
 
   return (
-    `<form class="trip-events__item event event--edit" action="#" method="post">
+    `<form class="trip-events__item event event--edit" action="#" method="post" autocomplete="off">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type event__type-btn" for="event-type-toggle-1">
@@ -189,6 +190,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
             type="text"
             name="event-price"
             value="${price}"
+            pattern="^[ 0-9]+$"
           >
         </div>
 
@@ -235,18 +237,20 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
           </div>
         </section>
 
-        <section class="event__section event__section--destination">
-          <h3 class="event__section-title event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">
-            ${description}
-          </p>
+    ${noDestination ? `` :
+      `<section class="event__section event__section--destination">
+        <h3 class="event__section-title event__section-title--destination">Destination</h3>
+        <p class="event__destination-description">
+          ${description}
+        </p>
 
-          <div class="event__photos-container">
-            <div class="event__photos-tape">
-              ${photosMarkup}
-            </div>
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${photosMarkup}
           </div>
-        </section>
+        </div>
+      </section>`
+    }
       </section>
     </form>`
   );
@@ -270,6 +274,7 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
 
     this._submitHandler = null;
     this._eventResetBtnClickHandler = null;
+    this._eventRollupBtnClickHandler = null;
     this._eventFavoriteBtnClickHandler = null;
 
     this._onTypeChange = this._onTypeChange.bind(this);
@@ -302,9 +307,9 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setSubmitHandler(this._submitHandler);
-    this.setEventResetBtnClickHandler(this._eventResetBtnClickHandler);
-    this.setEventRollupBtnClickHandler(this._setEventRollupBtnClickHandler);
     this.setEventFavoriteBtnClickHandler(this._eventFavoriteBtnClickHandler);
+    this.setEventResetBtnClickHandler(this._eventResetBtnClickHandler);
+    this.setEventRollupBtnClickHandler(this._eventRollupBtnClickHandler);
     this._subscribeOnEvents();
   }
 
@@ -362,7 +367,7 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
       eventRollupBtn.addEventListener(`click`, handler);
     }
 
-    this._setEventRollupBtnClickHandler = handler;
+    this._eventRollupBtnClickHandler = handler;
   }
 
   setFlatpickr(dateElement, date) {
@@ -370,10 +375,8 @@ export default class TripEventsItemEdit extends AbstractSmartComponent {
       'altInput': true,
       'enableTime': true,
       'time_24hr': true,
-      'dateFormat': `Z`,
       'altFormat': `d/m/y H:i`,
-      'defaultDate': date,
-      'minDate': this._eventsItem.start,
+      'defaultDate': date
     });
   }
 

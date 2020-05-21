@@ -130,6 +130,7 @@ export default class TripEventsItemController {
 
   _replaceEditToEvent() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+    this._tripEventsItemEditComponent.reset();
     replace(this._tripEventsItemComponent, this._tripEventsItemEditComponent);
     this._mode = Mode.DEFAULT;
   }

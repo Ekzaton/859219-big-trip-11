@@ -2,26 +2,24 @@
 import {FilterType} from "../const.js";
 
 // Получение запланированных точек маршрута
-export const getFutureEvents = (events, currentDate) => {
-  return events.filter((eventsItem) => eventsItem.start > currentDate);
+export const getFutureEvents = (events) => {
+  return events.filter((eventsItem) => eventsItem.start > Date.now());
 };
 
 // Получение пройденных точек маршрута
-export const getPastEvents = (events, currentDate) => {
-  return events.filter((eventsItem) => eventsItem.end < currentDate);
+export const getPastEvents = (events) => {
+  return events.filter((eventsItem) => eventsItem.end < Date.now());
 };
 
 // Получение отфильтрованных точек маршрута
 export const getEventsByFilter = (events, filterType) => {
-  const currentDate = new Date();
-
   switch (filterType) {
     case FilterType.EVERYTHING:
       return events;
     case FilterType.FUTURE:
-      return getFutureEvents(events, currentDate);
+      return getFutureEvents(events);
     case FilterType.PAST:
-      return getPastEvents(events, currentDate);
+      return getPastEvents(events);
   }
 
   return events;
