@@ -2,7 +2,6 @@
 import AbstractComponent from "./abstract.js";
 
 // Константы
-import {FILTERS} from "../const.js";
 const FILTER_ID_PREFIX = `filter-`;
 
 // Получение имени фильтра по ID
@@ -11,29 +10,28 @@ const getFilterNameById = (id) => {
 };
 
 // Разметка фильтров
-const createFiltersMarkup = (filters) => {
-  return filters.map((filter, isChecked) => {
-    return (
-      `<div class="trip-filters__filter">
-        <input id="filter-${filter.toLowerCase()}"
-          class="trip-filters__filter-input visually-hidden"
-          type="radio"
-          name="trip-filter"
-          value="${filter.toLowerCase()}"
-          ${isChecked === 0 ? `checked` : ``}
-        >
-        <label class="trip-filters__filter-label" for="filter-${filter.toLowerCase()}">
-          ${filter}
-        </label>
-      </div>`
-    );
-  })
-  .join(`\n`);
+const createFiltersMarkup = (filter, isChecked) => {
+  const {name} = filter;
+
+  return (
+    `<div class="trip-filters__filter">
+      <input id="filter-${name}"
+        class="trip-filters__filter-input visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value="${name}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="trip-filters__filter-label" for="filter-${name}">
+        ${name}
+      </label>
+    </div>`
+  );
 };
 
 // Шаблон секции фильтров
-const createTripFiltersTemplate = () => {
-  const filtersMarkup = createFiltersMarkup(FILTERS);
+const createTripFiltersTemplate = (filters) => {
+  const filtersMarkup = filters.map((it) => createFiltersMarkup(it, it.checked)).join(`\n`);
 
   return (
     `<form class="trip-filters" action="#" method="get">
@@ -45,8 +43,14 @@ const createTripFiltersTemplate = () => {
 
 // Класс
 export default class TripFilters extends AbstractComponent {
+  constructor(filters) {
+    super();
+
+    this._filters = filters;
+  }
+
   getTemplate() {
-    return createTripFiltersTemplate();
+    return createTripFiltersTemplate(this._filters);
   }
 
   setFilterChangeHandler(handler) {

@@ -7,7 +7,7 @@ import {render, replace, remove, RenderPosition} from "../utils/render.js";
 
 // Режимы отображения точки маршрута
 export const Mode = {
-  CREATING: `creating`,
+  ADD: `add`,
   DEFAULT: `default`,
   EDIT: `edit`,
 };
@@ -71,8 +71,6 @@ export default class TripEventsItemController {
       this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, {
         isFavorite: !eventsItem.isFavorite,
       }));
-
-      this._mode = Mode.EDIT;
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
@@ -93,24 +91,23 @@ export default class TripEventsItemController {
       this._replaceEditToEvent();
     });
 
-    const tripEventsListElement = this._container.querySelector(`.trip-events__list`);
-
     switch (mode) {
       case Mode.DEFAULT:
         if (oldTripEventsItemComponent && oldTripEventsItemEditComponent) {
           replace(this._tripEventsItemComponent, oldTripEventsItemComponent);
           replace(this._tripEventsItemEditComponent, oldTripEventsItemEditComponent);
         } else {
+          const tripEventsListElement = this._container.querySelector(`.trip-events__list`);
           render(tripEventsListElement, this._tripEventsItemComponent, RenderPosition.BEFOREEND);
         }
         break;
-      case Mode.CREATING:
+      case Mode.ADD:
         if (oldTripEventsItemComponent && oldTripEventsItemEditComponent) {
           remove(oldTripEventsItemComponent);
           remove(oldTripEventsItemEditComponent);
         }
-
-        render(tripEventsListElement, this._tripEventsItemEditComponent, RenderPosition.AFTERBEGIN);
+        const tripDaysElement = document.querySelector(`.trip-days`);
+        render(tripDaysElement, this._tripEventsItemEditComponent, RenderPosition.AFTERBEGIN);
         document.addEventListener(`keydown`, this._onEscKeyDown);
         break;
     }
@@ -145,7 +142,7 @@ export default class TripEventsItemController {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      if (this._mode === Mode.CREATING) {
+      if (this._mode === Mode.ADD) {
         this._onDataChange(this, EmptyEventsItem, null);
       }
 

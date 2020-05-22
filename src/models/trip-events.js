@@ -18,10 +18,6 @@ export default class TripEvents {
     return getEventsByFilter(this._events, this._activeFilterType);
   }
 
-  getAllEvents() {
-    return this._events;
-  }
-
   setEvents(events) {
     this._events = events;
     this._callHandlers(this._dataChangeHandlers);
@@ -38,7 +34,7 @@ export default class TripEvents {
     this._callHandlers(this._filterChangeHandlers);
   }
 
-  createEventsItem(eventsItem) {
+  addEventsItem(eventsItem) {
     this._events = [].concat(eventsItem, this._events);
     this._callHandlers(this._dataChangeHandlers);
   }

@@ -61,7 +61,7 @@ export default class TripEventsController {
     this._tripSortComponent = new TripSortComponent();
     this._tripDaysComponent = new TripDaysComponent();
 
-    this._creatingEventsItem = null;
+    this._addingEventsItem = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
@@ -89,16 +89,15 @@ export default class TripEventsController {
       renderTripEvents(this._tripDaysComponent, events, this._onDataChange, this._onViewChange);
   }
 
-  createEventsItem() {
-    if (this._creatingEventsItem) {
+  addEventsItem() {
+    if (this._addingEventsItem) {
       return;
     }
 
     this._eventsModel.resetFilter();
-
-    this._creatingEventsItem =
+    this._addingEventsItem =
       new TripEventsItemController(this._container, this._onDataChange, this._onViewChange);
-    this._creatingEventsItem.render(EmptyEventsItem, Mode.CREATING);
+    this._addingEventsItem.render(EmptyEventsItem, Mode.ADD);
   }
 
   _removeEvents() {
@@ -116,21 +115,17 @@ export default class TripEventsController {
 
   _onDataChange(tripEventsItemController, oldData, newData) {
     if (oldData === EmptyEventsItem) {
-      this._creatingEventsItem = null;
+      this._addingEventsItem = null;
       if (newData === null) {
         tripEventsItemController.destroy();
-        this._updateEvents();
       } else {
-        this._eventsModel.createEventsItem(newData);
+        this._eventsModel.addEventsItem(newData);
         tripEventsItemController.render(newData, Mode.DEFAULT);
-
         this._tripEventsItemControllers =
           [].concat(tripEventsItemController, this._tripEventsItemControllers);
-        this._updateEvents();
       }
     } else if (newData === null) {
       this._eventsModel.removeEventsItem(oldData.id);
-      this._updateEvents();
     } else {
       const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
 
@@ -138,6 +133,7 @@ export default class TripEventsController {
         tripEventsItemController.render(newData, Mode.DEFAULT);
       }
     }
+    this._updateEvents();
   }
 
   _onViewChange() {

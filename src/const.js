@@ -24,9 +24,6 @@ export const SortType = {
   PRICE: `price`,
 };
 
-// Фильтры
-export const FILTERS = [`Everything`, `Future`, `Past`];
-
 // Типы фильтров
 export const FilterType = {
   EVERYTHING: `everything`,

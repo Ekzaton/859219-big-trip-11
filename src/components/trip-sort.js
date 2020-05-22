@@ -75,11 +75,13 @@ export default class TripSort extends AbstractComponent {
       }
 
       this._currentSortType = sortType;
+
       if (sortType === SortType.EVENT) {
         this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
       } else {
         this.getElement().querySelector(`.trip-sort__item--day`).textContent = ``;
       }
+
       handler(this._currentSortType);
     });
   }

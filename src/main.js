@@ -43,8 +43,8 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 const tripEventsController = new TripEventsController(tripEventsElement, eventsModel);
 tripEventsController.render(events);
 
-const tripMainEventAddBtnElement = document.querySelector(`.trip-main__event-add-btn`);
+const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 
 tripMainEventAddBtnElement.addEventListener(`click`, () => {
-  tripEventsController.createEventsItem();
+  tripEventsController.addEventsItem();
 });
