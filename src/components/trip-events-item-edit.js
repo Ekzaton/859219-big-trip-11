@@ -155,7 +155,6 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
             id="event-destination-1"
             type="text"
             name="event-destination"
-            value="${city}"
           >
             ${destinationsMarkup}
           </select>
