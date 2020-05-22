@@ -1,21 +1,27 @@
 // Компоненты
 import TripInfoComponent from "./components/trip-info.js";
 import TripTabsComponent from "./components/trip-tabs.js";
-import TripFiltersComponent from "./components/trip-filters.js";
 
 // Контроллеры
 import TripEventsController from "./controllers/trip-events.js";
+import TripFiltersController from "./controllers/trip-filters.js";
 
 // Моки
 import {generateTripEvents} from "./mock/trip-events-item.js";
+
+// Модели данных
+import TripEventsModel from "./models/trip-events.js";
 
 // Утилиты
 import {render, RenderPosition} from "./utils/render.js";
 
 // Константы
 const EVENTS_COUNT = 20;
-
 const events = generateTripEvents(EVENTS_COUNT);
+
+// Передача моков в модель
+const eventsModel = new TripEventsModel();
+eventsModel.setEvents(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -24,12 +30,21 @@ render(tripMainElement, new TripInfoComponent(events), RenderPosition.AFTERBEGIN
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
-// Отрисовка меню и фильтров
+// Отрисовка меню
 render(tripControlsElement, new TripTabsComponent(), RenderPosition.BEFOREEND);
-render(tripControlsElement, new TripFiltersComponent(), RenderPosition.BEFOREEND);
+
+// Отрисовка фильтров
+const tripFiltersController = new TripFiltersController(tripControlsElement, eventsModel);
+tripFiltersController.render();
 
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-const tripEventsController = new TripEventsController(tripEventsElement);
-
+// Отрисовка точек маршрута
+const tripEventsController = new TripEventsController(tripEventsElement, eventsModel);
 tripEventsController.render(events);
+
+const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
+
+tripMainEventAddBtnElement.addEventListener(`click`, () => {
+  tripEventsController.addEventsItem();
+});

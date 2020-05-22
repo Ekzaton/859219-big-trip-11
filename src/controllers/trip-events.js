@@ -1,5 +1,5 @@
 // Компоненты
-import TripSortComponent, {SortType} from "../components/trip-sort.js";
+import TripSortComponent from "../components/trip-sort.js";
 import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
 import TripEventsMsgComponent from "../components/trip-events-msg.js";
@@ -10,146 +10,167 @@ import TripEventsItemController from "./trip-events-item.js";
 // Утилиты
 import {render, RenderPosition} from "../utils/render.js";
 
+// Константы
+import {Mode, EmptyEventsItem} from "./trip-events-item.js";
+import {SortType} from "../const.js";
+
 // Отрисовка точек маршрута
-const renderTripEvents = (container, events, onDataChange, onViewChange) => {
-  return events.map((eventsItem) => {
-    const tripEventsItemController = new TripEventsItemController(container, onDataChange, onViewChange);
+const renderTripEvents = (container, events, onDataChange, onViewChange, defaultSortTtype = true) => {
+  const tripEventsItemControllers = [];
 
-    tripEventsItemController.render(eventsItem);
+  const dates = defaultSortTtype ? getTripDates(events) : [null];
 
-    return tripEventsItemController;
+  dates.forEach((date, index) => {
+    const tripDaysItemComponent = defaultSortTtype
+      ? new TripDaysItemComponent(date, index)
+      : new TripDaysItemComponent();
+
+    const tripDaysItemElement = tripDaysItemComponent.getElement();
+
+    events
+      .filter((eventsItem) => defaultSortTtype ? new Date(eventsItem.start).toDateString() === date : eventsItem)
+      .map((eventsItem) => {
+        const tripEventsItemController = new TripEventsItemController(tripDaysItemElement, onDataChange, onViewChange);
+        tripEventsItemController.render(eventsItem, Mode.DEFAULT);
+        tripEventsItemControllers.push(tripEventsItemController);
+      });
+
+    render(container.getElement(), tripDaysItemComponent, RenderPosition.BEFOREEND);
   });
-};
-
-// Отрисовка дня маршрута
-const renderTripDaysItem = (container, events, onDataChange, onViewChange, date, index) => {
-  const tripDaysItemComponent = new TripDaysItemComponent(date, index);
-
-  const tripEventsListElement = tripDaysItemComponent.getElement()
-    .querySelector(`.trip-events__list`);
-
-  const tripEventsItemControllers = renderTripEvents(tripEventsListElement, events, onDataChange, onViewChange);
-
-  render(container, tripDaysItemComponent, RenderPosition.BEFOREEND);
 
   return tripEventsItemControllers;
 };
 
-// Отрисовка списка дней
-const renderTripDays = (container, events, dates, onDataChange, onViewChange) => {
-  let tripDays = [];
-
-  dates.forEach((date, index) => {
-    const eventsForDate = getEventsForDate(events, date);
-
-    tripDays = tripDays.concat(renderTripDaysItem(container, eventsForDate, onDataChange, onViewChange, date, index));
-  });
-
-  return tripDays;
-};
-
-// Получение отсортированных точек маршрута
-const getSortedEvents = (events, sortType) => {
-  let sortedEvents = [];
-  const newEvents = events.slice();
-
-  switch (sortType) {
-    case SortType.EVENT:
-      sortedEvents = newEvents;
-      break;
-    case SortType.TIME:
-      sortedEvents = newEvents.sort((a, b) => (b.end - b.start) - (a.end - a.start));
-      break;
-    case SortType.PRICE:
-      sortedEvents = newEvents.sort((a, b) => b.price - a.price);
-      break;
-  }
-
-  return sortedEvents;
-};
-
-// Получение дат маршрута в порядке возрастания
+// Получение дат маршрута
 const getTripDates = (events) => {
-  const dates = Array.from(
-      new Set(events.map((eventsItem) => eventsItem.start.toDateString()))
-  );
-
-  return dates.sort((a, b) => new Date(a) - new Date(b));
-};
-
-// Получение точек маршрута, сгруппированных по датам
-const getEventsForDate = (events, date) => {
-  return events.filter((eventsItem) => eventsItem.start.toDateString() === date);
+  return Array.from(new Set(events
+    .sort((firstItem, secondItem) => firstItem.start > secondItem.start ? 1 : -1)
+    .map((eventsItem) => new Date(eventsItem.start).toDateString())
+  ));
 };
 
 // Контроллер маршрута
 export default class TripEventsController {
-  constructor(container) {
+  constructor(container, eventsModel) {
     this._container = container;
+    this._eventsModel = eventsModel;
 
-    this._events = [];
-    this._dates = [];
     this._tripEventsItemControllers = [];
+
     this._tripEventsMsgComponent = new TripEventsMsgComponent();
     this._tripSortComponent = new TripSortComponent();
     this._tripDaysComponent = new TripDaysComponent();
 
+    this._addingEventsItem = null;
+
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._tripSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
-  render(events) {
-    this._events = events;
-    this._dates = getTripDates(events);
-
+  render() {
+    const container = this._container;
+    const events = this._eventsModel.getEvents();
     const noEvents = (events.length === 0);
 
     if (noEvents) {
-      render(this._container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
+      render(container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(this._container, this._tripSortComponent, RenderPosition.BEFOREEND);
-    render(this._container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
+    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
-    const tripDaysElement = this._tripDaysComponent.getElement();
+    this._tripEventsItemControllers =
+      renderTripEvents(this._tripDaysComponent, events, this._onDataChange, this._onViewChange);
+  }
 
-    const tripEvents = renderTripDays(tripDaysElement, events, this._dates, this._onDataChange, this._onViewChange);
-    this._tripEventsItemControllers = tripEvents;
+  addEventsItem() {
+    if (this._addingEventsItem) {
+      return;
+    }
+
+    this._eventsModel.resetFilter();
+    this._addingEventsItem =
+      new TripEventsItemController(this._container, this._onDataChange, this._onViewChange);
+    this._addingEventsItem.render(EmptyEventsItem, Mode.ADD);
+  }
+
+  _removeEvents() {
+    this._tripDaysComponent.clearElement();
+    this._tripEventsItemControllers
+      .forEach((tripEventsItemController) => tripEventsItemController.destroy());
+    this._tripEventsItemControllers = [];
+  }
+
+  _updateEvents() {
+    this._removeEvents();
+    this._tripEventsItemControllers =
+      renderTripEvents(this._tripDaysComponent, this._eventsModel.getEvents(), this._onDataChange, this._onViewChange);
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
-    const index = this._events.findIndex((it) => it === oldData);
+    if (oldData === EmptyEventsItem) {
+      this._addingEventsItem = null;
+      if (newData === null) {
+        tripEventsItemController.destroy();
+      } else {
+        this._eventsModel.addEventsItem(newData);
+        tripEventsItemController.render(newData, Mode.DEFAULT);
+        this._tripEventsItemControllers =
+          [].concat(tripEventsItemController, this._tripEventsItemControllers);
+      }
+    } else if (newData === null) {
+      this._eventsModel.removeEventsItem(oldData.id);
+    } else {
+      const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
 
-    if (index === -1) {
-      return;
+      if (isSuccess) {
+        tripEventsItemController.render(newData, Mode.DEFAULT);
+      }
     }
-
-    this._events = [].concat(this._events.slice(0, index), newData, this._events.slice(index + 1));
-
-    tripEventsItemController.render(this._events[index]);
+    this._updateEvents();
   }
 
   _onViewChange() {
-    this._tripEventsItemControllers.forEach((it) => it.setDefaultView());
+    this._tripEventsItemControllers
+      .forEach((tripEventsItemController) => tripEventsItemController.setDefaultView());
   }
 
   _onSortTypeChange(sortType) {
-    this._tripDaysComponent.clearElement();
+    const events = this._eventsModel.getEvents();
+    let newEvents = events.slice();
+    let sortedEvents = [];
+    let defaultSortTtype = false;
 
-    const tripDaysElement = this._tripDaysComponent.getElement();
-
-    if (sortType === SortType.EVENT) {
-      const tripEvents = renderTripDays(tripDaysElement, this._events, this._dates, this._onDataChange, this._onViewChange);
-      this._tripEventsItemControllers = tripEvents;
-    } else {
-      const sortedEvents = getSortedEvents(this._events, sortType);
-
-      const tripEvents = renderTripDaysItem(tripDaysElement, sortedEvents, this._onDataChange, this._onViewChange);
-      this._tripEventsItemControllers = tripEvents;
+    switch (sortType) {
+      case SortType.EVENT:
+        sortedEvents = newEvents;
+        defaultSortTtype = true;
+        break;
+      case SortType.TIME:
+        sortedEvents = newEvents.sort((firstItem, secondItem) =>
+          (secondItem.end - secondItem.start) - (firstItem.end - firstItem.start)
+        );
+        break;
+      case SortType.PRICE:
+        sortedEvents = newEvents.sort((firstItem, secondItem) =>
+          secondItem.price - firstItem.price
+        );
+        break;
     }
+
+    this._removeEvents();
+    this._tripEventsItemControllers =
+      renderTripEvents(this._tripDaysComponent, sortedEvents, this._onDataChange, this._onViewChange, defaultSortTtype);
+  }
+
+  _onFilterChange() {
+    this._tripSortComponent.resetSortType();
+    this._updateEvents();
   }
 }

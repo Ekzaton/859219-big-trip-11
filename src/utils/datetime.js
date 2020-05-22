@@ -26,26 +26,16 @@ export const getTime = (time) => {
 
 // Получение продолжительности
 export const getDuration = (start, end) => {
-  const duration = moment.duration(start - end);
-
-  const days = duration.days();
-  const hours = duration.hours();
-  const minutes = duration.minutes();
-
-  return (
-    `${days ? `${castDateTimeFormat(days)}D` : ``}
-      ${hours ? `${castDateTimeFormat(hours)}H` : ``}
-      ${minutes ? `${castDateTimeFormat(minutes)}M` : ``}`
-  );
+  return moment.duration(moment(end).diff(moment(start)));
 };
 
 // Получение случайной даты и времени
 export const getRandomDateTime = () => {
   const randomDateTime = new Date();
 
-  const diffDay = getRandomIntegerNumber(0, 7);
-  const diffHours = getRandomIntegerNumber(0, 24);
-  const diffMinutes = getRandomIntegerNumber(0, 60);
+  const diffDay = getRandomIntegerNumber(-5, 5);
+  const diffHours = getRandomIntegerNumber(0, 12);
+  const diffMinutes = getRandomIntegerNumber(0, 30);
 
   randomDateTime.setDate(randomDateTime.getDate() + diffDay);
   randomDateTime.setHours(randomDateTime.getHours() + diffHours);

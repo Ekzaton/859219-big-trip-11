@@ -1,22 +1,41 @@
 // Компоненты
 import AbstractComponent from "./abstract.js";
 
+// Константы
+const FILTER_ID_PREFIX = `filter-`;
+
+// Получение имени фильтра по ID
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
+// Разметка фильтров
+const createFiltersMarkup = (filter, isChecked) => {
+  const {name} = filter;
+
+  return (
+    `<div class="trip-filters__filter">
+      <input id="filter-${name}"
+        class="trip-filters__filter-input visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value="${name}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="trip-filters__filter-label" for="filter-${name}">
+        ${name}
+      </label>
+    </div>`
+  );
+};
+
 // Шаблон секции фильтров
-const createTripFiltersTemplate = () => {
+const createTripFiltersTemplate = (filters) => {
+  const filtersMarkup = filters.map((it) => createFiltersMarkup(it, it.checked)).join(`\n`);
+
   return (
     `<form class="trip-filters" action="#" method="get">
-      <div class="trip-filters__filter">
-        <input id="filter-everything" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="everything" checked>
-        <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
-      </div>
-      <div class="trip-filters__filter">
-        <input id="filter-future" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="future">
-        <label class="trip-filters__filter-label" for="filter-future">Future</label>
-      </div>
-      <div class="trip-filters__filter">
-        <input id="filter-past" class="trip-filters__filter-input visually-hidden" type="radio" name="trip-filter" value="past">
-        <label class="trip-filters__filter-label" for="filter-past">Past</label>
-      </div>
+      ${filtersMarkup}
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>`
   );
@@ -24,7 +43,20 @@ const createTripFiltersTemplate = () => {
 
 // Класс
 export default class TripFilters extends AbstractComponent {
+  constructor(filters) {
+    super();
+
+    this._filters = filters;
+  }
+
   getTemplate() {
-    return createTripFiltersTemplate();
+    return createTripFiltersTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+    });
   }
 }

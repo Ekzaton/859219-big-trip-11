@@ -2,7 +2,7 @@
 import AbstractComponent from "./abstract.js";
 
 // Утилиты
-import {placeholders} from "../utils/adapter.js";
+import {typePlaceholders} from "../utils/adapter.js";
 import {getDate, getTime, getDuration} from "../utils/datetime.js";
 
 // Разметка доп. опций
@@ -29,9 +29,12 @@ const createTripEventsItemTemplate = (eventsItem) => {
   const endDate = getDate(end);
   const endTime = getTime(end);
 
-  const durationTime = getDuration(end, start);
+  const duration = getDuration(start, end);
+  let days = duration.days();
+  let hours = duration.hours();
+  let minutes = duration.minutes();
 
-  const offersMarkup = createOffersMarkup(offers);
+  const offersMarkup = createOffersMarkup(offers.slice(0, 3));
 
   return (
     `<li class="trip-events__item">
@@ -40,12 +43,12 @@ const createTripEventsItemTemplate = (eventsItem) => {
           <img class="event__type-icon"
             width="42"
             height="42"
-            src="img/icons/${type.toLowerCase()}.png"
+            src="img/icons/${type}.png"
             alt="Event type icon"
           >
         </div>
         <h3 class="event__title">
-          ${placeholders.get(type.toLowerCase())}&nbsp;${city}
+          ${typePlaceholders.get(type)}&nbsp;${city}
         </h3>
         <div class="event__schedule">
           <p class="event__time">
@@ -57,7 +60,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
               ${endTime}
             </time>
           </p>
-          <p class="event__duration">${durationTime}</p>
+          <p class="event__duration">${days ? days + `D` : ``} ${hours ? hours + `H` : ``} ${minutes ? minutes + `M` : ``}</p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -78,6 +81,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
 export default class TripEventsItem extends AbstractComponent {
   constructor(eventsItem) {
     super();
+
     this._eventsItem = eventsItem;
   }
 

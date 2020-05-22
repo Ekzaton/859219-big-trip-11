@@ -1,14 +1,13 @@
 // Компоненты
 import AbstractComponent from "./abstract.js";
 
-// Утилшиты
-import {SORT_ITEMS} from "../const.js";
+// Константы
+import {SORT_ITEMS, SortType} from "../const.js";
+const SORT_ITEM_ID_PREFIX = `sort-`;
 
-// Типы сортировки
-export const SortType = {
-  EVENT: `sort-event`,
-  TIME: `sort-time`,
-  PRICE: `sort-price`,
+// Получение типа сортировки по ID
+const getSortTypeById = (id) => {
+  return id.substring(SORT_ITEM_ID_PREFIX.length);
 };
 
 // Разметка опций сортировки
@@ -16,14 +15,14 @@ const createSortItemsMarkup = (sortItems) => {
   return sortItems.map((sortItem, isChecked) => {
     return (
       `<div class="trip-sort__item trip-sort__item--${sortItem.toLowerCase()}">
-        <input id="${SortType[sortItem.toUpperCase()]}"
+        <input id="sort-${sortItem.toLowerCase()}"
           class="trip-sort__input visually-hidden"
           type="radio"
           name="trip-sort"
           value="sort-${sortItem.toLowerCase()}"
           ${isChecked === 0 ? `checked` : ``}
         >
-        <label class="trip-sort__btn" for="${SortType[sortItem.toUpperCase()]}">
+        <label class="trip-sort__btn" for="sort-${sortItem.toLowerCase()}">
           ${sortItem}
         </label>
       </div>`
@@ -49,33 +48,41 @@ const createTripSortTemplate = () => {
 export default class TripSort extends AbstractComponent {
   constructor() {
     super();
-    this._currenSortType = SortType.EVENT;
+
+    this._currentSortType = SortType.EVENT;
   }
 
   getTemplate() {
     return createTripSortTemplate();
   }
 
-  getSortType() {
-    return this._currenSortType;
+  resetSortType() {
+    this._currentSortType = SortType.EVENT;
+    this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
+    this.getElement().querySelector(`#sort-event`).checked = true;
   }
 
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
-
       if (evt.target.tagName !== `INPUT`) {
         return;
       }
 
-      const sortType = evt.target.id;
+      const sortType = getSortTypeById(evt.target.id);
 
-      if (this._currenSortType === sortType) {
+      if (this._currentSortType === sortType) {
         return;
       }
 
-      this._currenSortType = sortType;
+      this._currentSortType = sortType;
 
-      handler(this._currenSortType);
+      if (sortType === SortType.EVENT) {
+        this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
+      } else {
+        this.getElement().querySelector(`.trip-sort__item--day`).textContent = ``;
+      }
+
+      handler(this._currentSortType);
     });
   }
 }

@@ -29,6 +29,7 @@ const createTripDaysItemTemplate = (date, index) => {
 export default class TripDaysItem extends AbstractComponent {
   constructor(date, index) {
     super();
+
     this._date = date;
     this._index = index;
   }
