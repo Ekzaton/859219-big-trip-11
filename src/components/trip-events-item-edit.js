@@ -49,11 +49,12 @@ const createTypesMarkup = (types, currentType) => {
 };
 
 // Разметка пунктов назначения
-const createDestinationsMarkup = (destinations) => {
+const createDestinationsMarkup = (destinations, city) => {
   return destinations.map((destination) => {
     return (
       `<option
         value="${destination}"
+        ${destination === city ? `selected` : ``}
       >
         ${destination}
       </option>`
@@ -107,7 +108,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
 
   const transfersMarkup = createTypesMarkup(TRANSFERS, type);
   const activitiesMarkup = createTypesMarkup(ACTIVITIES, type);
-  const destinationsMarkup = createDestinationsMarkup(CITIES);
+  const destinationsMarkup = createDestinationsMarkup(CITIES, city);
   const offersMarkup = createOffersMarkup(offers);
   const photosMarkup = createPhotosMarkup(photos);
 
@@ -150,16 +151,14 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
           >
             ${typePlaceholders.get(type)}
           </label>
-          <input class="event__input event__input--destination"
+          <select class="event__input event__input--destination"
             id="event-destination-1"
             type="text"
             name="event-destination"
             value="${city}"
-            list="destination-list-1"
           >
-          <datalist id="destination-list-1">
             ${destinationsMarkup}
-          </datalist>
+          </select>
         </div>
 
         <div class="event__field-group event__field-group--time">
@@ -191,6 +190,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
             name="event-price"
             value="${price}"
             pattern="^[ 0-9]+$"
+            required
           >
         </div>
 
