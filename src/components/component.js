@@ -8,14 +8,14 @@ const HIDDEN_CLASS = `visually-hidden`;
 export default class Component {
   constructor() {
     if (new.target === Component) {
-      throw new Error(`Can't instantiate Component, only concrete one.`);
+      throw new Error(`Can't instantiate, only concrete one.`);
     }
 
     this._element = null;
   }
 
   getTemplate() {
-    throw new Error(`component method not implemented: getTemplate`);
+    throw new Error(`Abstract method not implemented: getTemplate`);
   }
 
   getElement() {

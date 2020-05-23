@@ -4,7 +4,7 @@ import Component from "./component.js";
 // Умный абстрактный компонент
 export default class SmartComponent extends Component {
   recoveryListeners() {
-    throw new Error(`component method not implemented: recoveryListeners`);
+    throw new Error(`Abstract method not implemented: recoveryListeners`);
   }
 
   rerender() {
