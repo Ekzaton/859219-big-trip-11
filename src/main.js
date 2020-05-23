@@ -54,7 +54,7 @@ tripMainEventAddBtnElement.addEventListener(`click`, () => {
 });
 
 // Отрисовка статистики
-const statisticsComponent = new StatisticsComponent();
+const statisticsComponent = new StatisticsComponent(eventsModel);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 statisticsComponent.hide();
 
