@@ -1,4 +1,5 @@
 // Компоненты
+import StatisticsComponent from "./components/statistics.js";
 import TripInfoComponent from "./components/trip-info.js";
 import TripTabsComponent from "./components/trip-tabs.js";
 
@@ -48,18 +49,25 @@ tripEventsController.render(events);
 
 const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 
+tripMainEventAddBtnElement.addEventListener(`click`, () => {
+  tripEventsController.addEventsItem();
+});
+
+// Отрисовка статистики
+const statisticsComponent = new StatisticsComponent();
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+statisticsComponent.hide();
+
 tripTabsComponent.setOnChange((tabsItem) => {
   tripTabsComponent.setActiveItem(tabsItem);
   switch (tabsItem) {
     case TabsItem.TABLE:
       tripEventsController.show();
+      statisticsComponent.hide();
       break;
     case TabsItem.STATS:
       tripEventsController.hide();
+      statisticsComponent.show();
       break;
   }
-});
-
-tripMainEventAddBtnElement.addEventListener(`click`, () => {
-  tripEventsController.addEventsItem();
 });
