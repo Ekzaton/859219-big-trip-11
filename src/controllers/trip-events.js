@@ -72,6 +72,14 @@ export default class TripEventsController {
     this._eventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
+  hide() {
+    this._container.hide();
+  }
+
+  show() {
+    this._container.show();
+  }
+
   render() {
     const container = this._container;
     const events = this._eventsModel.getEvents();

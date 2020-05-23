@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractSmartComponent from "./abstract-smart.js";
+import SmartComponent from "./smart-component.js";
 
 // Моки
 import {
@@ -258,7 +258,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
 };
 
 // Класс
-export default class TripEventsItemEdit extends AbstractSmartComponent {
+export default class TripEventsItemEdit extends SmartComponent {
   constructor(eventsItem) {
     super();
 

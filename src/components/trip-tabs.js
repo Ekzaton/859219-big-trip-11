@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Шаблон меню сайта
 const createTripTabsTemplate = () => {
@@ -12,7 +12,7 @@ const createTripTabsTemplate = () => {
 };
 
 // Класс
-export default class TripTabs extends AbstractComponent {
+export default class TripTabs extends Component {
   getTemplate() {
     return createTripTabsTemplate();
   }

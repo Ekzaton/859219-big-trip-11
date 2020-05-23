@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Константы
 const FILTER_ID_PREFIX = `filter-`;
@@ -42,7 +42,7 @@ const createTripFiltersTemplate = (filters) => {
 };
 
 // Класс
-export default class TripFilters extends AbstractComponent {
+export default class TripFilters extends Component {
   constructor(filters) {
     super();
 

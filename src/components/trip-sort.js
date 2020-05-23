@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Константы
 import {SORT_ITEMS, SortType} from "../const.js";
@@ -45,7 +45,7 @@ const createTripSortTemplate = () => {
 };
 
 // Класс
-export default class TripSort extends AbstractComponent {
+export default class TripSort extends Component {
   constructor() {
     super();
 
