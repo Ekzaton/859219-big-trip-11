@@ -73,11 +73,13 @@ export default class TripEventsController {
   }
 
   hide() {
-    this._container.hide();
+    this._tripDaysComponent.hide();
+    this._tripSortComponent.hide();
   }
 
   show() {
-    this._container.show();
+    this._tripDaysComponent.show();
+    this._tripSortComponent.show();
   }
 
   render() {

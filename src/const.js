@@ -14,6 +14,12 @@ export const MONTHS = [
   `Dec`,
 ];
 
+// Пункты меню
+export const TabsItem = {
+  TABLE: `control__table`,
+  STATS: `control__stats`,
+};
+
 // Опции сортировки
 export const SORT_ITEMS = [`Event`, `Time`, `Price`];
 

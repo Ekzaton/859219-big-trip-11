@@ -16,11 +16,12 @@ import TripEventsModel from "./models/trip-events.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 // Константы
+import {TabsItem} from "./const.js";
 const EVENTS_COUNT = 20;
-const events = generateTripEvents(EVENTS_COUNT);
 
 // Передача моков в модель
 const eventsModel = new TripEventsModel();
+const events = generateTripEvents(EVENTS_COUNT);
 eventsModel.setEvents(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -30,8 +31,10 @@ render(tripMainElement, new TripInfoComponent(events), RenderPosition.AFTERBEGIN
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
+const tripTabsComponent = new TripTabsComponent();
+
 // Отрисовка меню
-render(tripControlsElement, new TripTabsComponent(), RenderPosition.BEFOREEND);
+render(tripControlsElement, tripTabsComponent, RenderPosition.BEFOREEND);
 
 // Отрисовка фильтров
 const tripFiltersController = new TripFiltersController(tripControlsElement, eventsModel);
@@ -44,6 +47,18 @@ const tripEventsController = new TripEventsController(tripEventsElement, eventsM
 tripEventsController.render(events);
 
 const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
+
+tripTabsComponent.setOnChange((tabsItem) => {
+  tripTabsComponent.setActiveItem(tabsItem);
+  switch (tabsItem) {
+    case TabsItem.TABLE:
+      tripEventsController.show();
+      break;
+    case TabsItem.STATS:
+      tripEventsController.hide();
+      break;
+  }
+});
 
 tripMainEventAddBtnElement.addEventListener(`click`, () => {
   tripEventsController.addEventsItem();
