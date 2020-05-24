@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Шаблон списка дней
 const createTripDaysTemplate = () => {
@@ -9,7 +9,7 @@ const createTripDaysTemplate = () => {
 };
 
 // Класс
-export default class TripDays extends AbstractComponent {
+export default class TripDays extends Component {
   getTemplate() {
     return createTripDaysTemplate();
   }

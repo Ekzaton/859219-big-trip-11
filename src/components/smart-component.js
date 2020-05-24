@@ -1,8 +1,8 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Умный абстрактный компонент
-export default class AbstractSmartComponent extends AbstractComponent {
+export default class SmartComponent extends Component {
   recoveryListeners() {
     throw new Error(`Abstract method not implemented: recoveryListeners`);
   }

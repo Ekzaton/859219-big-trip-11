@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Утилиты
 import {getTripInfoTitle, getTripInfoDates, getTripInfoCost} from "../utils/info.js";
@@ -24,7 +24,7 @@ const createTripInfoTemplate = (events) => {
 };
 
 // Класс
-export default class TripInfo extends AbstractComponent {
+export default class TripInfo extends Component {
   constructor(events) {
     super();
 

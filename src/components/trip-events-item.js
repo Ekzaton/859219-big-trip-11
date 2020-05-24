@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Утилиты
 import {typePlaceholders} from "../utils/adapter.js";
@@ -78,7 +78,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
 };
 
 // Класс
-export default class TripEventsItem extends AbstractComponent {
+export default class TripEventsItem extends Component {
   constructor(eventsItem) {
     super();
 

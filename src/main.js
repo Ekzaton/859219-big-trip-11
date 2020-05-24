@@ -1,4 +1,5 @@
 // Компоненты
+import StatisticsComponent from "./components/statistics.js";
 import TripInfoComponent from "./components/trip-info.js";
 import TripTabsComponent from "./components/trip-tabs.js";
 
@@ -16,11 +17,12 @@ import TripEventsModel from "./models/trip-events.js";
 import {render, RenderPosition} from "./utils/render.js";
 
 // Константы
+import {TabsItem} from "./const.js";
 const EVENTS_COUNT = 20;
-const events = generateTripEvents(EVENTS_COUNT);
 
 // Передача моков в модель
 const eventsModel = new TripEventsModel();
+const events = generateTripEvents(EVENTS_COUNT);
 eventsModel.setEvents(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -30,8 +32,10 @@ render(tripMainElement, new TripInfoComponent(events), RenderPosition.AFTERBEGIN
 
 const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
 
+const tripTabsComponent = new TripTabsComponent();
+
 // Отрисовка меню
-render(tripControlsElement, new TripTabsComponent(), RenderPosition.BEFOREEND);
+render(tripControlsElement, tripTabsComponent, RenderPosition.BEFOREEND);
 
 // Отрисовка фильтров
 const tripFiltersController = new TripFiltersController(tripControlsElement, eventsModel);
@@ -47,4 +51,23 @@ const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__ev
 
 tripMainEventAddBtnElement.addEventListener(`click`, () => {
   tripEventsController.addEventsItem();
+});
+
+// Отрисовка статистики
+const statisticsComponent = new StatisticsComponent(eventsModel);
+render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
+statisticsComponent.hide();
+
+tripTabsComponent.setOnChange((tabsItem) => {
+  tripTabsComponent.setActiveItem(tabsItem);
+  switch (tabsItem) {
+    case TabsItem.TABLE:
+      tripEventsController.show();
+      statisticsComponent.hide();
+      break;
+    case TabsItem.STATS:
+      tripEventsController.hide();
+      statisticsComponent.show();
+      break;
+  }
 });

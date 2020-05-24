@@ -1,5 +1,5 @@
 // Компоненты
-import AbstractComponent from "./abstract.js";
+import Component from "./component.js";
 
 // Константы
 import {MONTHS} from "../const.js";
@@ -26,7 +26,7 @@ const createTripDaysItemTemplate = (date, index) => {
 };
 
 // Класс
-export default class TripDaysItem extends AbstractComponent {
+export default class TripDaysItem extends Component {
   constructor(date, index) {
     super();
 
