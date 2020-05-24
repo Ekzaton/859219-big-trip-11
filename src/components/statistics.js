@@ -2,9 +2,11 @@
 import SmartComponent from "./smart-component.js";
 
 // Константы
-const BAR_HEIGHT = 55;
+const BAR_HEIGHT = 50;
 const IMAGE_SIZE = 20;
 const IMAGE_PADDING = IMAGE_SIZE;
+const EVENT_TYPES = 10;
+const TRANSFER_TYPES = 7;
 
 // Библиотеки
 import Chart from "chart.js";
@@ -21,7 +23,7 @@ const getTypes = (events) => {
   return events.map((eventsItem) => eventsItem.type.toUpperCase()).filter(getUniqItems);
 };
 
-// Подсчёт затраченных средств
+// Подсчёт денежных средств
 const calculateMoney = (events, type) => {
   let moneySum = 0;
   const money = events.reduce((acc, eventsItem) => {
@@ -34,7 +36,7 @@ const calculateMoney = (events, type) => {
   return money[type];
 };
 
-// Подсчёт транаспортных средств
+// Подсчёт транспортных средств
 const calculateTransport = (events, type) => {
   return events.filter((eventsItem) => eventsItem.type.toUpperCase() === type).length;
 };
@@ -85,7 +87,7 @@ const chartCallback = (animation) => {
 };
 
 // Отрисовка диаграммы
-const renderChart = (ctx, types, calculation, title, measure) => {
+const renderChart = (ctx, types, calculation, title, prefix, postfix) => {
   return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
@@ -110,7 +112,7 @@ const renderChart = (ctx, types, calculation, title, measure) => {
           color: `#000000`,
           anchor: `end`,
           align: `start`,
-          formatter: (val) => `${val}${measure}`
+          formatter: (val) => `${prefix}${val}${postfix}`
         }
       },
       title: {
@@ -156,14 +158,15 @@ const renderChart = (ctx, types, calculation, title, measure) => {
   });
 };
 
-// Отрисовка диаграммы затраченных средств
+// Отрисовка диаграммы денежных средств
 const renderMoneyChart = (moneyCtx, events) => {
   const types = getTypes(events);
   const money = types.map((type) => calculateMoney(events, type));
   const title = `MONEY`;
-  const measure = ` €`;
+  const prefix = `€ `;
+  const postfix = ``;
 
-  renderChart(moneyCtx, types, money, title, measure);
+  renderChart(moneyCtx, types, money, title, prefix, postfix);
 };
 
 // Отрисовка диаграммы транспортных средств
@@ -172,9 +175,10 @@ const renderTransportChart = (transportCtx, events) => {
     .filter((eventsItem) => eventsItem !== `RESTAURANT` && eventsItem !== `CHECK-IN` && eventsItem !== `SIGHTSEEING`);
   const transport = types.map((type) => calculateTransport(events, type));
   const title = `TRANSPORT`;
-  const measure = `x`;
+  const prefix = ``;
+  const postfix = `x`;
 
-  renderChart(transportCtx, types, transport, title, measure);
+  renderChart(transportCtx, types, transport, title, prefix, postfix);
 };
 
 // Отрисовка диаграммы затраченного времени
@@ -182,9 +186,10 @@ const renderTimeSpentChart = (timeSpentCtx, events) => {
   const types = getTypes(events);
   const timeSpent = types.map((type) => calculateTimeSpent(events, type));
   const title = `TIME SPENT`;
-  const measure = `H`;
+  const prefix = ``;
+  const postfix = `H`;
 
-  renderChart(timeSpentCtx, types, timeSpent, title, measure);
+  renderChart(timeSpentCtx, types, timeSpent, title, prefix, postfix);
 };
 
 // Шаблон секции статистики
@@ -245,14 +250,16 @@ export default class Statistics extends SmartComponent {
     const transportCtx = element.querySelector(`.statistics__chart--transport`);
     const timeSpentCtx = element.querySelector(`.statistics__chart--time`);
 
-    moneyCtx.height = BAR_HEIGHT * 7;
-    transportCtx.height = BAR_HEIGHT * 5;
-    timeSpentCtx.height = BAR_HEIGHT * 7;
+    moneyCtx.height = BAR_HEIGHT * EVENT_TYPES;
+    transportCtx.height = BAR_HEIGHT * TRANSFER_TYPES;
+    timeSpentCtx.height = BAR_HEIGHT * EVENT_TYPES;
+
+    const events = this._eventsModel.getAllEvents();
 
     this._resetCharts();
-    this._moneyChart = renderMoneyChart(moneyCtx, this._eventsModel.getAllEvents());
-    this._transportChart = renderTransportChart(transportCtx, this._eventsModel.getAllEvents());
-    this._timeSpentChart = renderTimeSpentChart(timeSpentCtx, this._eventsModel.getAllEvents());
+    this._moneyChart = renderMoneyChart(moneyCtx, events);
+    this._transportChart = renderTransportChart(transportCtx, events);
+    this._timeSpentChart = renderTimeSpentChart(timeSpentCtx, events);
   }
 
   _resetCharts() {
