@@ -2,39 +2,26 @@
 import TripEventsItemComponent from "../components/trip-events-item.js";
 import TripEventsItemEditComponent from "../components/trip-events-item-edit.js";
 
+// Модели
+import TripEventsItemModel from "../models/trip-events-item.js";
+
 // Утилиты
 import {render, replace, remove, RenderPosition} from "../utils/render.js";
 
-// Режимы отображения точки маршрута
-export const Mode = {
-  ADD: `add`,
-  DEFAULT: `default`,
-  EDIT: `edit`,
-};
+// Константы
+import {Mode} from "../const.js";
 
 // Пустая точка маршрута
 export const EmptyEventsItem = {
-  id: String(new Date() + Math.random()),
   type: `taxi`,
+  start: new Date(),
+  end: new Date(),
   city: ``,
-  start: Date.now(),
-  end: Date.now(),
-  price: ``,
-  offers: [],
   description: ``,
   photos: [],
-  isFavorite: false
-};
-
-// Парсинг данных с формы
-const parseFormData = (formData) => {
-  return {
-    type: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    start: new Date(formData.get(`event-start-time`)),
-    end: new Date(formData.get(`event-end-time`)),
-    price: Number(formData.get(`event-price`))
-  };
+  price: 0,
+  isFavorite: false,
+  offers: []
 };
 
 // Контроллер точки маршрута
@@ -68,9 +55,12 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventFavoriteBtnClickHandler(() => {
-      this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, {
-        isFavorite: !eventsItem.isFavorite,
-      }));
+      const newEventsItem = TripEventsItemModel.clone(eventsItem);
+      newEventsItem.isFavorite = !newEventsItem.isFavorite;
+
+      this._onDataChange(this, eventsItem, newEventsItem);
+
+      this._mode = Mode.EDIT;
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
@@ -84,11 +74,9 @@ export default class TripEventsItemController {
 
     this._tripEventsItemEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const formData = this._tripEventsItemEditComponent.getData();
-      const data = parseFormData(formData);
+      const newData = this._tripEventsItemEditComponent.getData();
 
-      this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, data));
-      this._replaceEditToEvent();
+      this._onDataChange(this, eventsItem, newData);
     });
 
     switch (mode) {

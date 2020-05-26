@@ -14,6 +14,24 @@ export const MONTHS = [
   `Dec`,
 ];
 
+// Точки маршрута - перемещения
+export const TRANSFERS = [
+  `taxi`,
+  `bus`,
+  `train`,
+  `ship`,
+  `transport`,
+  `drive`,
+  `flight`
+];
+
+// Точки маршрута - меропориятия
+export const ACTIVITIES = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
 // Пункты меню
 export const TabsItem = {
   TABLE: `control__table`,
@@ -35,4 +53,11 @@ export const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
   PAST: `past`,
+};
+
+// Режимы отображения точки маршрута
+export const Mode = {
+  ADD: `add`,
+  DEFAULT: `default`,
+  EDIT: `edit`,
 };

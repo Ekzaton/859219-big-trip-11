@@ -18,10 +18,11 @@ import API from "./api.js";
 
 // Константы
 import {TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 3fji6khtgrgrg@`;
+const AUTHORIZATION_KEY = `Basic 3fji6rytyyttgrg@`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
-const api = new API(AUTHORIZATION_KEY);
-const eventsModel = new TripEventsModel();
+const api = new API(END_POINT, AUTHORIZATION_KEY);
+const tripEventsModel = new TripEventsModel();
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripMainTripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
@@ -30,10 +31,10 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 
 // const tripInfoComponent = new TripInfoComponent();
 const tripTabsComponent = new TripTabsComponent();
-const statisticsComponent = new StatisticsComponent(eventsModel);
+const statisticsComponent = new StatisticsComponent(tripEventsModel);
 
-const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, eventsModel);
-const tripEventsController = new TripEventsController(tripEventsElement, eventsModel);
+const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
+const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, api);
 
 // Отрисовка
 // render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
@@ -62,8 +63,12 @@ tripMainEventAddBtnElement.addEventListener(`click`, () => {
   tripEventsController.addEventsItem();
 });
 
-api.getEvents()
-  .then((events) => {
-    eventsModel.setEvents(events);
+Promise.all([
+  api.getEvents(),
+  api.getEventDestinations(),
+  api.getEventOffers()
+])
+  .then((res) => {
+    tripEventsModel.setEvents(res[0]);
     tripEventsController.render();
   });

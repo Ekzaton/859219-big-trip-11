@@ -10,7 +10,7 @@ const createOffersMarkup = (offers) => {
   return offers.map((offer) => {
     return (
       `<li class="event__offer">
-        <span class="event__offer-name">${offer.name}</span>
+        <span class="event__offer-name">${offer.title}</span>
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
       </li>`
@@ -30,9 +30,9 @@ const createTripEventsItemTemplate = (eventsItem) => {
   const endTime = getTime(end);
 
   const duration = getDuration(start, end);
-  let days = duration.days();
-  let hours = duration.hours();
-  let minutes = duration.minutes();
+  const days = duration.days();
+  const hours = duration.hours();
+  const minutes = duration.minutes();
 
   const offersMarkup = createOffersMarkup(offers.slice(0, 3));
 

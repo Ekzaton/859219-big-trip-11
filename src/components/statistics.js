@@ -212,10 +212,10 @@ const createStatisticsTemplate = () => {
 
 // Класс
 export default class Statistics extends SmartComponent {
-  constructor(eventsModel) {
+  constructor(tripEventsModel) {
     super();
 
-    this._eventsModel = eventsModel;
+    this._tripEventsModel = tripEventsModel;
 
     this._moneyChart = null;
     this._transportChart = null;
@@ -254,7 +254,7 @@ export default class Statistics extends SmartComponent {
     transportCtx.height = BAR_HEIGHT * TRANSFER_TYPES;
     timeSpentCtx.height = BAR_HEIGHT * EVENT_TYPES;
 
-    const events = this._eventsModel.getAllEvents();
+    const events = this._tripEventsModel.getAllEvents();
 
     this._resetCharts();
     this._moneyChart = renderMoneyChart(moneyCtx, events);

@@ -11,8 +11,8 @@ import TripEventsItemController from "./trip-events-item.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 // Константы
-import {Mode, EmptyEventsItem} from "./trip-events-item.js";
-import {SortType} from "../const.js";
+import {EmptyEventsItem} from "./trip-events-item.js";
+import {Mode, SortType} from "../const.js";
 
 // Отрисовка точек маршрута
 const renderTripEvents = (container, events, onDataChange, onViewChange, defaultSortTtype = true) => {
@@ -51,9 +51,10 @@ const getTripDates = (events) => {
 
 // Контроллер маршрута
 export default class TripEventsController {
-  constructor(container, eventsModel) {
+  constructor(container, tripEventsModel, api) {
     this._container = container;
-    this._eventsModel = eventsModel;
+    this._tripEventsModel = tripEventsModel;
+    this._api = api;
 
     this._tripEventsItemControllers = [];
 
@@ -69,7 +70,7 @@ export default class TripEventsController {
     this._onFilterChange = this._onFilterChange.bind(this);
 
     this._tripSortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
-    this._eventsModel.setFilterChangeHandler(this._onFilterChange);
+    this._tripEventsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   hide() {
@@ -84,7 +85,7 @@ export default class TripEventsController {
 
   render() {
     const container = this._container;
-    const events = this._eventsModel.getEvents();
+    const events = this._tripEventsModel.getEvents();
     const noEvents = (events.length === 0);
 
     if (noEvents) {
@@ -104,7 +105,7 @@ export default class TripEventsController {
       return;
     }
 
-    this._eventsModel.resetFilter();
+    this._tripEventsModel.resetFilter();
     this._addingEventsItem =
       new TripEventsItemController(this._container, this._onDataChange, this._onViewChange);
     this._addingEventsItem.render(EmptyEventsItem, Mode.ADD);
@@ -120,7 +121,7 @@ export default class TripEventsController {
   _updateEvents() {
     this._removeEvents();
     this._tripEventsItemControllers =
-      renderTripEvents(this._tripDaysComponent, this._eventsModel.getEvents(), this._onDataChange, this._onViewChange);
+      renderTripEvents(this._tripDaysComponent, this._tripEventsModel.getEvents(), this._onDataChange, this._onViewChange);
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
@@ -129,21 +130,24 @@ export default class TripEventsController {
       if (newData === null) {
         tripEventsItemController.destroy();
       } else {
-        this._eventsModel.addEventsItem(newData);
+        this._tripEventsModel.addEventsItem(newData);
         tripEventsItemController.render(newData, Mode.DEFAULT);
         this._tripEventsItemControllers =
           [].concat(tripEventsItemController, this._tripEventsItemControllers);
       }
     } else if (newData === null) {
-      this._eventsModel.removeEventsItem(oldData.id);
+      this._tripEventsModel.removeEventsItem(oldData.id);
     } else {
-      const isSuccess = this._eventsModel.updateEventsItem(oldData.id, newData);
+      this._api.updateEventsItem(oldData.id, newData)
+         .then((tripEventsModel) => {
+           const isSuccess = this._tripEventsModel.updateEventsItem(oldData.id, newData);
 
-      if (isSuccess) {
-        tripEventsItemController.render(newData, Mode.DEFAULT);
-      }
+           if (isSuccess) {
+             tripEventsItemController.render(tripEventsModel, Mode.DEFAULT);
+             this._updateEvents(this._tripEventsItemControllers);
+           }
+         });
     }
-    this._updateEvents();
   }
 
   _onViewChange() {
@@ -152,8 +156,8 @@ export default class TripEventsController {
   }
 
   _onSortTypeChange(sortType) {
-    const events = this._eventsModel.getEvents();
-    let newEvents = events.slice();
+    const events = this._tripEventsModel.getEvents();
+    const newEvents = events.slice();
     let sortedEvents = [];
     let defaultSortTtype = false;
 
