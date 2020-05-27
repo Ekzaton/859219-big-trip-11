@@ -1,6 +1,6 @@
 // Компоненты
 import StatisticsComponent from "./components/statistics.js";
-// import TripInfoComponent from "./components/trip-info.js";
+import TripEventsMsgLoadingComponent from "./components/trip-events-msg-loading.js";
 import TripTabsComponent from "./components/trip-tabs.js";
 
 // Контроллеры
@@ -18,7 +18,7 @@ import API from "./api.js";
 
 // Константы
 import {TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 3fji6rytyyttgrg@`;
+const AUTHORIZATION_KEY = `Basic 3fji6rytuen49k`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const api = new API(END_POINT, AUTHORIZATION_KEY);
@@ -29,17 +29,17 @@ const tripMainTripControlsElement = tripMainElement.querySelector(`.trip-main__t
 const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-// const tripInfoComponent = new TripInfoComponent();
 const tripTabsComponent = new TripTabsComponent();
+const tripEventsMsgLoadingComponent = new TripEventsMsgLoadingComponent();
 const statisticsComponent = new StatisticsComponent(tripEventsModel);
 
 const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
 const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, api);
 
 // Отрисовка
-// render(tripMainElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
 render(tripMainTripControlsElement, tripTabsComponent, RenderPosition.AFTERBEGIN);
 tripFiltersController.render();
+render(tripEventsElement, tripEventsMsgLoadingComponent, RenderPosition.AFTERBEGIN);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 statisticsComponent.hide();
 
@@ -70,5 +70,6 @@ Promise.all([
 ])
   .then((res) => {
     tripEventsModel.setEvents(res[0]);
+    tripEventsMsgLoadingComponent.hide();
     tripEventsController.render();
   });

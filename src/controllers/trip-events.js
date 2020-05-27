@@ -2,7 +2,7 @@
 import TripSortComponent from "../components/trip-sort.js";
 import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
-import TripEventsMsgComponent from "../components/trip-events-msg.js";
+import TripEventsMsgNoEventsComponent from "../components/trip-events-msg-no-events.js";
 
 // Контроллеры
 import TripEventsItemController from "./trip-events-item.js";
@@ -58,7 +58,7 @@ export default class TripEventsController {
 
     this._tripEventsItemControllers = [];
 
-    this._tripEventsMsgComponent = new TripEventsMsgComponent();
+    this._tripEventsMsgNoEventsComponent = new TripEventsMsgNoEventsComponent();
     this._tripSortComponent = new TripSortComponent();
     this._tripDaysComponent = new TripDaysComponent();
 
@@ -89,7 +89,7 @@ export default class TripEventsController {
     const noEvents = (events.length === 0);
 
     if (noEvents) {
-      render(container, this._tripEventsMsgComponent, RenderPosition.BEFOREEND);
+      render(container, this._tripEventsMsgNoEventsComponent, RenderPosition.BEFOREEND);
       return;
     }
 
@@ -139,12 +139,12 @@ export default class TripEventsController {
       this._tripEventsModel.removeEventsItem(oldData.id);
     } else {
       this._api.updateEventsItem(oldData.id, newData)
-         .then((tripEventsModel) => {
-           const isSuccess = this._tripEventsModel.updateEventsItem(oldData.id, newData);
+         .then((tripEventsItemModel) => {
+           const isSuccess = this._tripEventsModel.updateEventsItem(oldData.id, tripEventsItemModel);
 
            if (isSuccess) {
-             tripEventsItemController.render(tripEventsModel, Mode.DEFAULT);
-             this._updateEvents(this._tripEventsItemControllers);
+             tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
+             this._updateEvents();
            }
          });
     }
