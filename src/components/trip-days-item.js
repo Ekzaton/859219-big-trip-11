@@ -1,25 +1,24 @@
 // Компоненты
 import Component from "./component.js";
 
-// Константы
-import {MONTHS} from "../const.js";
+// Утилиты
+import {getDate, getDayMonth} from "../utils/datetime.js";
 
 // Шаблон дня маршрута
 const createTripDaysItemTemplate = (date, index) => {
-  const dateTime = new Date(date);
+  let dayInfo = ``;
 
-  const day = dateTime.getDate() || ``;
-  const month = dateTime.getMonth() + 1 || ``;
-  const year = dateTime.getFullYear() || ``;
+  if (date && index) {
+    const dayDate = getDate(new Date(date));
+    const dayMonth = getDayMonth(new Date(date));
+
+    dayInfo = `<span class="day__counter">${index}</span>
+              <time class="day__date" datetime="${dayDate}">${dayMonth}</time>`;
+  }
 
   return (
     `<li class="trip-days__item day">
-      <div class="day__info">
-        <span class="day__counter">${index + 1 || ``}</span>
-        <time class="day__date" datetime="${year}-${month}-${day}">
-          ${MONTHS[month - 1] || ``}&nbsp;${day || ``}
-        </time>
-      </div>
+      <div class="day__info">${dayInfo}</div>
       <ul class="trip-events__list"></ul>
     </li>`
   );

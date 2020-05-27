@@ -22,7 +22,7 @@ const renderTripEvents = (container, events, onDataChange, onViewChange, default
 
   dates.forEach((date, index) => {
     const tripDaysItemComponent = defaultSortTtype
-      ? new TripDaysItemComponent(date, index)
+      ? new TripDaysItemComponent(date, index + 1)
       : new TripDaysItemComponent();
 
     const tripDaysItemElement = tripDaysItemComponent.getElement();
