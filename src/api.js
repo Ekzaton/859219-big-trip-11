@@ -3,13 +3,8 @@ import EventDestinationsModel from "./models/event-destinations.js";
 import EventOffersModel from "./models/event-offers.js";
 import TripEventsItemModel from "./models/trip-events-item.js";
 
-// Методы HTTP
-const Method = {
-  GET: `GET`,
-  POST: `POST`,
-  PUT: `PUT`,
-  DELETE: `DELETE`
-};
+// Константы
+import {Method} from "./const.js";
 
 // Проверка статуса ответа
 const checkStatus = (response) => {

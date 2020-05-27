@@ -15,6 +15,6 @@ export default class TripDays extends Component {
   }
 
   clearElement() {
-    this._element.innerHTML = ``;
+    this.getElement().innerHTML = ``;
   }
 }
