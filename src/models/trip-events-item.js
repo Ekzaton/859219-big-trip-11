@@ -10,7 +10,7 @@ export default class TripEventsItem {
     this.photos = data[`destination`][`pictures`];
     this.price = data[`base_price`];
     this.isFavorite = Boolean(data[`is_favorite`]);
-    this.offers = data[`offers`];
+    this.selectedOffers = data[`offers`];
   }
 
   toRAW() {
@@ -26,7 +26,7 @@ export default class TripEventsItem {
       },
       'base_price': this.price,
       'is_favorite': this.isFavorite,
-      'offers': this.offers
+      'offers': this.selectedOffers
     };
   }
 

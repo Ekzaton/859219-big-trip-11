@@ -2,10 +2,10 @@
 import TripFiltersComponent from "../components/trip-filters.js";
 
 // Утилиты
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, replace} from "../utils/render.js";
 
 // Константы
-import {FilterType} from "../const.js";
+import {FilterType, RenderPosition} from "../const.js";
 
 // Контроллер фильтров
 export default class TripFiltersController {

@@ -1,6 +1,9 @@
 // Компоненты
 import Component from "./component.js";
 
+// Утилиты
+import {capitalize} from "../utils/common.js";
+
 // Константы
 import {SortType} from "../const.js";
 const SORT_ITEMS = Object.values(SortType);
@@ -24,7 +27,7 @@ const createSortItemsMarkup = (sortItems) => {
           ${isChecked === 0 ? `checked` : ``}
         >
         <label class="trip-sort__btn" for="sort-${sortItem}">
-          ${sortItem}
+          ${capitalize(sortItem)}
         </label>
       </div>`
     );

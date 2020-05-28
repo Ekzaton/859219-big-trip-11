@@ -1,6 +1,4 @@
 // Модели
-import EventDestinationsModel from "./models/event-destinations.js";
-import EventOffersModel from "./models/event-offers.js";
 import TripEventsItemModel from "./models/trip-events-item.js";
 
 // Константы
@@ -30,14 +28,12 @@ export default class API {
 
   getEventDestinations() {
     return this._load({url: `destinations`})
-      .then((response) => response.json())
-      .then(EventDestinationsModel.setEventDestinations);
+      .then((response) => response.json());
   }
 
   getEventOffers() {
     return this._load({url: `offers`})
-      .then((response) => response.json())
-      .then(EventOffersModel.setEventOffers);
+      .then((response) => response.json());
   }
 
   updateEventsItem(id, data) {

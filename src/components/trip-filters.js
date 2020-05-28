@@ -1,6 +1,9 @@
 // Компоненты
 import Component from "./component.js";
 
+// Утилиты
+import {capitalize} from "../utils/common.js";
+
 // Константы
 const FILTER_ID_PREFIX = `filter-`;
 
@@ -23,7 +26,7 @@ const createFiltersMarkup = (filter, isChecked) => {
         ${isChecked ? `checked` : ``}
       >
       <label class="trip-filters__filter-label" for="filter-${name}">
-        ${name}
+        ${capitalize(name)}
       </label>
     </div>`
   );

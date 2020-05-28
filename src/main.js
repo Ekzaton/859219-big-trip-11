@@ -11,14 +11,14 @@ import TripFiltersController from "./controllers/trip-filters.js";
 import TripEventsModel from "./models/trip-events.js";
 
 // Утилиты
-import {render, RenderPosition} from "./utils/render.js";
+import {render} from "./utils/render.js";
 
 // API
 import API from "./api.js";
 
 // Константы
-import {TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 3fji6rytuen49k`;
+import {RenderPosition, TabsItem} from "./const.js";
+const AUTHORIZATION_KEY = `Basic 3omngjf84kd`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const api = new API(END_POINT, AUTHORIZATION_KEY);
@@ -68,8 +68,10 @@ Promise.all([
   api.getEventDestinations(),
   api.getEventOffers()
 ])
-  .then((res) => {
-    tripEventsModel.setEvents(res[0]);
+  .then(([events, offers, destinations]) => {
+    tripEventsModel.setEvents(events);
+    tripEventsModel.setEventDestinations(offers);
+    tripEventsModel.setEventOffers(destinations);
     tripEventsMsgLoadingComponent.hide();
     tripEventsController.render();
   });

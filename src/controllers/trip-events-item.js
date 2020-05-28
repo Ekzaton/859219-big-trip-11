@@ -6,10 +6,10 @@ import TripEventsItemEditComponent from "../components/trip-events-item-edit.js"
 import TripEventsItemModel from "../models/trip-events-item.js";
 
 // Утилиты
-import {render, replace, remove, RenderPosition} from "../utils/render.js";
+import {render, replace, remove} from "../utils/render.js";
 
 // Константы
-import {Mode} from "../const.js";
+import {Mode, RenderPosition} from "../const.js";
 
 // Пустая точка маршрута
 export const EmptyEventsItem = {
@@ -21,13 +21,38 @@ export const EmptyEventsItem = {
   photos: [],
   price: 0,
   isFavorite: false,
-  offers: []
+  selectedOffers: []
+};
+
+const parseFormData = (formData, destinations) => {
+  const city = document.querySelector(`#event-destination-1`).value;
+  const selectedOffers = Array.from(document.querySelectorAll(
+      `.event__offer-checkbox:checked + label[for^="event"]`));
+
+  return new TripEventsItemModel({
+    'type': formData.get(`event-type`),
+    'date_from': formData.get(`event-start-time`),
+    'date_to': formData.get(`event-end-time`),
+    'destination': {
+      'name': destinations[city].name,
+      'description': destinations[city].description,
+      'pictures': destinations[city].pictures
+    },
+    'base_price': Number(formData.get(`event-price`)),
+    'is_favorite': Boolean(formData.get(`event-favorite`)),
+    'offers': selectedOffers.map((offer) => ({
+      'title': offer.querySelector(`.event__offer-title`).textContent,
+      'price': Number(offer.querySelector(`.event__offer-price`).textContent)
+    })),
+  });
 };
 
 // Контроллер точки маршрута
 export default class TripEventsItemController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, destinations, offers, onDataChange, onViewChange) {
     this._container = container;
+    this._destinations = destinations;
+    this._offers = offers;
 
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
@@ -47,7 +72,7 @@ export default class TripEventsItemController {
     this._mode = mode;
 
     this._tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
-    this._tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
+    this._tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem, this._destinations, this._offers);
 
     this._tripEventsItemComponent.setEventRollupBtnClickHandler(() => {
       this._replaceEventToEdit();
@@ -74,9 +99,10 @@ export default class TripEventsItemController {
 
     this._tripEventsItemEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
-      const newData = this._tripEventsItemEditComponent.getData();
+      const formData = this._tripEventsItemEditComponent.getData();
+      const data = parseFormData(formData, this._destinations);
 
-      this._onDataChange(this, eventsItem, newData);
+      this._onDataChange(this, eventsItem, data);
     });
 
     switch (mode) {

@@ -2,8 +2,11 @@
 import Component from "./component.js";
 
 // Утилиты
-import {typePlaceholders} from "../utils/adapter.js";
+import {capitalize} from "../utils/common.js";
 import {getDate, getTime, getDuration} from "../utils/datetime.js";
+
+// Константы
+import {TypePlaceholder} from "../const.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -21,7 +24,7 @@ const createOffersMarkup = (offers) => {
 
 // Шаблон точки маршрута
 const createTripEventsItemTemplate = (eventsItem) => {
-  const {type, city, start, end, price, offers} = eventsItem;
+  const {type, city, start, end, price, selectedOffers} = eventsItem;
 
   const startDate = getDate(start);
   const startTime = getTime(start);
@@ -34,7 +37,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
   const hours = duration.hours();
   const minutes = duration.minutes();
 
-  const offersMarkup = createOffersMarkup(offers.slice(0, 3));
+  const offersMarkup = createOffersMarkup(selectedOffers.slice(0, 3));
 
   return (
     `<li class="trip-events__item">
@@ -48,7 +51,7 @@ const createTripEventsItemTemplate = (eventsItem) => {
           >
         </div>
         <h3 class="event__title">
-          ${typePlaceholders.get(type)}&nbsp;${city}
+          ${capitalize(type)}&nbsp;${TypePlaceholder[type]}&nbsp;${city}
         </h3>
         <div class="event__schedule">
           <p class="event__time">
