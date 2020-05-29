@@ -315,11 +315,19 @@ export default class TripEventsItemEdit extends SmartComponent {
     this.rerender();
   }
 
-  disableElements() {
+  disable() {
     const elements = Array.from(this.getElement().elements);
     elements.forEach((element) => {
       element.disabled = true;
     });
+  }
+
+  showBoxShadow() {
+    this.getElement().style.boxShadow = `0 0 4px 4px red`;
+  }
+
+  hideBoxShadow() {
+    this.getElement().style.boxShadow = ``;
   }
 
   recoveryListeners() {

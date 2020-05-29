@@ -10,6 +10,7 @@ import {render, replace, remove} from "../utils/render.js";
 
 // Константы
 import {Mode, RenderPosition} from "../const.js";
+const ANIMATION_TIMEOUT = 600;
 
 // Пустая точка маршрута
 export const EmptyEventsItem = {
@@ -89,11 +90,11 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
+      this._tripEventsItemEditComponent.hideBoxShadow()
+      this._tripEventsItemEditComponent.disable();
       this._tripEventsItemEditComponent.setData({
         resetBtnText: `Deleting...`,
-      });
-      this._tripEventsItemEditComponent.disableElements();
-
+      });;
       this._onDataChange(this, eventsItem, null);
     });
 
@@ -106,11 +107,11 @@ export default class TripEventsItemController {
       evt.preventDefault();
       const formData = this._tripEventsItemEditComponent.getData();
       const data = parseFormData(formData, this._destinations);
+      this._tripEventsItemEditComponent.hideBoxShadow();
+      this._tripEventsItemEditComponent.disable();
       this._tripEventsItemEditComponent.setData({
         submitBtnText: `Saving...`,
       });
-      this._tripEventsItemEditComponent.disableElements();
-
       this._onDataChange(this, eventsItem, data);
     });
 
@@ -146,6 +147,25 @@ export default class TripEventsItemController {
     remove(this._tripEventsItemEditComponent);
     remove(this._tripEventsItemComponent);
     document.removeEventListener(`keydown`, this._onEscKeyDown);
+  }
+
+  shake() {
+    this._tripEventsItemEditComponent.getElement().style.animation =
+      `shake ${ANIMATION_TIMEOUT / 1000}s`;
+    this._tripEventsItemComponent.getElement().style.animation =
+      `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._tripEventsItemEditComponent.getElement().style.animation = ``;
+      this._tripEventsItemComponent.getElement().style.animation = ``;
+
+      this._tripEventsItemEditComponent.setData({
+        resetBtnText: `Delete`,
+        submitBtnText: `Save`,
+      });
+    }, ANIMATION_TIMEOUT);
+
+    setTimeout(() => this._tripEventsItemEditComponent.showBoxShadow(), ANIMATION_TIMEOUT);
   }
 
   _replaceEditToEvent() {

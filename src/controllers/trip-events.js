@@ -158,6 +158,9 @@ export default class TripEventsController {
             this._tripEventsItemControllers =
               [].concat(tripEventsItemController, this._tripEventsItemControllers);
             this._updateEvents();
+          })
+          .catch(() => {
+            tripEventsItemController.shake();
           });
       }
     } else if (newData === null) {
@@ -165,6 +168,9 @@ export default class TripEventsController {
         .then(() => {
           this._tripEventsModel.removeEventsItem(oldData.id);
           this._updateEvents();
+        })
+        .catch(() => {
+          tripEventsItemController.shake();
         });
     } else {
       this._api.updateEventsItem(oldData.id, newData)
@@ -175,6 +181,9 @@ export default class TripEventsController {
            tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
            this._updateEvents();
          }
+       })
+       .catch(() => {
+         tripEventsItemController.shake();
        });
     }
   }
