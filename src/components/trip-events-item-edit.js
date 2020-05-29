@@ -1,29 +1,20 @@
 // Компоненты
 import SmartComponent from "./smart-component.js";
 
-// Моки
-import {
-  TRANSFERS,
-  ACTIVITIES,
-  CITIES,
-  OFFERS,
-  SENTENCES,
-  generateRandomItems,
-  generateRandomPhotos
-} from "../mock/trip-events-item.js";
-
 // Утилиты
-import {typePlaceholders, typeNames} from "../utils/adapter.js";
+import {capitalize} from "../utils/common.js";
 import {getDateTime} from "../utils/datetime.js";
 
 // Константы
 import {EmptyEventsItem} from "../controllers/trip-events-item.js";
+import {TRANSFERS, ACTIVITIES, TypePlaceholder} from "../const.js";
 
 // Библиотеки
 import flatpickr from "flatpickr";
 
 // Стили
 import "flatpickr/dist/flatpickr.min.css";
+import 'flatpickr/dist/themes/material_blue.css';
 
 // Разметка типов точек маршрута
 const createTypesMarkup = (types, currentType) => {
@@ -40,7 +31,7 @@ const createTypesMarkup = (types, currentType) => {
         <label class="event__type-label event__type-label--${type}"
           for="event-type-${type}-1"
         >
-          ${typeNames.get(type)}
+          ${capitalize(type)}
         </label>
       </div>`
     );
@@ -64,19 +55,20 @@ const createDestinationsMarkup = (destinations, city) => {
 };
 
 // Разметка доп. опций
-const createOffersMarkup = (offers) => {
+const createOffersMarkup = (offers, selectedOffers) => {
   return offers.map((offer) => {
     return (
       `<div class="event__offer-selector">
         <input class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offer.type}-1"
+          id="event-offer-${offer.title}-1"
           type="checkbox"
-          name="event-offer-${offer.type}"
+          name="event-offer-${offer.title}"
+          ${selectedOffers.some((it) => it.title === offer.title) ? `checked` : ``}
         >
         <label class="event__offer-label"
-          for="event-offer-${offer.type}-1"
+          for="event-offer-${offer.title}-1"
         >
-          <span class="event__offer-name">${offer.name}</span>
+          <span class="event__offer-title">${offer.title}</span>
           &plus;
           &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
         </label>
@@ -88,28 +80,29 @@ const createOffersMarkup = (offers) => {
 
 // Разметка фотографий
 const createPhotosMarkup = (photos) => {
-  return photos.map((source) => {
-    return (`<img class="event__photo" src="${source}" alt="Event photo">`);
+  return photos.map((photo) => {
+    return (
+      `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`
+    );
   })
   .join(`\n`);
 };
 
 // Шаблон формы создания/редактирования точки маршрута
-const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
+const createTripEventsItemEditTemplate = (eventsItem, options, destinations, offers) => {
   const {start, end, price, isFavorite} = eventsItem;
-  const {city, description, photos} = destination;
-  const {type, offers} = offer;
+  const {type, city, description, photos, selectedOffers} = options;
 
-  const newEventsItem = (eventsItem === EmptyEventsItem) ? true : false;
-  const noDestination = (city === ``) ? true : false;
+  const addingEventsItem = (eventsItem === EmptyEventsItem);
+  const noOffers = (offers[type].length === 0);
 
   const startDateTime = getDateTime(start);
   const endDateTime = getDateTime(end);
 
   const transfersMarkup = createTypesMarkup(TRANSFERS, type);
   const activitiesMarkup = createTypesMarkup(ACTIVITIES, type);
-  const destinationsMarkup = createDestinationsMarkup(CITIES, city);
-  const offersMarkup = createOffersMarkup(offers);
+  const destinationsMarkup = createDestinationsMarkup(Object.keys(destinations), city);
+  const offersMarkup = createOffersMarkup(offers[type], selectedOffers);
   const photosMarkup = createPhotosMarkup(photos);
 
   return (
@@ -149,7 +142,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
           <label class="event__label event__type-output"
             for="event-destination-1"
           >
-            ${typePlaceholders.get(type)}
+            ${capitalize(type)}&nbsp;${TypePlaceholder[type]}
           </label>
           <select class="event__input event__input--destination"
             id="event-destination-1"
@@ -189,6 +182,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
             name="event-price"
             value="${price}"
             pattern="^[ 0-9]+$"
+            maxlength="4"
             required
           >
         </div>
@@ -197,10 +191,10 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
           Save
         </button>
         <button class="event__reset-btn" type="reset">
-          ${newEventsItem ? `Cancel` : `Delete`}
+          ${addingEventsItem ? `Cancel` : `Delete`}
         </button>
 
-    ${newEventsItem ? `` :
+    ${addingEventsItem ? `` :
       `<input id="event-favorite-1"
           class="event__favorite-checkbox visually-hidden"
           type="checkbox"
@@ -221,7 +215,7 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
       </label>`
     }
 
-    ${newEventsItem ? `` :
+    ${addingEventsItem ? `` :
       `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>`
@@ -229,17 +223,20 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
 
       </header>
 
+
       <section class="event__details">
-        <section class="event__section event__section--offers">
-          <h3 class="event__section-title event__section-title--offers">Offers</h3>
+    ${noOffers ? `` :
+      `<section class="event__section event__section--offers">
+        <h3 class="event__section-title event__section-title--offers">Offers</h3>
 
-          <div class="event__available-offers">
-            ${offersMarkup}
-          </div>
-        </section>
+        <div class="event__available-offers">
+          ${offersMarkup}
+        </div>
+      </section>`
+    }
 
-    ${noDestination ? `` :
-      `<section class="event__section event__section--destination">
+
+      <section class="event__section event__section--destination">
         <h3 class="event__section-title event__section-title--destination">Destination</h3>
         <p class="event__destination-description">
           ${description}
@@ -250,8 +247,8 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
             ${photosMarkup}
           </div>
         </div>
-      </section>`
-    }
+      </section>
+
       </section>
     </form>`
   );
@@ -259,16 +256,21 @@ const createTripEventsItemEditTemplate = (eventsItem, destination, offer) => {
 
 // Класс
 export default class TripEventsItemEdit extends SmartComponent {
-  constructor(eventsItem) {
+  constructor(eventsItem, destinations, offers) {
     super();
 
     this._eventsItem = eventsItem;
+    this._destinations = destinations;
+    this._offers = offers;
 
+    this._type = eventsItem.type;
+    this._start = eventsItem.start;
+    this._end = eventsItem.end;
     this._city = eventsItem.city;
     this._description = eventsItem.description;
     this._photos = eventsItem.photos;
-    this._type = eventsItem.type;
-    this._offers = eventsItem.offers;
+    this._price = eventsItem.price;
+    this._selectedOffers = eventsItem.selectedOffers;
 
     this._element = null;
     this._flatpickr = null;
@@ -278,9 +280,6 @@ export default class TripEventsItemEdit extends SmartComponent {
     this._eventRollupBtnClickHandler = null;
     this._eventFavoriteBtnClickHandler = null;
 
-    this._onTypeChange = this._onTypeChange.bind(this);
-    this._onDestinationChange = this._onDestinationChange.bind(this);
-
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
@@ -289,20 +288,19 @@ export default class TripEventsItemEdit extends SmartComponent {
     return createTripEventsItemEditTemplate(
         this._eventsItem,
         {
+          type: this._type,
           city: this._city,
           description: this._description,
-          photos: this._photos
+          photos: this._photos,
+          selectedOffers: this._selectedOffers
         },
-        {
-          type: this._type,
-          offers: this._offers
-        }
+        this._destinations,
+        this._offers
     );
   }
 
   getData() {
     const form = this.getElement();
-
     return new FormData(form);
   }
 
@@ -329,11 +327,14 @@ export default class TripEventsItemEdit extends SmartComponent {
   reset() {
     const eventsItem = this._eventsItem;
 
+    this._type = eventsItem.type;
+    this._start = eventsItem.start;
+    this._end = eventsItem.end;
     this._city = eventsItem.city;
     this._description = eventsItem.description;
     this._photos = eventsItem.photos;
-    this._type = eventsItem.type;
-    this._offers = eventsItem.offers;
+    this._price = eventsItem.price;
+    this._selectedOffers = eventsItem.selectedOffers;
 
     this.rerender();
   }
@@ -349,9 +350,9 @@ export default class TripEventsItemEdit extends SmartComponent {
 
     if (eventFavoriteBtn) {
       eventFavoriteBtn.addEventListener(`click`, handler);
-    }
 
-    this._eventFavoriteBtnClickHandler = handler;
+      this._eventFavoriteBtnClickHandler = handler;
+    }
   }
 
   setEventResetBtnClickHandler(handler) {
@@ -366,9 +367,9 @@ export default class TripEventsItemEdit extends SmartComponent {
 
     if (eventRollupBtn) {
       eventRollupBtn.addEventListener(`click`, handler);
-    }
 
-    this._eventRollupBtnClickHandler = handler;
+      this._eventRollupBtnClickHandler = handler;
+    }
   }
 
   setFlatpickr(dateElement, date) {
@@ -387,8 +388,8 @@ export default class TripEventsItemEdit extends SmartComponent {
     const startDateTimeElement = this.getElement().querySelector(`#event-start-time-1`);
     const endDateTimeElement = this.getElement().querySelector(`#event-end-time-1`);
 
-    this.setFlatpickr(startDateTimeElement, this._eventsItem.start);
-    this.setFlatpickr(endDateTimeElement, this._eventsItem.end);
+    this.setFlatpickr(startDateTimeElement, this._start);
+    this.setFlatpickr(endDateTimeElement, this._end);
   }
 
   _destroyFlatpickr() {
@@ -398,28 +399,25 @@ export default class TripEventsItemEdit extends SmartComponent {
     }
   }
 
-  _onTypeChange(evt) {
-    this._type = evt.target.value;
-    this._offers = generateRandomItems(OFFERS);
-
-    this.rerender();
-  }
-
-  _onDestinationChange(evt) {
-    this._city = evt.target.value;
-    this._description = generateRandomItems(SENTENCES).join(`\n`);
-    this._photos = generateRandomPhotos();
-
-    this.rerender();
-  }
-
   _subscribeOnEvents() {
     const element = this.getElement();
 
     element.querySelector(`.event__type-list`)
-      .addEventListener(`change`, this._onTypeChange);
+    .addEventListener(`change`, (evt) => {
+      if (evt.target.tagName === `INPUT`) {
+        this._type = evt.target.value;
+      }
+
+      this.rerender();
+    });
 
     element.querySelector(`.event__input--destination`)
-      .addEventListener(`change`, this._onDestinationChange);
+    .addEventListener(`change`, (evt) => {
+      this._city = evt.target.value;
+      this._description = this._destinations[this._city].description;
+      this._photos = this._destinations[this._city].pictures;
+
+      this.rerender();
+    });
   }
 }

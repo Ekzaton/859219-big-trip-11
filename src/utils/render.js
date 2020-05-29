@@ -1,8 +1,5 @@
-// Позиции для отрисовки
-export const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-};
+// Константы
+import {RenderPosition} from "../const.js";
 
 // Создание DOM-элемента
 export const createElement = (template) => {

@@ -2,16 +2,16 @@
 import TripFiltersComponent from "../components/trip-filters.js";
 
 // Утилиты
-import {render, replace, RenderPosition} from "../utils/render.js";
+import {render, replace} from "../utils/render.js";
 
 // Константы
-import {FilterType} from "../const.js";
+import {FilterType, RenderPosition} from "../const.js";
 
 // Контроллер фильтров
 export default class TripFiltersController {
-  constructor(container, eventsModel) {
+  constructor(container, tripEventsModel) {
     this._container = container;
-    this._eventsModel = eventsModel;
+    this._tripEventsModel = tripEventsModel;
 
     this._activeFilterType = FilterType.EVERYTHING;
     this._tripFiltersComponent = null;
@@ -42,7 +42,7 @@ export default class TripFiltersController {
   }
 
   _onFilterChange(filterType) {
-    this._eventsModel.setFilter(filterType);
+    this._tripEventsModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 

@@ -1,8 +1,12 @@
 // Компоненты
 import Component from "./component.js";
 
+// Утилиты
+import {capitalize} from "../utils/common.js";
+
 // Константы
-import {SORT_ITEMS, SortType} from "../const.js";
+import {SortType} from "../const.js";
+const SORT_ITEMS = Object.values(SortType);
 const SORT_ITEM_ID_PREFIX = `sort-`;
 
 // Получение типа сортировки по ID
@@ -14,16 +18,16 @@ const getSortTypeById = (id) => {
 const createSortItemsMarkup = (sortItems) => {
   return sortItems.map((sortItem, isChecked) => {
     return (
-      `<div class="trip-sort__item trip-sort__item--${sortItem.toLowerCase()}">
-        <input id="sort-${sortItem.toLowerCase()}"
+      `<div class="trip-sort__item trip-sort__item--${sortItem}">
+        <input id="sort-${sortItem}"
           class="trip-sort__input visually-hidden"
           type="radio"
           name="trip-sort"
-          value="sort-${sortItem.toLowerCase()}"
+          value="sort-${sortItem}"
           ${isChecked === 0 ? `checked` : ``}
         >
-        <label class="trip-sort__btn" for="sort-${sortItem.toLowerCase()}">
-          ${sortItem}
+        <label class="trip-sort__btn" for="sort-${sortItem}">
+          ${capitalize(sortItem)}
         </label>
       </div>`
     );
@@ -59,7 +63,7 @@ export default class TripSort extends Component {
   resetSortType() {
     this._currentSortType = SortType.EVENT;
     this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
-    this.getElement().querySelector(`#sort-event`).checked = true;
+    document.getElementById(`sort-event`).checked = true;
   }
 
   setSortTypeChangeHandler(handler) {

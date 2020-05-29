@@ -1,63 +1,49 @@
 // Компоненты
 import StatisticsComponent from "./components/statistics.js";
-import TripInfoComponent from "./components/trip-info.js";
+import TripEventsMsgLoadingComponent from "./components/trip-events-msg-loading.js";
 import TripTabsComponent from "./components/trip-tabs.js";
 
 // Контроллеры
 import TripEventsController from "./controllers/trip-events.js";
 import TripFiltersController from "./controllers/trip-filters.js";
 
-// Моки
-import {generateTripEvents} from "./mock/trip-events-item.js";
-
 // Модели данных
 import TripEventsModel from "./models/trip-events.js";
 
 // Утилиты
-import {render, RenderPosition} from "./utils/render.js";
+import {render} from "./utils/render.js";
+
+// API
+import API from "./api.js";
 
 // Константы
-import {TabsItem} from "./const.js";
-const EVENTS_COUNT = 20;
+import {RenderPosition, TabsItem} from "./const.js";
+const AUTHORIZATION_KEY = `Basic 3omngjf84kd`;
+const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
-// Передача моков в модель
-const eventsModel = new TripEventsModel();
-const events = generateTripEvents(EVENTS_COUNT);
-eventsModel.setEvents(events);
+const api = new API(END_POINT, AUTHORIZATION_KEY);
+const tripEventsModel = new TripEventsModel();
 
 const tripMainElement = document.querySelector(`.trip-main`);
-
-// Отрисовка информации о маршруте и стоимости
-render(tripMainElement, new TripInfoComponent(events), RenderPosition.AFTERBEGIN);
-
-const tripControlsElement = tripMainElement.querySelector(`.trip-controls`);
-
-const tripTabsComponent = new TripTabsComponent();
-
-// Отрисовка меню
-render(tripControlsElement, tripTabsComponent, RenderPosition.BEFOREEND);
-
-// Отрисовка фильтров
-const tripFiltersController = new TripFiltersController(tripControlsElement, eventsModel);
-tripFiltersController.render();
-
+const tripMainTripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
+const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 
-// Отрисовка точек маршрута
-const tripEventsController = new TripEventsController(tripEventsElement, eventsModel);
-tripEventsController.render(events);
+const tripTabsComponent = new TripTabsComponent();
+const tripEventsMsgLoadingComponent = new TripEventsMsgLoadingComponent();
+const statisticsComponent = new StatisticsComponent(tripEventsModel);
 
-const tripMainEventAddBtnElement = tripMainElement.querySelector(`.trip-main__event-add-btn`);
+const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
+const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, api);
 
-tripMainEventAddBtnElement.addEventListener(`click`, () => {
-  tripEventsController.addEventsItem();
-});
-
-// Отрисовка статистики
-const statisticsComponent = new StatisticsComponent(eventsModel);
+// Отрисовка
+render(tripMainTripControlsElement, tripTabsComponent, RenderPosition.AFTERBEGIN);
+tripFiltersController.render();
+render(tripEventsElement, tripEventsMsgLoadingComponent, RenderPosition.AFTERBEGIN);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
 statisticsComponent.hide();
 
+// Переключение пунктов меню
 tripTabsComponent.setOnChange((tabsItem) => {
   tripTabsComponent.setActiveItem(tabsItem);
   switch (tabsItem) {
@@ -71,3 +57,21 @@ tripTabsComponent.setOnChange((tabsItem) => {
       break;
   }
 });
+
+// Добавление точки маршрута
+tripMainEventAddBtnElement.addEventListener(`click`, () => {
+  tripEventsController.addEventsItem();
+});
+
+Promise.all([
+  api.getEvents(),
+  api.getEventDestinations(),
+  api.getEventOffers()
+])
+  .then(([events, offers, destinations]) => {
+    tripEventsModel.setEvents(events);
+    tripEventsModel.setEventDestinations(offers);
+    tripEventsModel.setEventOffers(destinations);
+    tripEventsMsgLoadingComponent.hide();
+    tripEventsController.render();
+  });

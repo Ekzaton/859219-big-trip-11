@@ -162,11 +162,8 @@ const renderChart = (ctx, types, calculation, title, prefix, postfix) => {
 const renderMoneyChart = (moneyCtx, events) => {
   const types = getTypes(events);
   const money = types.map((type) => calculateMoney(events, type));
-  const title = `MONEY`;
-  const prefix = `€ `;
-  const postfix = ``;
 
-  renderChart(moneyCtx, types, money, title, prefix, postfix);
+  renderChart(moneyCtx, types, money, `MONEY`, `€ `, ``);
 };
 
 // Отрисовка диаграммы транспортных средств
@@ -174,22 +171,16 @@ const renderTransportChart = (transportCtx, events) => {
   const types = getTypes(events)
     .filter((eventsItem) => eventsItem !== `RESTAURANT` && eventsItem !== `CHECK-IN` && eventsItem !== `SIGHTSEEING`);
   const transport = types.map((type) => calculateTransport(events, type));
-  const title = `TRANSPORT`;
-  const prefix = ``;
-  const postfix = `x`;
 
-  renderChart(transportCtx, types, transport, title, prefix, postfix);
+  renderChart(transportCtx, types, transport, `TRANSPORT`, ``, `x`);
 };
 
 // Отрисовка диаграммы затраченного времени
 const renderTimeSpentChart = (timeSpentCtx, events) => {
   const types = getTypes(events);
   const timeSpent = types.map((type) => calculateTimeSpent(events, type));
-  const title = `TIME SPENT`;
-  const prefix = ``;
-  const postfix = `H`;
 
-  renderChart(timeSpentCtx, types, timeSpent, title, prefix, postfix);
+  renderChart(timeSpentCtx, types, timeSpent, `TIME SPENT`, ``, `H`);
 };
 
 // Шаблон секции статистики
@@ -212,10 +203,10 @@ const createStatisticsTemplate = () => {
 
 // Класс
 export default class Statistics extends SmartComponent {
-  constructor(eventsModel) {
+  constructor(tripEventsModel) {
     super();
 
-    this._eventsModel = eventsModel;
+    this._tripEventsModel = tripEventsModel;
 
     this._moneyChart = null;
     this._transportChart = null;
@@ -254,7 +245,7 @@ export default class Statistics extends SmartComponent {
     transportCtx.height = BAR_HEIGHT * TRANSFER_TYPES;
     timeSpentCtx.height = BAR_HEIGHT * EVENT_TYPES;
 
-    const events = this._eventsModel.getAllEvents();
+    const events = this._tripEventsModel.getAllEvents();
 
     this._resetCharts();
     this._moneyChart = renderMoneyChart(moneyCtx, events);

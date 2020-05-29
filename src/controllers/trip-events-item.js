@@ -2,45 +2,57 @@
 import TripEventsItemComponent from "../components/trip-events-item.js";
 import TripEventsItemEditComponent from "../components/trip-events-item-edit.js";
 
-// Утилиты
-import {render, replace, remove, RenderPosition} from "../utils/render.js";
+// Модели
+import TripEventsItemModel from "../models/trip-events-item.js";
 
-// Режимы отображения точки маршрута
-export const Mode = {
-  ADD: `add`,
-  DEFAULT: `default`,
-  EDIT: `edit`,
-};
+// Утилиты
+import {render, replace, remove} from "../utils/render.js";
+
+// Константы
+import {Mode, RenderPosition} from "../const.js";
 
 // Пустая точка маршрута
 export const EmptyEventsItem = {
-  id: String(new Date() + Math.random()),
   type: `taxi`,
+  start: new Date(),
+  end: new Date(),
   city: ``,
-  start: Date.now(),
-  end: Date.now(),
-  price: ``,
-  offers: [],
   description: ``,
   photos: [],
-  isFavorite: false
+  price: 0,
+  isFavorite: false,
+  selectedOffers: []
 };
 
-// Парсинг данных с формы
-const parseFormData = (formData) => {
-  return {
-    type: formData.get(`event-type`),
-    city: formData.get(`event-destination`),
-    start: new Date(formData.get(`event-start-time`)),
-    end: new Date(formData.get(`event-end-time`)),
-    price: Number(formData.get(`event-price`))
-  };
+const parseFormData = (formData, destinations) => {
+  const city = document.querySelector(`#event-destination-1`).value;
+  const selectedOffers = Array.from(document.querySelectorAll(
+      `.event__offer-checkbox:checked + label[for^="event"]`));
+
+  return new TripEventsItemModel({
+    'type': formData.get(`event-type`),
+    'date_from': formData.get(`event-start-time`),
+    'date_to': formData.get(`event-end-time`),
+    'destination': {
+      'name': destinations[city].name,
+      'description': destinations[city].description,
+      'pictures': destinations[city].pictures
+    },
+    'base_price': Number(formData.get(`event-price`)),
+    'is_favorite': Boolean(formData.get(`event-favorite`)),
+    'offers': selectedOffers.map((offer) => ({
+      'title': offer.querySelector(`.event__offer-title`).textContent,
+      'price': Number(offer.querySelector(`.event__offer-price`).textContent)
+    })),
+  });
 };
 
 // Контроллер точки маршрута
 export default class TripEventsItemController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, destinations, offers, onDataChange, onViewChange) {
     this._container = container;
+    this._destinations = destinations;
+    this._offers = offers;
 
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
@@ -60,7 +72,7 @@ export default class TripEventsItemController {
     this._mode = mode;
 
     this._tripEventsItemComponent = new TripEventsItemComponent(eventsItem);
-    this._tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem);
+    this._tripEventsItemEditComponent = new TripEventsItemEditComponent(eventsItem, this._destinations, this._offers);
 
     this._tripEventsItemComponent.setEventRollupBtnClickHandler(() => {
       this._replaceEventToEdit();
@@ -68,9 +80,12 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventFavoriteBtnClickHandler(() => {
-      this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, {
-        isFavorite: !eventsItem.isFavorite,
-      }));
+      const newEventsItem = TripEventsItemModel.clone(eventsItem);
+      newEventsItem.isFavorite = !newEventsItem.isFavorite;
+
+      this._onDataChange(this, eventsItem, newEventsItem);
+
+      this._mode = Mode.EDIT;
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
@@ -85,10 +100,9 @@ export default class TripEventsItemController {
     this._tripEventsItemEditComponent.setSubmitHandler((evt) => {
       evt.preventDefault();
       const formData = this._tripEventsItemEditComponent.getData();
-      const data = parseFormData(formData);
+      const data = parseFormData(formData, this._destinations);
 
-      this._onDataChange(this, eventsItem, Object.assign({}, eventsItem, data));
-      this._replaceEditToEvent();
+      this._onDataChange(this, eventsItem, data);
     });
 
     switch (mode) {
