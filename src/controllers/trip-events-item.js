@@ -90,11 +90,11 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
-      this._tripEventsItemEditComponent.hideBoxShadow()
+      this._tripEventsItemEditComponent.hideBoxShadow();
       this._tripEventsItemEditComponent.disable();
       this._tripEventsItemEditComponent.setData({
         resetBtnText: `Deleting...`,
-      });;
+      });
       this._onDataChange(this, eventsItem, null);
     });
 
