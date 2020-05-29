@@ -47,11 +47,11 @@ export default class API {
       .then(TripEventsItemModel.parseEventsItem);
   }
 
-  addEventsItem(point) {
+  addEventsItem(eventsItem) {
     return this._load({
       url: `points`,
       method: Method.POST,
-      body: JSON.stringify(point.toRAW()),
+      body: JSON.stringify(eventsItem.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
