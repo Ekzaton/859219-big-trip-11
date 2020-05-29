@@ -145,23 +145,31 @@ export default class TripEventsController {
       if (newData === null) {
         tripEventsItemController.destroy();
       } else {
-        this._tripEventsModel.addEventsItem(newData);
-        tripEventsItemController.render(newData, Mode.DEFAULT);
-        this._tripEventsItemControllers =
-          [].concat(tripEventsItemController, this._tripEventsItemControllers);
+        this._api.addEventsItem(newData)
+          .then((tripEventsItemModel) => {
+            this._tripEventsModel.addEventsItem(newData);
+            tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
+            this._tripEventsItemControllers =
+              [].concat(tripEventsItemController, this._tripEventsItemControllers);
+            this._updateEvents();
+          });
       }
     } else if (newData === null) {
-      this._tripEventsModel.removeEventsItem(oldData.id);
+      this._api.removeEventsItem(oldData.id)
+        .then(() => {
+          this._tripEventsModel.removeEventsItem(oldData.id);
+          this._updateEvents();
+        });
     } else {
       this._api.updateEventsItem(oldData.id, newData)
-         .then((tripEventsItemModel) => {
-           const isSuccess = this._tripEventsModel.updateEventsItem(oldData.id, tripEventsItemModel);
+       .then((tripEventsItemModel) => {
+         const isSuccess = this._tripEventsModel.updateEventsItem(oldData.id, tripEventsItemModel);
 
-           if (isSuccess) {
-             tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
-             this._updateEvents();
-           }
-         });
+         if (isSuccess) {
+           tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
+           this._updateEvents();
+         }
+       });
     }
   }
 
