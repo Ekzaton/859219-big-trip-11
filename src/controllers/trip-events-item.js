@@ -89,6 +89,11 @@ export default class TripEventsItemController {
     });
 
     this._tripEventsItemEditComponent.setEventResetBtnClickHandler(() => {
+      this._tripEventsItemEditComponent.setData({
+        resetBtnText: `Deleting...`,
+      });
+      this._tripEventsItemEditComponent.disableElements();
+
       this._onDataChange(this, eventsItem, null);
     });
 
@@ -101,6 +106,10 @@ export default class TripEventsItemController {
       evt.preventDefault();
       const formData = this._tripEventsItemEditComponent.getData();
       const data = parseFormData(formData, this._destinations);
+      this._tripEventsItemEditComponent.setData({
+        submitBtnText: `Saving...`,
+      });
+      this._tripEventsItemEditComponent.disableElements();
 
       this._onDataChange(this, eventsItem, data);
     });

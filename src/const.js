@@ -58,16 +58,21 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`,
 };
 
-// Плйсхолдеры для типов точки маршрута
+// Плейсхолдеры для типов точки маршрута
 export const TypePlaceholder = {
-  "taxi": `to`,
-  "bus": `to`,
-  "train": `to`,
-  "ship": `to`,
-  "transport": `to`,
-  "drive": `to`,
-  "flight": `to`,
-  "check-in": `in`,
-  "sightseeing": `in`,
-  "restaurant": `in`
+  'taxi': `to`,
+  'bus': `to`,
+  'train': `to`,
+  'ship': `to`,
+  'transport': `to`,
+  'drive': `to`,
+  'flight': `to`,
+  'check-in': `in`,
+  'sightseeing': `in`,
+  'restaurant': `in`
+};
+
+export const DefaultData = {
+  submitBtnText: `Save`,
+  resetBtnText: `Delete`,
 };

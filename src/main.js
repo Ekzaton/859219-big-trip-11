@@ -18,7 +18,7 @@ import API from "./api.js";
 
 // Константы
 import {RenderPosition, TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 3omngjf84kd`;
+const AUTHORIZATION_KEY = `Basic 4fjhg8kgf90`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 
 const api = new API(END_POINT, AUTHORIZATION_KEY);
