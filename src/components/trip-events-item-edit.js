@@ -7,7 +7,7 @@ import {getDateTime} from "../utils/datetime.js";
 
 // Константы
 import {EmptyEventsItem} from "../controllers/trip-events-item.js";
-import {TRANSFERS, ACTIVITIES, TypePlaceholder} from "../const.js";
+import {ACTIVITIES, TRANSFERS, DefaultData, TypePlaceholder} from "../const.js";
 
 // Библиотеки
 import flatpickr from "flatpickr";
@@ -91,7 +91,7 @@ const createPhotosMarkup = (photos) => {
 // Шаблон формы создания/редактирования точки маршрута
 const createTripEventsItemEditTemplate = (eventsItem, options, destinations, offers) => {
   const {start, end, price, isFavorite} = eventsItem;
-  const {type, city, description, photos, selectedOffers} = options;
+  const {type, city, description, photos, selectedOffers, externalData} = options;
 
   const addingEventsItem = (eventsItem === EmptyEventsItem);
   const noOffers = (offers[type].length === 0);
@@ -104,6 +104,9 @@ const createTripEventsItemEditTemplate = (eventsItem, options, destinations, off
   const destinationsMarkup = createDestinationsMarkup(Object.keys(destinations), city);
   const offersMarkup = createOffersMarkup(offers[type], selectedOffers);
   const photosMarkup = createPhotosMarkup(photos);
+
+  const submitBtnText = externalData.submitBtnText;
+  const resetBtnText = externalData.resetBtnText;
 
   return (
     `<form class="trip-events__item event event--edit" action="#" method="post" autocomplete="off">
@@ -188,10 +191,10 @@ const createTripEventsItemEditTemplate = (eventsItem, options, destinations, off
         </div>
 
         <button class="event__save-btn btn btn--blue" type="submit">
-          Save
+          ${submitBtnText}
         </button>
         <button class="event__reset-btn" type="reset">
-          ${addingEventsItem ? `Cancel` : `Delete`}
+          ${addingEventsItem ? `Cancel` : resetBtnText}
         </button>
 
     ${addingEventsItem ? `` :
@@ -271,6 +274,7 @@ export default class TripEventsItemEdit extends SmartComponent {
     this._photos = eventsItem.photos;
     this._price = eventsItem.price;
     this._selectedOffers = eventsItem.selectedOffers;
+    this._externalData = DefaultData;
 
     this._element = null;
     this._flatpickr = null;
@@ -292,7 +296,8 @@ export default class TripEventsItemEdit extends SmartComponent {
           city: this._city,
           description: this._description,
           photos: this._photos,
-          selectedOffers: this._selectedOffers
+          selectedOffers: this._selectedOffers,
+          externalData: this._externalData
         },
         this._destinations,
         this._offers
@@ -302,6 +307,27 @@ export default class TripEventsItemEdit extends SmartComponent {
   getData() {
     const form = this.getElement();
     return new FormData(form);
+  }
+
+  setData(data) {
+    this._externalData = Object.assign({}, DefaultData, data);
+
+    this.rerender();
+  }
+
+  disable() {
+    const elements = Array.from(this.getElement().elements);
+    elements.forEach((element) => {
+      element.disabled = true;
+    });
+  }
+
+  showBoxShadow() {
+    this.getElement().style.boxShadow = `0 0 4px 4px red`;
+  }
+
+  hideBoxShadow() {
+    this.getElement().style.boxShadow = ``;
   }
 
   recoveryListeners() {

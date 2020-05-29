@@ -47,6 +47,24 @@ export default class API {
       .then(TripEventsItemModel.parseEventsItem);
   }
 
+  addEventsItem(point) {
+    return this._load({
+      url: `points`,
+      method: Method.POST,
+      body: JSON.stringify(point.toRAW()),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json())
+      .then(TripEventsItemModel.parseEventsItem);
+  }
+
+  removeEventsItem(id) {
+    return this._load({
+      url: `points/${id}`,
+      method: Method.DELETE
+    });
+  }
+
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._authorization);
 
