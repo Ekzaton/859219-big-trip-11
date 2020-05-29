@@ -114,7 +114,13 @@ export default class TripEventsController {
 
     this._tripEventsModel.resetFilter();
     this._addingEventsItem =
-      new TripEventsItemController(this._container, this._onDataChange, this._onViewChange);
+      new TripEventsItemController(
+          this._container,
+          this._tripEventsModel.getEventDestinations(),
+          this._tripEventsModel.getEventOffers(),
+          this._onDataChange,
+          this._onViewChange
+      );
     this._addingEventsItem.render(EmptyEventsItem, Mode.ADD);
   }
 
