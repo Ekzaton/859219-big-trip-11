@@ -9,6 +9,12 @@ const isOnline = () => {
   return window.navigator.onLine;
 };
 
+// Получение синхронизированных точек маршрута
+const getSyncedEvents = (items) => {
+  return items.filter(({success}) => success)
+    .map(({payload}) => payload.eventsItem);
+};
+
 // Создание структуры хранилища
 const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
@@ -104,5 +110,19 @@ export default class Provider {
     this._store.removeItem(id);
 
     return Promise.resolve();
+  }
+
+  sync() {
+    if (isOnline()) {
+      const localEvents = Object.values(this._store.getItems());
+      return this._api.sync(localEvents)
+        .then((response) => {
+          const addedEvents = getSyncedEvents(response.created);
+          const updatedEvents = getSyncedEvents(response.updated);
+          const items = createStoreStructure([...addedEvents, ...updatedEvents]);
+          this._store.setItems(items);
+        });
+    }
+    return Promise.reject(new Error(`Sync data failed`));
   }
 }
