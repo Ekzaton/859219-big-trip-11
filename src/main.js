@@ -96,4 +96,5 @@ window.addEventListener(`offline`, () => {
 // Удаление уведомления об оффлайне из заголовка
 window.addEventListener(`online`, () => {
   document.title = document.title.replace(`[offline]`, ``);
+  apiWithProvider.sync();
 });
