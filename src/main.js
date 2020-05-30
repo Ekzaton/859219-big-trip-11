@@ -1,3 +1,8 @@
+// API
+import API from "./api/index.js";
+import Provider from "./api/provider.js";
+import Store from "./api/store.js";
+
 // Компоненты
 import StatisticsComponent from "./components/statistics.js";
 import TripEventsMsgLoadingComponent from "./components/trip-events-msg-loading.js";
@@ -13,15 +18,17 @@ import TripEventsModel from "./models/trip-events.js";
 // Утилиты
 import {render} from "./utils/render.js";
 
-// API
-import API from "./api.js";
-
 // Константы
 import {RenderPosition, TabsItem} from "./const.js";
 const AUTHORIZATION_KEY = `Basic 4fjhg8kgf90`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
+const STORE_PREFIX = `taskmanager-localstorage`;
+const STORE_VER = `v1`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const api = new API(END_POINT, AUTHORIZATION_KEY);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 const tripEventsModel = new TripEventsModel();
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -34,7 +41,7 @@ const tripEventsMsgLoadingComponent = new TripEventsMsgLoadingComponent();
 const statisticsComponent = new StatisticsComponent(tripEventsModel);
 
 const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
-const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, api);
+const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, apiWithProvider);
 
 // Отрисовка
 render(tripMainTripControlsElement, tripTabsComponent, RenderPosition.AFTERBEGIN);
@@ -64,14 +71,30 @@ tripMainEventAddBtnElement.addEventListener(`click`, () => {
 });
 
 Promise.all([
-  api.getEvents(),
-  api.getEventDestinations(),
-  api.getEventOffers()
+  apiWithProvider.getEvents(),
+  apiWithProvider.getEventDestinations(),
+  apiWithProvider.getEventOffers()
 ])
-  .then(([events, offers, destinations]) => {
+  .then(([events, destinations, offers]) => {
     tripEventsModel.setEvents(events);
-    tripEventsModel.setEventDestinations(offers);
-    tripEventsModel.setEventOffers(destinations);
+    tripEventsModel.setEventDestinations(destinations);
+    tripEventsModel.setEventOffers(offers);
     tripEventsMsgLoadingComponent.hide();
     tripEventsController.render();
   });
+
+// Регистрация сервис-воркера
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
+
+// Добавление уведомления об оффлайне в заголовок
+window.addEventListener(`offline`, () => {
+  document.title += `[offline]`;
+});
+
+// Удаление уведомления об оффлайне из заголовка
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(`[offline]`, ``);
+  apiWithProvider.sync();
+});

@@ -1,8 +1,8 @@
 // Модели
-import TripEventsItemModel from "./models/trip-events-item.js";
+import TripEventsItemModel from "../models/trip-events-item.js";
 
 // Константы
-import {Method} from "./const.js";
+import {Method} from "../const.js";
 
 // Проверка статуса ответа
 const checkStatus = (response) => {
@@ -47,11 +47,11 @@ export default class API {
       .then(TripEventsItemModel.parseEventsItem);
   }
 
-  addEventsItem(point) {
+  addEventsItem(eventsItem) {
     return this._load({
       url: `points`,
       method: Method.POST,
-      body: JSON.stringify(point.toRAW()),
+      body: JSON.stringify(eventsItem.toRAW()),
       headers: new Headers({"Content-Type": `application/json`})
     })
       .then((response) => response.json())
@@ -63,6 +63,16 @@ export default class API {
       url: `points/${id}`,
       method: Method.DELETE
     });
+  }
+
+  sync(data) {
+    return this._load({
+      url: `points/sync`,
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then((response) => response.json());
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
