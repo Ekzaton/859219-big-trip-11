@@ -77,6 +77,6 @@ Promise.all([
   });
 
 // Регистрация сервис-воркера
-  window.addEventListener(`load`, () => {
-    navigator.serviceWorker.register(`/sw.js`);
-  });
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`);
+});
