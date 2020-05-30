@@ -75,3 +75,8 @@ Promise.all([
     tripEventsMsgLoadingComponent.hide();
     tripEventsController.render();
   });
+
+// Регистрация сервис-воркера
+  window.addEventListener(`load`, () => {
+    navigator.serviceWorker.register(`/sw.js`);
+  });
