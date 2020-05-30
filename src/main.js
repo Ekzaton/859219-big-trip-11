@@ -87,3 +87,13 @@ Promise.all([
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);
 });
+
+// Добавление уведомления об оффлайне в заголовок
+window.addEventListener(`offline`, () => {
+  document.title += `[offline]`;
+});
+
+// Удаление уведомления об оффлайне из заголовка
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(`[offline]`, ``);
+});
