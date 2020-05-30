@@ -1,8 +1,8 @@
 // Модели
-import TripEventsItemModel from "./models/trip-events-item.js";
+import TripEventsItemModel from "../models/trip-events-item.js";
 
 // Константы
-import {Method} from "./const.js";
+import {Method} from "../const.js";
 
 // Проверка статуса ответа
 const checkStatus = (response) => {
