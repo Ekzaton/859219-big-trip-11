@@ -31,7 +31,7 @@ const renderTripEvents = (container, events, destinations, offers, onDataChange,
       .filter((eventsItem) => defaultSortType
         ? new Date(eventsItem.start).toDateString() === date
         : eventsItem)
-      .map((eventsItem) => {
+      .forEach((eventsItem) => {
         const tripEventsItemController = new TripEventsItemController(
             tripDaysItemElement,
             destinations,
@@ -51,10 +51,7 @@ const renderTripEvents = (container, events, destinations, offers, onDataChange,
 
 // Получение дат маршрута
 const getTripDates = (events) => {
-  return Array.from(new Set(events
-    .sort((firstItem, secondItem) => firstItem.start > secondItem.start ? 1 : -1)
-    .map((eventsItem) => new Date(eventsItem.start).toDateString())
-  ));
+  return Array.from(new Set(events.map((eventsItem) => new Date(eventsItem.start).toDateString())));
 };
 
 // Контроллер маршрута
@@ -72,6 +69,7 @@ export default class TripEventsController {
 
     this._addingEventsItem = null;
     this._defaultSortType = null;
+
     this._currentSortType = SortType.EVENT;
 
     this._onDataChange = this._onDataChange.bind(this);
