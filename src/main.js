@@ -86,11 +86,9 @@ Promise.all([
   });
 
 // Регистрация сервис-воркера
-/*
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);
 });
-*/
 
 // Добавление уведомления об оффлайне в заголовок
 window.addEventListener(`offline`, () => {
