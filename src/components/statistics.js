@@ -10,8 +10,8 @@ const TRANSFER_TYPES = 7;
 
 // Библиотеки
 import Chart from "chart.js";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import moment from 'moment';
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import moment from "moment";
 
 // Получение уникальных значений
 const getUniqItems = (item, index, array) => {

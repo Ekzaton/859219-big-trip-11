@@ -5,28 +5,26 @@ import Store from "./api/store.js";
 
 // Компоненты
 import StatisticsComponent from "./components/statistics.js";
+import TripDaysComponent from "./components/trip-days.js";
 import TripEventsMsgLoadingComponent from "./components/trip-events-msg-loading.js";
 import TripTabsComponent from "./components/trip-tabs.js";
 
 // Контроллеры
 import TripEventsController from "./controllers/trip-events.js";
 import TripFiltersController from "./controllers/trip-filters.js";
+import TripInfoController from "./controllers/trip-info.js";
 
 // Модели данных
 import TripEventsModel from "./models/trip-events.js";
 
 // Утилиты
-import {render} from "./utils/render.js";
+import {render, remove} from "./utils/render.js";
 
 // Константы
-import {RenderPosition, TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 4tg45h5h`;
-const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
-const STORE_PREFIX = `taskmanager-localstorage`;
-const STORE_VER = `v1`;
-const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
+import {AccessData, RenderPosition, StoreReqs, TabsItem} from "./const.js";
+const STORE_NAME = `${StoreReqs.STORE_PREFIX}-${StoreReqs.STORE_VER}`;
 
-const api = new API(END_POINT, AUTHORIZATION_KEY);
+const api = new API(AccessData.END_POINT, AccessData.AUTHORIZATION_KEY);
 const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
 const tripEventsModel = new TripEventsModel();
@@ -38,13 +36,17 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 
 const tripTabsComponent = new TripTabsComponent();
 const tripEventsMsgLoadingComponent = new TripEventsMsgLoadingComponent();
+const tripDaysComponent = new TripDaysComponent();
 const statisticsComponent = new StatisticsComponent(tripEventsModel);
 
+const tripInfoController = new TripInfoController(tripMainElement, tripEventsModel);
 const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
-const tripEventsController = new TripEventsController(tripEventsElement, tripEventsModel, apiWithProvider);
+const tripEventsController = new TripEventsController(tripDaysComponent, tripEventsModel, apiWithProvider);
 
 // Отрисовка
+tripInfoController.render();
 render(tripMainTripControlsElement, tripTabsComponent, RenderPosition.AFTERBEGIN);
+render(tripEventsElement, tripDaysComponent, RenderPosition.AFTERBEGIN);
 tripFiltersController.render();
 render(tripEventsElement, tripEventsMsgLoadingComponent, RenderPosition.AFTERBEGIN);
 render(tripEventsElement, statisticsComponent, RenderPosition.AFTEREND);
@@ -79,14 +81,16 @@ Promise.all([
     tripEventsModel.setEvents(events);
     tripEventsModel.setEventDestinations(destinations);
     tripEventsModel.setEventOffers(offers);
-    tripEventsMsgLoadingComponent.hide();
+    remove(tripEventsMsgLoadingComponent);
     tripEventsController.render();
   });
 
 // Регистрация сервис-воркера
+/*
 window.addEventListener(`load`, () => {
   navigator.serviceWorker.register(`/sw.js`);
 });
+*/
 
 // Добавление уведомления об оффлайне в заголовок
 window.addEventListener(`offline`, () => {

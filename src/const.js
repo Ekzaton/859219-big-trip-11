@@ -1,3 +1,10 @@
+// Меропориятия
+export const ACTIVITIES = [
+  `check-in`,
+  `sightseeing`,
+  `restaurant`
+];
+
 // Перемещения
 export const TRANSFERS = [
   `taxi`,
@@ -9,38 +16,17 @@ export const TRANSFERS = [
   `flight`
 ];
 
-// Меропориятия
-export const ACTIVITIES = [
-  `check-in`,
-  `sightseeing`,
-  `restaurant`
-];
-
-// Пункты меню
-export const TabsItem = {
-  TABLE: `control__table`,
-  STATS: `control__stats`,
-};
-
-// Типы сортировки
-export const SortType = {
-  EVENT: `event`,
-  TIME: `time`,
-  PRICE: `price`,
+// Данные для доступа
+export const AccessData = {
+  END_POINT: `https://11.ecmascript.pages.academy/big-trip`,
+  AUTHORIZATION_KEY: `Basic t94tjmg34`
 };
 
 // Типы фильтров
 export const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
-  PAST: `past`,
-};
-
-// Режимы отображения точки маршрута
-export const Mode = {
-  ADD: `add`,
-  DEFAULT: `default`,
-  EDIT: `edit`,
+  PAST: `past`
 };
 
 // Методы HTTP
@@ -51,28 +37,35 @@ export const Method = {
   DELETE: `DELETE`
 };
 
+// Режимы отображения точки маршрута
+export const Mode = {
+  ADD: `add`,
+  DEFAULT: `default`,
+  EDIT: `edit`
+};
+
 // Позиции для отрисовки
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   AFTEREND: `afterend`,
-  BEFOREEND: `beforeend`,
+  BEFOREEND: `beforeend`
 };
 
-// Плейсхолдеры для типов точки маршрута
-export const TypePlaceholder = {
-  'taxi': `to`,
-  'bus': `to`,
-  'train': `to`,
-  'ship': `to`,
-  'transport': `to`,
-  'drive': `to`,
-  'flight': `to`,
-  'check-in': `in`,
-  'sightseeing': `in`,
-  'restaurant': `in`
+// Типы сортировки
+export const SortType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
 };
 
-export const DefaultData = {
-  submitBtnText: `Save`,
-  resetBtnText: `Delete`,
+// Реквизиты хранилища
+export const StoreReqs = {
+  PREFIX: `bigtrip-cache`,
+  VER: `v1`
+};
+
+// Пункты меню
+export const TabsItem = {
+  TABLE: `control__table`,
+  STATS: `control__stats`
 };

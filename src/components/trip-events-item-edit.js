@@ -2,12 +2,13 @@
 import SmartComponent from "./smart-component.js";
 
 // Утилиты
-import {capitalize} from "../utils/common.js";
+import {capitalize, TypePlaceholder} from "../utils/common.js";
 import {getDateTime} from "../utils/datetime.js";
 
 // Константы
+import {ACTIVITIES, TRANSFERS} from "../const.js";
+
 import {EmptyEventsItem} from "../controllers/trip-events-item.js";
-import {ACTIVITIES, TRANSFERS, DefaultData, TypePlaceholder} from "../const.js";
 
 // Библиотеки
 import flatpickr from "flatpickr";
@@ -86,6 +87,12 @@ const createPhotosMarkup = (photos) => {
     );
   })
   .join(`\n`);
+};
+
+// Текст кнопок формы по умолчанию
+const DefaultData = {
+  submitBtnText: `Save`,
+  resetBtnText: `Delete`
 };
 
 // Шаблон формы создания/редактирования точки маршрута

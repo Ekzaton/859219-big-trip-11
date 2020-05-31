@@ -1,18 +1,18 @@
 // Компоненты
-import TripSortComponent from "../components/trip-sort.js";
-import TripDaysComponent from "../components/trip-days.js";
 import TripDaysItemComponent from "../components/trip-days-item.js";
 import TripEventsMsgNoEventsComponent from "../components/trip-events-msg-no-events.js";
+import TripSortComponent from "../components/trip-sort.js";
 
 // Контроллеры
 import TripEventsItemController from "./trip-events-item.js";
 
 // Утилиты
-import {render} from "../utils/render.js";
+import {remove, render} from "../utils/render.js";
 
 // Константы
-import {EmptyEventsItem} from "./trip-events-item.js";
 import {Mode, SortType, RenderPosition} from "../const.js";
+
+import {EmptyEventsItem} from "./trip-events-item.js";
 
 // Отрисовка точек маршрута
 const renderTripEvents = (container, events, destinations, offers, onDataChange, onViewChange, defaultSortType) => {
@@ -43,7 +43,7 @@ const renderTripEvents = (container, events, destinations, offers, onDataChange,
         tripEventsItemControllers.push(tripEventsItemController);
       });
 
-    render(container, tripDaysItemComponent, RenderPosition.BEFOREEND);
+    render(container.getElement(), tripDaysItemComponent, RenderPosition.BEFOREEND);
   });
 
   return tripEventsItemControllers;
@@ -63,9 +63,10 @@ export default class TripEventsController {
 
     this._tripEventsItemControllers = [];
 
-    this._tripEventsMsgNoEventsComponent = new TripEventsMsgNoEventsComponent();
     this._tripSortComponent = new TripSortComponent();
-    this._tripDaysComponent = new TripDaysComponent();
+    this._tripEventsMsgNoEventsComponent = null;
+
+    this._tripEventsElement = document.querySelector(`.trip-events`);
 
     this._addingEventsItem = null;
     this._defaultSortType = null;
@@ -80,27 +81,21 @@ export default class TripEventsController {
   }
 
   hide() {
-    this._tripDaysComponent.hide();
     this._tripSortComponent.hide();
+    this._container.hide();
+    this._removeNoEventsMessage();
   }
 
   show() {
-    this._tripDaysComponent.show();
     this._tripSortComponent.show();
+    this._container.show();
+    this._addNoEventsMessage();
   }
 
   render() {
-    const container = this._container;
-    const events = this._tripEventsModel.getEvents();
-    const noEvents = (events.length === 0);
+    render(this._tripEventsElement, this._tripSortComponent, RenderPosition.AFTERBEGIN);
 
-    if (noEvents) {
-      render(container, this._tripEventsMsgNoEventsComponent, RenderPosition.BEFOREEND);
-      return;
-    }
-
-    render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
-    render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
+    this._addNoEventsMessage();
 
     this._tripSortComponent.setSortTypeChangeHandler((sortType) => {
       this._renderSortedEvents(sortType);
@@ -122,10 +117,12 @@ export default class TripEventsController {
         this._onViewChange
     );
     this._addingEventsItem.render(EmptyEventsItem, Mode.ADD);
+    this._removeNoEventsMessage();
+    this._tripSortComponent.show();
   }
 
   _removeEvents() {
-    this._tripDaysComponent.clearElement();
+    this._container.clearElement();
     this._tripEventsItemControllers
       .forEach((tripEventsItemController) => tripEventsItemController.destroy());
     this._tripEventsItemControllers = [];
@@ -161,7 +158,7 @@ export default class TripEventsController {
 
     this._removeEvents();
     this._tripEventsItemControllers = renderTripEvents(
-        this._tripDaysComponent.getElement(),
+        this._container,
         sortedEvents,
         this._tripEventsModel.getEventDestinations(),
         this._tripEventsModel.getEventOffers(),
@@ -169,6 +166,21 @@ export default class TripEventsController {
         this._onViewChange,
         this._defaultSortType
     );
+  }
+
+  _addNoEventsMessage() {
+    if (!this._tripEventsMsgNoEventsComponent && this._tripEventsModel.getAllEvents().length === 0) {
+      this._tripEventsMsgNoEventsComponent = new TripEventsMsgNoEventsComponent();
+      render(this._tripEventsElement, this._tripEventsMsgNoEventsComponent, RenderPosition.AFTERBEGIN);
+      this._tripSortComponent.hide();
+    }
+  }
+
+  _removeNoEventsMessage() {
+    if (this._tripEventsMsgNoEventsComponent) {
+      remove(this._tripEventsMsgNoEventsComponent);
+      this._tripEventsMsgNoEventsComponent = null;
+    }
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
