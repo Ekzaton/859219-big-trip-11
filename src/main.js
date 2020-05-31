@@ -20,7 +20,7 @@ import {render} from "./utils/render.js";
 
 // Константы
 import {RenderPosition, TabsItem} from "./const.js";
-const AUTHORIZATION_KEY = `Basic 3refveg5yhf94tjv4`;
+const AUTHORIZATION_KEY = `Basic t490tjmh50yg`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip`;
 const STORE_PREFIX = `taskmanager-localstorage`;
 const STORE_VER = `v1`;

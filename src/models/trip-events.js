@@ -52,12 +52,6 @@ export default class TripEvents {
     this._callHandlers(this._filterChangeHandlers);
   }
 
-  resetFilter() {
-    this._activeFilterType = FilterType.EVERYTHING;
-    document.querySelector(`#filter-everything`).checked = true;
-    this._callHandlers(this._filterChangeHandlers);
-  }
-
   addEventsItem(eventsItem) {
     this._events = [].concat(eventsItem, this._events);
     this._callHandlers(this._dataChangeHandlers);

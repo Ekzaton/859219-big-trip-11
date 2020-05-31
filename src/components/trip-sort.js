@@ -60,12 +60,6 @@ export default class TripSort extends Component {
     return createTripSortTemplate();
   }
 
-  resetSortType() {
-    this._currentSortType = SortType.EVENT;
-    this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
-    document.getElementById(`sort-event`).checked = true;
-  }
-
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       if (evt.target.tagName !== `INPUT`) {

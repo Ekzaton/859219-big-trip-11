@@ -84,13 +84,11 @@ export default class TripEventsController {
   hide() {
     this._tripDaysComponent.hide();
     this._tripSortComponent.hide();
-    // this._removeNoWaypoint();
   }
 
   show() {
     this._tripDaysComponent.show();
     this._tripSortComponent.show();
-    // this._renderNoWaypoint();
   }
 
   render() {
@@ -107,10 +105,10 @@ export default class TripEventsController {
     render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
     this._tripSortComponent.setSortTypeChangeHandler((sortType) => {
-      this._sortEvents(sortType);
+      this._renderSortedEvents(sortType);
     });
 
-    this._sortEvents(this._currentSortType);
+    this._renderSortedEvents(this._currentSortType);
   }
 
   addEventsItem() {
@@ -136,7 +134,43 @@ export default class TripEventsController {
   }
 
   _updateEvents() {
-    this._sortEvents(this._currentSortType);
+    this._renderSortedEvents(this._currentSortType);
+  }
+
+  _renderSortedEvents(sortType) {
+    const events = this._tripEventsModel.getEvents();
+    const newEvents = events.slice();
+    let sortedEvents = [];
+
+    this._defaultSortType = false;
+    this._currentSortType = sortType;
+
+    switch (sortType) {
+      case SortType.EVENT:
+        sortedEvents = newEvents.sort((firstItem, secondItem) =>
+          firstItem.start > secondItem.start);
+        this._defaultSortType = true;
+        break;
+      case SortType.TIME:
+        sortedEvents = newEvents.sort((firstItem, secondItem) =>
+          (secondItem.end - secondItem.start) - (firstItem.end - firstItem.start));
+        break;
+      case SortType.PRICE:
+        sortedEvents = newEvents.sort((firstItem, secondItem) =>
+          secondItem.price - firstItem.price);
+        break;
+    }
+
+    this._removeEvents();
+    this._tripEventsItemControllers = renderTripEvents(
+        this._tripDaysComponent.getElement(),
+        sortedEvents,
+        this._tripEventsModel.getEventDestinations(),
+        this._tripEventsModel.getEventOffers(),
+        this._onDataChange,
+        this._onViewChange,
+        this._defaultSortType
+    );
   }
 
   _onDataChange(tripEventsItemController, oldData, newData) {
@@ -147,7 +181,7 @@ export default class TripEventsController {
       } else {
         this._api.addEventsItem(newData)
           .then((tripEventsItemModel) => {
-            this._tripEventsModel.addEventsItem(newData);
+            this._tripEventsModel.addEventsItem(tripEventsItemModel);
             tripEventsItemController.render(tripEventsItemModel, Mode.DEFAULT);
             this._tripEventsItemControllers =
                 [].concat(tripEventsItemController, this._tripEventsItemControllers);
@@ -185,43 +219,6 @@ export default class TripEventsController {
   _onViewChange() {
     this._tripEventsItemControllers
       .forEach((tripEventsItemController) => tripEventsItemController.setDefaultView());
-  }
-
-  _sortEvents(sortType) {
-    const events = this._tripEventsModel.getEvents();
-    const newEvents = events.slice();
-    let sortedEvents = [];
-
-    this._defaultSortType = false;
-
-    switch (sortType) {
-      case SortType.EVENT:
-        sortedEvents = newEvents.sort((firstItem, secondItem) =>
-          firstItem.start > secondItem.start);
-        this._defaultSortType = true;
-        break;
-      case SortType.TIME:
-        sortedEvents = newEvents.sort((firstItem, secondItem) =>
-          (secondItem.end - secondItem.start) - (firstItem.end - firstItem.start));
-        break;
-      case SortType.PRICE:
-        sortedEvents = newEvents.sort((firstItem, secondItem) =>
-          secondItem.price - firstItem.price);
-        break;
-    }
-
-    this._removeEvents();
-    this._currentSortType = sortType;
-    this._tripEventsItemControllers =
-      renderTripEvents(
-          this._tripDaysComponent.getElement(),
-          sortedEvents,
-          this._tripEventsModel.getEventDestinations(),
-          this._tripEventsModel.getEventOffers(),
-          this._onDataChange,
-          this._onViewChange,
-          this._defaultSortType
-      );
   }
 
   _onFilterChange() {
