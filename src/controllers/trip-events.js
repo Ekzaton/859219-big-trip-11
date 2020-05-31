@@ -106,7 +106,7 @@ export default class TripEventsController {
     render(container, this._tripSortComponent, RenderPosition.BEFOREEND);
     render(container, this._tripDaysComponent, RenderPosition.BEFOREEND);
 
-    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+    this._tripSortComponent.setSortTypeChangeHandler((sortType) => {
       this._sortPoints(sortType);
     });
 
