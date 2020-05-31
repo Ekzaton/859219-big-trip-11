@@ -2,11 +2,8 @@
 import Component from "./component.js";
 
 // Утилиты
-import {capitalize} from "../utils/common.js";
+import {capitalize, TypePlaceholder} from "../utils/common.js";
 import {getDate, getTime, getDuration} from "../utils/datetime.js";
-
-// Константы
-import {TypePlaceholder} from "../const.js";
 
 // Разметка доп. опций
 const createOffersMarkup = (offers) => {
@@ -63,7 +60,11 @@ const createTripEventsItemTemplate = (eventsItem) => {
               ${endTime}
             </time>
           </p>
-          <p class="event__duration">${days ? days + `D` : ``} ${hours ? hours + `H` : ``} ${minutes ? minutes + `M` : ``}</p>
+          <p class="event__duration">
+            ${days ? days + `D` : ``}
+            ${hours ? hours + `H` : ``}
+            ${minutes ? minutes + `M` : ``}
+          </p>
         </div>
         <p class="event__price">
           &euro;&nbsp;<span class="event__price-value">${price}</span>
