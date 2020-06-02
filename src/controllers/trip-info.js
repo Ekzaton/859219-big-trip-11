@@ -9,21 +9,21 @@ import {RenderPosition} from "../const.js";
 
 // Класс
 export default class TripInfoController {
-  constructor(container, tripEventsModel) {
+  constructor(container, tripModel) {
     this._container = container;
-    this._tripEventsModel = tripEventsModel;
+    this._tripModel = tripModel;
 
     this._tripInfoComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
 
-    this._tripEventsModel.setDataChangeHandler(this._onDataChange);
+    this._tripModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
     const oldTripInfoComponent = this._tripInfoComponent;
 
-    this._tripInfoComponent = new TripInfoComponent(this._tripEventsModel.getAllEvents());
+    this._tripInfoComponent = new TripInfoComponent(this._tripModel.getAllEvents());
 
     if (oldTripInfoComponent) {
       replace(this._tripInfoComponent, oldTripInfoComponent);

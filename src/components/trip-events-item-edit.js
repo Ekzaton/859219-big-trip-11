@@ -273,14 +273,6 @@ export default class TripEventsItemEdit extends SmartComponent {
     this._destinations = destinations;
     this._offers = offers;
 
-    this._type = eventsItem.type;
-    this._start = eventsItem.start;
-    this._end = eventsItem.end;
-    this._city = eventsItem.city;
-    this._description = eventsItem.description;
-    this._photos = eventsItem.photos;
-    this._price = eventsItem.price;
-    this._selectedOffers = eventsItem.selectedOffers;
     this._externalData = DefaultData;
 
     this._element = null;
@@ -291,6 +283,7 @@ export default class TripEventsItemEdit extends SmartComponent {
     this._eventRollupBtnClickHandler = null;
     this._eventFavoriteBtnClickHandler = null;
 
+    this._initEventsItem(this._eventsItem);
     this._applyFlatpickr();
     this._subscribeOnEvents();
   }
@@ -358,16 +351,7 @@ export default class TripEventsItemEdit extends SmartComponent {
   }
 
   reset() {
-    const eventsItem = this._eventsItem;
-
-    this._type = eventsItem.type;
-    this._start = eventsItem.start;
-    this._end = eventsItem.end;
-    this._city = eventsItem.city;
-    this._description = eventsItem.description;
-    this._photos = eventsItem.photos;
-    this._price = eventsItem.price;
-    this._selectedOffers = eventsItem.selectedOffers;
+    this._initEventsItem(this._eventsItem);
 
     this.rerender();
   }
@@ -413,6 +397,17 @@ export default class TripEventsItemEdit extends SmartComponent {
       'altFormat': `d/m/y H:i`,
       'defaultDate': date
     });
+  }
+
+  _initEventsItem(eventsItem) {
+    this._type = eventsItem.type;
+    this._start = eventsItem.start;
+    this._end = eventsItem.end;
+    this._city = eventsItem.city;
+    this._description = eventsItem.description;
+    this._photos = eventsItem.photos;
+    this._price = eventsItem.price;
+    this._selectedOffers = eventsItem.selectedOffers;
   }
 
   _applyFlatpickr() {

@@ -19,7 +19,7 @@ export const TRANSFERS = [
 // Данные для доступа
 export const AccessData = {
   END_POINT: `https://11.ecmascript.pages.academy/big-trip`,
-  AUTHORIZATION_KEY: `Basic t94tjmg34`
+  AUTHORIZATION_KEY: `Basic 34vg4gjgg4`
 };
 
 // Типы фильтров

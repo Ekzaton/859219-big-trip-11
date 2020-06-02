@@ -1,12 +1,12 @@
 // Утилиты
-import {getEventDestinations, getEventOffers} from "../utils/common.js";
+import {getDestinations, getOffers} from "../utils/common.js";
 import {getEventsByFilter} from "../utils/filter.js";
 
 // Константы
 import {FilterType} from "../const.js";
 
 // Модель точек маршрута
-export default class TripEvents {
+export default class Trip {
   constructor() {
     this._events = [];
     this._destinations = {};
@@ -40,11 +40,11 @@ export default class TripEvents {
   }
 
   setEventDestinations(destinations) {
-    this._destinations = getEventDestinations(destinations);
+    this._destinations = getDestinations(destinations);
   }
 
   setEventOffers(offers) {
-    this._offers = getEventOffers(offers);
+    this._offers = getOffers(offers);
   }
 
   setFilter(filterType) {

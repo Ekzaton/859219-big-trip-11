@@ -14,8 +14,8 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import moment from "moment";
 
 // Получение уникальных значений
-const getUniqItems = (item, index, array) => {
-  return array.indexOf(item) === index;
+const getUniqItems = (item, index, self) => {
+  return self.indexOf(item) === index;
 };
 
 // Получение типов точек маршрута
@@ -55,7 +55,7 @@ const calculateTimeSpent = (events, type) => {
 };
 
 // Анимация диаграммы
-const chartCallback = (animation) => {
+const renderAnimation = (animation) => {
   const chart = animation.chart;
   const axisY = chart.scales[`y-axis-0`];
   const ticks = axisY.ticks;
@@ -81,7 +81,7 @@ const chartCallback = (animation) => {
 
       const tickIcon = new Image();
       tickIcon.addEventListener(`load`, onLoadImage);
-      tickIcon.src = `img/icons/${tick}.png`;
+      tickIcon.src = `img/icons/${tick.toLowerCase()}.png`;
     });
   }
 };
@@ -152,7 +152,7 @@ const renderChart = (ctx, types, calculation, title, prefix, postfix) => {
         enabled: false,
       },
       animation: {
-        onProgress: chartCallback
+        onProgress: renderAnimation
       }
     }
   });
@@ -203,10 +203,10 @@ const createStatisticsTemplate = () => {
 
 // Класс
 export default class Statistics extends SmartComponent {
-  constructor(tripEventsModel) {
+  constructor(tripModel) {
     super();
 
-    this._tripEventsModel = tripEventsModel;
+    this._tripModel = tripModel;
 
     this._moneyChart = null;
     this._transportChart = null;
@@ -245,7 +245,7 @@ export default class Statistics extends SmartComponent {
     transportCtx.height = BAR_HEIGHT * TRANSFER_TYPES;
     timeSpentCtx.height = BAR_HEIGHT * EVENT_TYPES;
 
-    const events = this._tripEventsModel.getAllEvents();
+    const events = this._tripModel.getAllEvents();
 
     this._resetCharts();
     this._moneyChart = renderMoneyChart(moneyCtx, events);
