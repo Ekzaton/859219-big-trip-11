@@ -4,7 +4,7 @@ export const capitalize = (title) => {
 };
 
 // Получение пунктов назначаения
-export const getEventDestinations = (data) => {
+export const getDestinations = (data) => {
   return data.reduce((acc, item) => {
     if (acc[item.name] === undefined) {
       acc[item.name] = [];
@@ -15,7 +15,7 @@ export const getEventDestinations = (data) => {
 };
 
 // Получение доп. опций
-export const getEventOffers = (data) => {
+export const getOffers = (data) => {
   return data.reduce((acc, item) => {
     if (acc[item.type] === undefined) {
       acc[item.type] = [];

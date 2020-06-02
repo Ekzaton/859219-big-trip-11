@@ -1,5 +1,5 @@
 // API
-import API from "./api/index.js";
+import API from "./api/api.js";
 import Provider from "./api/provider.js";
 import Store from "./api/store.js";
 
@@ -10,12 +10,12 @@ import TripEventsMsgLoadingComponent from "./components/trip-events-msg-loading.
 import TripTabsComponent from "./components/trip-tabs.js";
 
 // Контроллеры
-import TripEventsController from "./controllers/trip-events.js";
+import TripController from "./controllers/trip.js";
 import TripFiltersController from "./controllers/trip-filters.js";
 import TripInfoController from "./controllers/trip-info.js";
 
 // Модели данных
-import TripEventsModel from "./models/trip-events.js";
+import TripModel from "./models/trip.js";
 
 // Утилиты
 import {render, remove} from "./utils/render.js";
@@ -27,7 +27,7 @@ const STORE_NAME = `${StoreReqs.STORE_PREFIX}-${StoreReqs.STORE_VER}`;
 const api = new API(AccessData.END_POINT, AccessData.AUTHORIZATION_KEY);
 const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
-const tripEventsModel = new TripEventsModel();
+const tripModel = new TripModel();
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripMainTripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
@@ -37,11 +37,11 @@ const tripEventsElement = document.querySelector(`.trip-events`);
 const tripTabsComponent = new TripTabsComponent();
 const tripEventsMsgLoadingComponent = new TripEventsMsgLoadingComponent();
 const tripDaysComponent = new TripDaysComponent();
-const statisticsComponent = new StatisticsComponent(tripEventsModel);
+const statisticsComponent = new StatisticsComponent(tripModel);
 
-const tripInfoController = new TripInfoController(tripMainElement, tripEventsModel);
-const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripEventsModel);
-const tripEventsController = new TripEventsController(tripDaysComponent, tripEventsModel, apiWithProvider);
+const tripInfoController = new TripInfoController(tripMainElement, tripModel);
+const tripFiltersController = new TripFiltersController(tripMainTripControlsElement, tripModel);
+const tripController = new TripController(tripDaysComponent, tripModel, apiWithProvider);
 
 // Отрисовка
 tripInfoController.render();
@@ -57,11 +57,11 @@ tripTabsComponent.setOnChange((tabsItem) => {
   tripTabsComponent.setActiveItem(tabsItem);
   switch (tabsItem) {
     case TabsItem.TABLE:
-      tripEventsController.show();
+      tripController.show();
       statisticsComponent.hide();
       break;
     case TabsItem.STATS:
-      tripEventsController.hide();
+      tripController.hide();
       statisticsComponent.show();
       break;
   }
@@ -69,7 +69,7 @@ tripTabsComponent.setOnChange((tabsItem) => {
 
 // Добавление точки маршрута
 tripMainEventAddBtnElement.addEventListener(`click`, () => {
-  tripEventsController.addEventsItem();
+  tripController.addEventsItem();
 });
 
 Promise.all([
@@ -78,11 +78,11 @@ Promise.all([
   apiWithProvider.getEventOffers()
 ])
   .then(([events, destinations, offers]) => {
-    tripEventsModel.setEvents(events);
-    tripEventsModel.setEventDestinations(destinations);
-    tripEventsModel.setEventOffers(offers);
+    tripModel.setEvents(events);
+    tripModel.setEventDestinations(destinations);
+    tripModel.setEventOffers(offers);
     remove(tripEventsMsgLoadingComponent);
-    tripEventsController.render();
+    tripController.render();
   });
 
 // Регистрация сервис-воркера

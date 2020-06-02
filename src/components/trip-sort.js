@@ -74,11 +74,8 @@ export default class TripSort extends Component {
 
       this._currentSortType = sortType;
 
-      if (sortType === SortType.EVENT) {
-        this.getElement().querySelector(`.trip-sort__item--day`).textContent = `Day`;
-      } else {
-        this.getElement().querySelector(`.trip-sort__item--day`).textContent = ``;
-      }
+      const tripSortItemDayElement = this.getElement().querySelector(`.trip-sort__item--day`);
+      tripSortItemDayElement.textContent = (sortType === SortType.EVENT) ? `Day` : ``;
 
       handler(this._currentSortType);
     });

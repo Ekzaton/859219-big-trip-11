@@ -5,14 +5,14 @@ import TripEventsItemModel from "../models/trip-events-item.js";
 import {nanoid} from "nanoid";
 
 // Проверка доступности интернета
-const isOnline = () => {
+const checkOnline = () => {
   return window.navigator.onLine;
 };
 
 // Получение синхронизированных точек маршрута
 const getSyncedEvents = (items) => {
   return items.filter(({success}) => success)
-    .map(({payload}) => payload.eventsItem);
+    .map(({payload}) => payload.point);
 };
 
 // Создание структуры хранилища
@@ -32,12 +32,13 @@ export default class Provider {
   }
 
   getEvents() {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.getEvents()
         .then((events) => {
           const items = createStoreStructure(events.map((eventsItem) => eventsItem.toRAW()));
 
           this._store.setItems(items);
+
           return events;
         });
     }
@@ -47,34 +48,39 @@ export default class Provider {
   }
 
   getEventDestinations() {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.getEventDestinations()
       .then((eventDestinations) => {
-        this._store.setItemDestinations(`destinations`, eventDestinations);
+        this._store.setItemDestinations(eventDestinations);
+
         return eventDestinations;
       });
     }
+    const localEventDestinations = this._store.getItemDestinations();
 
-    return Promise.resolve(this._store.getItems(`destinations`));
+    return Promise.resolve(localEventDestinations);
   }
 
   getEventOffers() {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.getEventOffers()
         .then((eventOffers) => {
-          this._store.setItemOffers(`offers`, eventOffers);
+          this._store.setItemOffers(eventOffers);
+
           return eventOffers;
         });
     }
+    const localEventOffers = this._store.getItemOffers();
 
-    return Promise.resolve(this._store.getItems(`offers`));
+    return Promise.resolve(localEventOffers);
   }
 
   updateEventsItem(id, data) {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.updateEventsItem(id, data)
         .then((updatedEventsItem) => {
           this._store.setItem(updatedEventsItem.id, updatedEventsItem.toRAW());
+
           return updatedEventsItem;
         });
     }
@@ -86,10 +92,11 @@ export default class Provider {
   }
 
   addEventsItem(eventsItem) {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.addEventsItem(eventsItem)
         .then((newEventsItem) => {
           this._store.setItem(newEventsItem.id, newEventsItem.toRAW());
+
           return newEventsItem;
         });
     }
@@ -103,7 +110,7 @@ export default class Provider {
   }
 
   removeEventsItem(id) {
-    if (isOnline()) {
+    if (checkOnline()) {
       return this._api.removeEventsItem(id)
         .then(() => this._store.removeItem(id));
     }
@@ -113,16 +120,18 @@ export default class Provider {
   }
 
   sync() {
-    if (isOnline()) {
+    if (checkOnline()) {
       const localEvents = Object.values(this._store.getItems());
       return this._api.sync(localEvents)
         .then((response) => {
           const addedEvents = getSyncedEvents(response.created);
           const updatedEvents = getSyncedEvents(response.updated);
           const items = createStoreStructure([...addedEvents, ...updatedEvents]);
+
           this._store.setItems(items);
         });
     }
+
     return Promise.reject(new Error(`Sync data failed`));
   }
 }

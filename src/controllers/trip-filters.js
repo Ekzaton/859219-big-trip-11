@@ -9,9 +9,9 @@ import {FilterType, RenderPosition} from "../const.js";
 
 // Контроллер фильтров
 export default class TripFiltersController {
-  constructor(container, tripEventsModel) {
+  constructor(container, tripModel) {
     this._container = container;
-    this._tripEventsModel = tripEventsModel;
+    this._tripModel = tripModel;
 
     this._activeFilterType = FilterType.EVERYTHING;
     this._tripFiltersComponent = null;
@@ -42,7 +42,7 @@ export default class TripFiltersController {
   }
 
   _onFilterChange(filterType) {
-    this._tripEventsModel.setFilter(filterType);
+    this._tripModel.setFilter(filterType);
     this._activeFilterType = filterType;
   }
 
